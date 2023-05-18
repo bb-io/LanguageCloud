@@ -32,5 +32,19 @@ namespace Apps.LanguageCloud
             }
             return response;
         }
+
+        public PollExportQuoteReportDto PollQuoteReportExportOperation(string exportId, string projectId, string format,
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        {
+            var request = new LanguageCloudRequest($"/projects/{projectId}/quote-report/export?format={format}&exportId={exportId}",
+                Method.Get, authenticationCredentialsProviders);
+            var response = this.Get<PollExportQuoteReportDto>(request);
+            while (response?.Status == "inProgress")
+            {
+                Task.Delay(2000);
+                response = this.Get<PollExportQuoteReportDto>(request);
+            }
+            return response;
+        }
     }
 }

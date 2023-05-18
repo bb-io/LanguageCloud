@@ -6,6 +6,7 @@ using Apps.LanguageCloud.Models.Files.Responses;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Files.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Newtonsoft.Json;
 
 namespace Apps.LanguageCloud.Actions
 {
@@ -57,13 +58,13 @@ namespace Apps.LanguageCloud.Actions
         {
             var client = new LanguageCloudClient(authenticationCredentialsProviders);
             var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Post, authenticationCredentialsProviders);
-            request.AddParameter("properties", new
+            request.AddParameter("properties", JsonConvert.SerializeObject(new
             {
                 name = input.FileName,
                 role = "translatable",
                 type = "native",
                 language = input.SourceLanguageCode
-            }, ParameterType.RequestBody);
+            }), ParameterType.RequestBody);
             request.AddFile("file", input.File, input.FileName);
             var response = client.Execute<FileInfoDto>(request).Data;
             return response;

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Responses
+namespace Apps.LanguageCloud.Dtos
 {
-    public class GetAuthTokenTestResponse
+    public class ExportQuoteReportDto
     {
-        public string OAuthToken { get; set; }
+        public string Id { get; set; }
     }
 }
