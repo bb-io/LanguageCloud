@@ -22,11 +22,7 @@ namespace Apps.LanguageCloud
 
         public T GetInstance<T>()
         {
-            if (!_typesInstances.TryGetValue(typeof(T), out var value))
-            {
-                throw new InvalidOperationException($"Instance of type '{typeof(T)}' not found");
-            }
-            return (T)value;
+            throw new NotImplementedException();
         }
     }
 }

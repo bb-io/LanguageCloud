@@ -13,5 +13,14 @@ namespace Apps.LanguageCloud.Dtos
         public string Id { get; set; }
 
         public string Role { get; set; }
+
+        public VersionDto LatestVersion { get; set; }
+    }
+
+    public class VersionDto
+    {
+        public string Id { get; set; }
+
+        public string Type { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace Apps.LanguageCloud.Connections
                 "Authorization",
                 $"LC apiKey={token.Value}"
             );
-            var url = values.First(v => v.Key == "api_endpoint");
+            var url = values.First(v => v.Key == "tenantId");
             yield return new AuthenticationCredentialsProvider(
                 AuthenticationCredentialsRequestLocation.None,
                 "tenantId",

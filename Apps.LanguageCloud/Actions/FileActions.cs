@@ -46,12 +46,13 @@ namespace Apps.LanguageCloud.Actions
             [ActionParameter] GetFileRequest input)
         {
             var client = new LanguageCloudClient(authenticationCredentialsProviders);
-            var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}", Method.Get, authenticationCredentialsProviders);
+            var fields = new string[] { "name", "languageDirection", "latestVersion" };
+            var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get, authenticationCredentialsProviders);
             return client.Get<FileInfoDto>(request);
         }
 
         [Action("Upload source file", Description = "Upload source file to project")]
-        public FileInfoDto UploadFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public FileInfoDto UploadSourceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] UploadFileRequest input)
         {
             var client = new LanguageCloudClient(authenticationCredentialsProviders);
@@ -66,6 +67,28 @@ namespace Apps.LanguageCloud.Actions
             request.AddFile("file", input.File, input.FileName);
             var response = client.Execute<FileInfoDto>(request).Data;
             return response;
+        }
+
+        [Action("Download target file", Description = "Download target file by id")]
+        public DownloadTargetFileResponse DownloadTargetFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] DownloadFileRequest input)
+        {
+            var client = new LanguageCloudClient(authenticationCredentialsProviders);
+
+            var targetFile = GetTargetFile(authenticationCredentialsProviders, new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
+            var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format=native", 
+                Method.Post, authenticationCredentialsProviders);
+            var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
+            var pollingResult = client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, authenticationCredentialsProviders);
+            var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports/{pollingResult.Id}/download", 
+                Method.Get, authenticationCredentialsProviders);
+            var fileData = client.Get(downloadRequest).RawBytes;
+            
+            return new DownloadTargetFileResponse()
+            {
+                File = fileData,
+                FileName = targetFile.Name
+            };
         }
 
     }
