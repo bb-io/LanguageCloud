@@ -46,5 +46,20 @@ namespace Apps.LanguageCloud
             }
             return response;
         }
+
+        public ImportTmxDto PollImportTMXOperation(string importId,
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        {
+            var request = new LanguageCloudRequest($"/translation-memory/imports/{importId}",
+                Method.Get, authenticationCredentialsProviders);
+            Task.Delay(2000);
+            var response = this.Get<ImportTmxDto>(request);
+            while (response?.Status == "inProgress" || response?.Status == "queued")
+            {
+                Task.Delay(2000);
+                response = this.Get<ImportTmxDto>(request);
+            }
+            return response;
+        }
     }
 }
