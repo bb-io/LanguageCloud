@@ -10,8 +10,12 @@ namespace Apps.LanguageCloud.Models.TranslationMemories.Requests
     {
         public string Name { get; set; }
 
-        public string SourceLang { get; set; }
+        public string LanguageProcessingRuleId { get; set; }
 
-        public string TargetLang { get; set; }
+        public string FieldTemplateId { get; set; }
+
+        public string SourceLanguage { get; set; }
+
+        public string TargetLanguage { get; set; }
     }
 }

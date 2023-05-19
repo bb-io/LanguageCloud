@@ -34,12 +34,20 @@ namespace Apps.LanguageCloud.Actions
             [ActionParameter] CreateTranslationMemoryRequest input)
         {
             var client = new LanguageCloudClient(authenticationCredentialsProviders);
-            var request = new LanguageCloudRequest($"/api2/v1/transMemories", Method.Post, authenticationCredentialsProviders);
+            var request = new LanguageCloudRequest($"/translation-memory", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 name = input.Name,
-                sourceLang = input.SourceLang,
-                targetLangs = new[] { input.TargetLang }
+                languageDirections = new[]
+                {
+                    new
+                    {
+                        sourceLanguage = new {languageCode = input.SourceLanguage },
+                        targetLanguage = new {languageCode = input.TargetLanguage }
+                    }
+                },
+                languageProcessingRuleId = input.LanguageProcessingRuleId,
+                fieldTemplateId = input.FieldTemplateId
             });
             return client.Execute<TranslationMemoryDto>(request).Data;
         }
@@ -49,7 +57,7 @@ namespace Apps.LanguageCloud.Actions
             [ActionParameter] GetTranslationMemoryRequest input)
         {
             var client = new LanguageCloudClient(authenticationCredentialsProviders);
-            var request = new LanguageCloudRequest($"/translation-memory{input.TranslationMemoryUId}", Method.Get, authenticationCredentialsProviders);
+            var request = new LanguageCloudRequest($"/translation-memory/{input.TranslationMemoryId}", Method.Get, authenticationCredentialsProviders);
             var response = client.Get<TranslationMemoryDto>(request);
             return response;
         }
