@@ -11,6 +11,7 @@ using Apps.LanguageCloud.Models.Projects.Responses;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Projects.Requests;
+using Apps.LanguageCloud.Webhooks.Payload;
 
 namespace Apps.LanguageCloud.Actions
 {
@@ -90,6 +91,24 @@ namespace Apps.LanguageCloud.Actions
         {
             var client = new LanguageCloudClient(authenticationCredentialsProviders);
             var request = new LanguageCloudRequest($"/projects/{input.ProjectId}", Method.Delete, authenticationCredentialsProviders);
+            client.Execute(request);
+        }
+
+        [Action("Start project", Description = "Start project by Id")]
+        public void StartProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] GetProjectRequest input)
+        {
+            var client = new LanguageCloudClient(authenticationCredentialsProviders);
+            var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/start", Method.Put, authenticationCredentialsProviders);
+            client.Execute(request);
+        }
+
+        [Action("Complete project", Description = "Complete project by Id")]
+        public void CompleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] GetProjectRequest input)
+        {
+            var client = new LanguageCloudClient(authenticationCredentialsProviders);
+            var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/complete", Method.Put, authenticationCredentialsProviders);
             client.Execute(request);
         }
     }
