@@ -111,5 +111,17 @@ namespace Apps.LanguageCloud.Actions
             var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/complete", Method.Put, authenticationCredentialsProviders);
             client.Execute(request);
         }
+
+        [Action("List all languages", Description = "List all languages")]
+        public ListAllLanguagesResponse ListAllLanguages(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        {
+            var client = new LanguageCloudClient(authenticationCredentialsProviders);
+            var request = new LanguageCloudRequest("/languages", Method.Get, authenticationCredentialsProviders);
+            var response = client.Get<ResponseWrapper<List<LanguageDto>>>(request);
+            return new ListAllLanguagesResponse()
+            {
+                Languages = response.Items
+            };
+        }
     }
 }

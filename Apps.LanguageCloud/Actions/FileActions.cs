@@ -70,6 +70,18 @@ namespace Apps.LanguageCloud.Actions
             return response;
         }
 
+        [Action("Upload zip archive", Description = "Upload zip archive with source files")]
+        public ImportZipDto UploadZipArchive(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] UploadZipRequest input)
+        {
+            var client = new LanguageCloudClient(authenticationCredentialsProviders);
+            var request = new LanguageCloudRequest($"/files", Method.Post, authenticationCredentialsProviders);
+            request.AddFile("file", input.File, input.FileName);
+            var importOperation = client.Execute<ZipFileStatusDto>(request).Data;
+            var pollingResult = client.PollImportZipArchiveOperation(importOperation.Id, authenticationCredentialsProviders);
+            return pollingResult;
+        }
+
         [Action("Download target file", Description = "Download target file by id")]
         public DownloadTargetFileResponse DownloadTargetFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DownloadFileRequest input)
@@ -90,6 +102,31 @@ namespace Apps.LanguageCloud.Actions
                 File = fileData,
                 FileName = targetFile.Name
             };
+        }
+
+        [Action("Attach source file to project", Description = "Attach source file to project")]
+        public void AttachSourceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] AttachSourceFileRequest input)
+        {
+            var client = new LanguageCloudClient(authenticationCredentialsProviders);
+            var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/attach-files", Method.Post, authenticationCredentialsProviders);
+            request.AddJsonBody(new
+            {
+                sourceFilesAttachment = new[]
+                {
+                    new
+                    {
+                        name = input.Name,
+                        role = "translatable",
+                        fileUrl = input.FileId,
+                        type = "native",
+                        language = new { 
+                            languageCode = input.LanguageCode
+                        }
+                    }
+                }
+            });
+            client.Execute(request);
         }
 
     }

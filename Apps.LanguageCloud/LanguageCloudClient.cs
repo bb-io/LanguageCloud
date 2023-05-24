@@ -61,5 +61,19 @@ namespace Apps.LanguageCloud
             }
             return response;
         }
+
+        public ImportZipDto PollImportZipArchiveOperation(string fileId,
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        {
+            var request = new LanguageCloudRequest($"/files/{fileId}",
+                Method.Get, authenticationCredentialsProviders);
+            var response = this.Get<ImportZipDto>(request);
+            while (response?.UnzipStatus == "extracting" || response?.UnzipStatus == "queued")
+            {
+                Task.Delay(2000);
+                response = this.Get<ImportZipDto>(request);
+            }
+            return response;
+        }
     }
 }
