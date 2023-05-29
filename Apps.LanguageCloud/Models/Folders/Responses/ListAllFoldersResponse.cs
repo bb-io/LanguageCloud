@@ -9,6 +9,6 @@ namespace Apps.LanguageCloud.Models.Folders.Responses
 {
     public class ListAllFoldersResponse
     {
-        public List<FolderDto> Folders;
+        public IEnumerable<FolderDto> Folders { get; set; }
     }
 }
