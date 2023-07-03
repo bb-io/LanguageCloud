@@ -1,5 +1,4 @@
 ﻿using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 
 
 namespace Apps.LanguageCloud

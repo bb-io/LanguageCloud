@@ -1,5 +1,4 @@
 ﻿using Apps.LanguageCloud.Dtos;
-using Apps.LanguageCloud.Models.Files.Requests;
 using Apps.LanguageCloud.Models.Quotes.Requests;
 using Apps.LanguageCloud.Models.Quotes.Responses;
 using Blackbird.Applications.Sdk.Common;

@@ -2,18 +2,11 @@
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Tasks.Requests;
 using Apps.LanguageCloud.Models.Tasks.Responses;
-using Apps.LanguageCloud.Models.Users.Requests;
-using Apps.LanguageCloud.Models.Users.Responses;
-using Apps.LanguageCloud.Webhooks.Payload;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace Apps.LanguageCloud.Actions
 {
@@ -80,10 +73,24 @@ namespace Apps.LanguageCloud.Actions
             var request = new LanguageCloudRequest($"/tasks/{input.Id}/complete", Method.Put, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
-                outcome = input.Outcome,
+                outcome = "done",
                 comment = input.Comment
             });
-            client.Execute(request);
+
+            try
+            {
+                client.Execute(request);
+            }
+            catch (HttpRequestException ex)
+            {
+                var message = ex.StatusCode switch
+                {
+                    HttpStatusCode.Conflict => "The task is not in created or in progress state",
+                    _ => ex.Message
+                };
+
+                throw new(message);
+            }
         }
 
         [Action("Release task", Description = "Release task by Id")]

@@ -2,16 +2,10 @@
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Apps.LanguageCloud.Models.Projects.Responses;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Projects.Requests;
-using Apps.LanguageCloud.Webhooks.Payload;
 
 namespace Apps.LanguageCloud.Actions
 {

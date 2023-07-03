@@ -1,8 +1,6 @@
-﻿using Apps.LanguageCloud.Dtos;
-using Apps.LanguageCloud.Webhooks.Payload;
+﻿using Apps.LanguageCloud.Webhooks.Payload;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
-using System.Text.Json;
 
 namespace Apps.LanguageCloud.Webhooks
 {

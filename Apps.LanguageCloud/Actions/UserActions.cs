@@ -1,6 +1,4 @@
 ﻿using Apps.LanguageCloud.Dtos;
-using Apps.LanguageCloud.Models.Projects.Requests;
-using Apps.LanguageCloud.Models.Projects.Responses;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Users.Requests;
 using Apps.LanguageCloud.Models.Users.Responses;
