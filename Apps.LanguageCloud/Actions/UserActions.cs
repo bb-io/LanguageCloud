@@ -22,7 +22,7 @@ namespace Apps.LanguageCloud.Actions
             var response = client.Get<ResponseWrapper<List<UserDto>>>(request);
             return new ListAllUsersResponse()
             {
-                Users = response.Items
+                Users = response.Items.Where(x => !string.IsNullOrEmpty(x.Email))
             };
         }
 
