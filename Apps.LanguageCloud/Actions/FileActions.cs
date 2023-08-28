@@ -7,6 +7,8 @@ using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Files.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Newtonsoft.Json;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
+using System.Net.Mime;
 
 namespace Apps.LanguageCloud.Actions
 {
@@ -60,12 +62,12 @@ namespace Apps.LanguageCloud.Actions
             var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Post, authenticationCredentialsProviders);
             request.AddParameter("properties", JsonConvert.SerializeObject(new
             {
-                name = input.FileName,
+                name = input.File.Name,
                 role = "translatable",
                 type = "native",
                 language = input.SourceLanguageCode
             }), ParameterType.RequestBody);
-            request.AddFile("file", input.File, input.FileName);
+            request.AddFile("file", input.File.Bytes, input.File.Name);
             var response = client.Execute<FileInfoDto>(request).Data;
             return response;
         }
@@ -76,7 +78,7 @@ namespace Apps.LanguageCloud.Actions
         {
             var client = new LanguageCloudClient(authenticationCredentialsProviders);
             var request = new LanguageCloudRequest($"/files", Method.Post, authenticationCredentialsProviders);
-            request.AddFile("file", input.File, input.FileName);
+            request.AddFile("file", input.File.Bytes, input.File.Name);
             var importOperation = client.Execute<ZipFileStatusDto>(request).Data;
             var pollingResult = client.PollImportZipArchiveOperation(importOperation.Id, authenticationCredentialsProviders);
             return pollingResult;
@@ -99,8 +101,11 @@ namespace Apps.LanguageCloud.Actions
             
             return new DownloadTargetFileResponse()
             {
-                File = fileData,
-                FileName = targetFile.Name
+                File = new File(fileData)
+                {
+                    Name = targetFile.Name,
+                    ContentType = MediaTypeNames.Application.Octet
+                }
             };
         }
 

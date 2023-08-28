@@ -1,4 +1,5 @@
-﻿namespace Apps.LanguageCloud.Models.Files.Requests
+﻿
+namespace Apps.LanguageCloud.Models.Files.Requests
 {
     public class AttachSourceFileRequest
     {

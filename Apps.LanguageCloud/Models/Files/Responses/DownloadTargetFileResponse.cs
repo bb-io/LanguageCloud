@@ -1,9 +1,12 @@
-﻿namespace Apps.LanguageCloud.Models.Files.Responses
+﻿using Blackbird.Applications.Sdk.Common;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
+
+
+namespace Apps.LanguageCloud.Models.Files.Responses
 {
     public class DownloadTargetFileResponse
     {
-        public string FileName { get; set; }
-
-        public byte[] File { get; set; }
+        [Display("File")]
+        public File File { get; set; }
     }
 }

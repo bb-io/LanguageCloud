@@ -5,6 +5,9 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
+using System.Net.Mime;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
+
 
 namespace Apps.LanguageCloud.Actions
 {
@@ -26,8 +29,10 @@ namespace Apps.LanguageCloud.Actions
             var fileFormat = input.FileFormat == "pdf" ? "pdf" : "xlsx";
             return new DownloadQuoteReportResponse()
             {
-                File = fileData,
-                FileName = $"QuoteReport_{input.LanguageCode}_{DateTime.Now.ToString("yyyyMMddTHHmmss")}.{fileFormat}"
+                File = new File(fileData) {
+                    Name = $"QuoteReport_{input.LanguageCode}_{DateTime.Now.ToString("yyyyMMddTHHmmss")}.{fileFormat}",
+                    ContentType = MediaTypeNames.Application.Octet
+                }
             };
         }
     }

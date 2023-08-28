@@ -64,7 +64,7 @@ namespace Apps.LanguageCloud.Actions
             [ActionParameter] ImportTmxRequest input)
         {
             var restClient = new LanguageCloudClient(authenticationCredentialsProviders);
-            using var memoryStream = new MemoryStream(input.File);
+            using var memoryStream = new MemoryStream(input.File.Bytes);
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, $"https://lc-api.sdl.com/public-api/v1/translation-memory/{input.TranslationMemoryId}/imports");
             request.Headers.Add("Authorization", authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
@@ -74,7 +74,7 @@ namespace Apps.LanguageCloud.Actions
                 sourceLanguageCode = input.SourceLanguage,
                 targetLanguageCode = input.TargetLanguage
             })), "properties");
-            content.Add(new StreamContent(memoryStream), "file", input.Filename);
+            content.Add(new StreamContent(memoryStream), "file", input.File.Name);
             request.Content = content;
             var response = client.Send(request);
             response.EnsureSuccessStatusCode();
