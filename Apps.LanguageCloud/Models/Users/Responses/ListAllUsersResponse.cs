@@ -1,9 +1,8 @@
 ﻿using Apps.LanguageCloud.Dtos;
 
-namespace Apps.LanguageCloud.Models.Users.Responses
+namespace Apps.LanguageCloud.Models.Users.Responses;
+
+public class ListAllUsersResponse
 {
-    public class ListAllUsersResponse
-    {
-        public IEnumerable<UserDto> Users { get; set; }
-    }
+    public IEnumerable<UserDto> Users { get; set; }
 }

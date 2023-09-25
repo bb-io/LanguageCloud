@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.TranslationMemories.Responses
+﻿namespace Apps.LanguageCloud.Models.TranslationMemories.Responses;
+
+public class ExportTranslationMemoryResponse
 {
-    public class ExportTranslationMemoryResponse
-    {
-        public byte[] File { get; set; }
-    }
+    public byte[] File { get; set; }
 }

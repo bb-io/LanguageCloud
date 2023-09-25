@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.Responses
+﻿namespace Apps.LanguageCloud.Models.Responses;
+
+public class ResponseWrapper<T>
 {
-    public class ResponseWrapper<T>
-    {
-        public T Items { get; set; }
-    }
+    public T Items { get; set; }
 }

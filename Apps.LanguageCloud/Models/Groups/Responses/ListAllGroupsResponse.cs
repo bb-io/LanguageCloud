@@ -1,9 +1,8 @@
 ﻿using Apps.LanguageCloud.Dtos;
 
-namespace Apps.LanguageCloud.Models.Groups.Responses
+namespace Apps.LanguageCloud.Models.Groups.Responses;
+
+public class ListAllGroupsResponse
 {
-    public class ListAllGroupsResponse
-    {
-        public IEnumerable<GroupDto> Groups { get; set; }
-    }
+    public IEnumerable<GroupDto> Groups { get; set; }
 }

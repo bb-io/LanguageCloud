@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.ProjectTemplates.Requests
+﻿namespace Apps.LanguageCloud.Models.ProjectTemplates.Requests;
+
+public class GetProjectTemplateRequest
 {
-    public class GetProjectTemplateRequest
-    {
-        public string Id { get; set; } 
-    }
+    public string Id { get; set; } 
 }

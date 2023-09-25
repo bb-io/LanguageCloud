@@ -1,9 +1,8 @@
-﻿namespace Apps.LanguageCloud.Dtos
-{
-    public class TaskDto
-    {
-        public string Id { get; set; }
+﻿namespace Apps.LanguageCloud.Dtos;
 
-        public string Status { get; set; }
-    }
+public class TaskDto
+{
+    public string Id { get; set; }
+
+    public string Status { get; set; }
 }

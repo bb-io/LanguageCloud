@@ -1,8 +1,7 @@
-﻿namespace Apps.LanguageCloud.Dtos
+﻿namespace Apps.LanguageCloud.Dtos;
+
+public class GroupDto
 {
-    public class GroupDto
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
+    public string Id { get; set; }
+    public string Name { get; set; }
 }

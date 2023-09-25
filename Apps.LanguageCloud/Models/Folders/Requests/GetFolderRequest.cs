@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.Folders.Requests
+﻿namespace Apps.LanguageCloud.Models.Folders.Requests;
+
+public class GetFolderRequest
 {
-    public class GetFolderRequest
-    {
-        public string FolderId { get; set; }
-    }
+    public string FolderId { get; set; }
 }

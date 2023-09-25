@@ -1,9 +1,8 @@
-﻿namespace Apps.LanguageCloud.Models.TranslationMemories.Responses
-{
-    public class ExportTransMemoryRequest
-    {
-        public string TranslationMemoryUId { get; set; }
+﻿namespace Apps.LanguageCloud.Models.TranslationMemories.Responses;
 
-        public string FileFormat { get; set; } //"TMX" "XLSX"
-    }
+public class ExportTransMemoryRequest
+{
+    public string TranslationMemoryUId { get; set; }
+
+    public string FileFormat { get; set; } //"TMX" "XLSX"
 }

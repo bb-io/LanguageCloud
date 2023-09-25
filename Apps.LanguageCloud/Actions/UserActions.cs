@@ -7,30 +7,29 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 
-namespace Apps.LanguageCloud.Actions
-{
-    [ActionList]
-    public class UserActions
-    {
-        [Action("List all users", Description = "List all users")]
-        public ListAllUsersResponse ListAllUsers(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
-        {
-            var client = new LanguageCloudClient(authenticationCredentialsProviders);
-            var request = new LanguageCloudRequest("/users", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<UserDto>>>(request);
-            return new ListAllUsersResponse()
-            {
-                Users = response.Items.Where(x => !string.IsNullOrEmpty(x.Email))
-            };
-        }
+namespace Apps.LanguageCloud.Actions;
 
-        [Action("Get user", Description = "Get user by Id")]
-        public UserDto? GetUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] GetUserRequest input)
+[ActionList]
+public class UserActions
+{
+    [Action("List all users", Description = "List all users")]
+    public ListAllUsersResponse ListAllUsers(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    {
+        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest("/users", Method.Get, authenticationCredentialsProviders);
+        var response = client.Get<ResponseWrapper<List<UserDto>>>(request);
+        return new ListAllUsersResponse()
         {
-            var client = new LanguageCloudClient(authenticationCredentialsProviders);
-            var request = new LanguageCloudRequest($"/users/{input.UserId}", Method.Get, authenticationCredentialsProviders);
-            return client.Get<UserDto>(request);
-        }
+            Users = response.Items.Where(x => !string.IsNullOrEmpty(x.Email))
+        };
+    }
+
+    [Action("Get user", Description = "Get user by Id")]
+    public UserDto? GetUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] GetUserRequest input)
+    {
+        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/users/{input.UserId}", Method.Get, authenticationCredentialsProviders);
+        return client.Get<UserDto>(request);
     }
 }

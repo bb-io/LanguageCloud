@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.Projects.Requests
+﻿namespace Apps.LanguageCloud.Models.Projects.Requests;
+
+public class GetProjectRequest
 {
-    public class GetProjectRequest
-    {
-        public string ProjectId { get; set; }
-    }
+    public string ProjectId { get; set; }
 }

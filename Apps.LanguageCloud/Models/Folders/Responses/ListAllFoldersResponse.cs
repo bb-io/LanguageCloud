@@ -1,9 +1,8 @@
 ﻿using Apps.LanguageCloud.Dtos;
 
-namespace Apps.LanguageCloud.Models.Folders.Responses
+namespace Apps.LanguageCloud.Models.Folders.Responses;
+
+public class ListAllFoldersResponse
 {
-    public class ListAllFoldersResponse
-    {
-        public IEnumerable<FolderDto> Folders { get; set; }
-    }
+    public IEnumerable<FolderDto> Folders { get; set; }
 }

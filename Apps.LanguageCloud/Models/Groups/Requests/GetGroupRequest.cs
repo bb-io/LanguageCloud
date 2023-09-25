@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.Groups.Requests
+﻿namespace Apps.LanguageCloud.Models.Groups.Requests;
+
+public class GetGroupRequest
 {
-    public class GetGroupRequest
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

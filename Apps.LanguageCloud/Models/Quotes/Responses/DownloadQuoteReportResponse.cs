@@ -2,11 +2,10 @@
 using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 
-namespace Apps.LanguageCloud.Models.Quotes.Responses
+namespace Apps.LanguageCloud.Models.Quotes.Responses;
+
+public class DownloadQuoteReportResponse
 {
-    public class DownloadQuoteReportResponse
-    {
-        [Display("File")]
-        public File File { get; set; }
-    }
+    [Display("File")]
+    public File File { get; set; }
 }

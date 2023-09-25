@@ -1,9 +1,8 @@
 ﻿using Apps.LanguageCloud.Dtos;
 
-namespace Apps.LanguageCloud.Models.Projects.Responses
+namespace Apps.LanguageCloud.Models.Projects.Responses;
+
+public class ListAllLanguagesResponse
 {
-    public class ListAllLanguagesResponse
-    {
-        public IEnumerable<LanguageDto> Languages { get; set; }
-    }
+    public IEnumerable<LanguageDto> Languages { get; set; }
 }

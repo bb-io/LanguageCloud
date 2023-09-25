@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.TranslationMemories.Requests
+﻿namespace Apps.LanguageCloud.Models.TranslationMemories.Requests;
+
+public class GetTranslationMemoryRequest
 {
-    public class GetTranslationMemoryRequest
-    {
-        public string TranslationMemoryId { get; set; }
-    }
+    public string TranslationMemoryId { get; set; }
 }

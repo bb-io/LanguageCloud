@@ -1,9 +1,8 @@
-﻿namespace Apps.LanguageCloud.Models.Projects.Requests
-{
-    public class CreateFromTemplateRequest
-    {
-        public string Name { get; set; }
+﻿namespace Apps.LanguageCloud.Models.Projects.Requests;
 
-        public string TemplateId { get; set; }
-    }
+public class CreateFromTemplateRequest
+{
+    public string Name { get; set; }
+
+    public string TemplateId { get; set; }
 }

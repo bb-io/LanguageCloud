@@ -1,8 +1,7 @@
-﻿namespace Apps.LanguageCloud.Models.Files.Requests
+﻿namespace Apps.LanguageCloud.Models.Files.Requests;
+
+public class DownloadFileRequest
 {
-    public class DownloadFileRequest
-    {
-        public string ProjectId { get; set; }
-        public string FileId { get; set; }
-    }
+    public string ProjectId { get; set; }
+    public string FileId { get; set; }
 }

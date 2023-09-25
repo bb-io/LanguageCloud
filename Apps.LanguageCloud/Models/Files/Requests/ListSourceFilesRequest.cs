@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.Files.Requests
+﻿namespace Apps.LanguageCloud.Models.Files.Requests;
+
+public class ListSourceFilesRequest
 {
-    public class ListSourceFilesRequest
-    {
-        public string ProjectId { get; set; }
-    }
+    public string ProjectId { get; set; }
 }

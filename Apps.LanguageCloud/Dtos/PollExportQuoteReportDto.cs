@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Dtos
+﻿namespace Apps.LanguageCloud.Dtos;
+
+public class PollExportQuoteReportDto
 {
-    public class PollExportQuoteReportDto
-    {
-        public string Status { get; set; }
-    }
+    public string Status { get; set; }
 }

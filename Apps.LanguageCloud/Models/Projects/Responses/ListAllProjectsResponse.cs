@@ -1,9 +1,8 @@
 ﻿using Apps.LanguageCloud.Dtos;
 
-namespace Apps.LanguageCloud.Models.Projects.Responses
+namespace Apps.LanguageCloud.Models.Projects.Responses;
+
+public class ListAllProjectsResponse
 {
-    public class ListAllProjectsResponse
-    {
-        public IEnumerable<ProjectDto> Projects { get; set; }
-    }
+    public IEnumerable<ProjectDto> Projects { get; set; }
 }

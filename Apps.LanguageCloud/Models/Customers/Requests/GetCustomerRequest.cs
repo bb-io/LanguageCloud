@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.Customers.Requests
+﻿namespace Apps.LanguageCloud.Models.Customers.Requests;
+
+public class GetCustomerRequest
 {
-    public class GetCustomerRequest
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

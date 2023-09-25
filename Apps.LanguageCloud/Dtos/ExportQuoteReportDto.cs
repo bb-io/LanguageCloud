@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Dtos
+﻿namespace Apps.LanguageCloud.Dtos;
+
+public class ExportQuoteReportDto
 {
-    public class ExportQuoteReportDto
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

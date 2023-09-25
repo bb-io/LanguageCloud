@@ -1,11 +1,10 @@
-﻿namespace Apps.LanguageCloud.Dtos
+﻿namespace Apps.LanguageCloud.Dtos;
+
+public class ImportTmxDto
 {
-    public class ImportTmxDto
-    {
-        public string Id { get; set; }
+    public string Id { get; set; }
 
-        public string Status { get; set; }
+    public string Status { get; set; }
 
 
-    }
 }

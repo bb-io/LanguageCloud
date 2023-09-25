@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Webhooks.Payload
+﻿namespace Apps.LanguageCloud.Webhooks.Payload;
+
+public class WebhookPayloadWrapper<T>
 {
-    public class WebhookPayloadWrapper<T>
-    {
-        public T Data { get; set; }
-    }
+    public T Data { get; set; }
 }

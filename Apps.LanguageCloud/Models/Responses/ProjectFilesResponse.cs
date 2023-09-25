@@ -1,7 +1,6 @@
-﻿namespace Apps.Memsource.Models.Responses
+﻿namespace Apps.Memsource.Models.Responses;
+
+public class ProjectFilesResponse
 {
-    public class ProjectFilesResponse
-    {
-        public string ProjectFiles { get; set; }
-    }
+    public string ProjectFiles { get; set; }
 }

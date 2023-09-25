@@ -1,7 +1,6 @@
-﻿namespace Apps.LanguageCloud.Models.Tasks.Requests
+﻿namespace Apps.LanguageCloud.Models.Tasks.Requests;
+
+public class GetTaskRequest
 {
-    public class GetTaskRequest
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

@@ -7,31 +7,30 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 
-namespace Apps.LanguageCloud.Actions
-{
-    [ActionList]
-    public class GroupActions
-    {
-        
-        [Action("List all groups", Description = "List all groups")]
-        public ListAllGroupsResponse ListAllGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
-        {
-            var client = new LanguageCloudClient(authenticationCredentialsProviders);
-            var request = new LanguageCloudRequest("/groups", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<GroupDto>>>(request);
-            return new ListAllGroupsResponse()
-            {
-                Groups = response.Items
-            };
-        }
+namespace Apps.LanguageCloud.Actions;
 
-        [Action("Get group", Description = "Get group by Id")]
-        public GroupDto? GetGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] GetCustomerRequest input)
+[ActionList]
+public class GroupActions
+{
+        
+    [Action("List all groups", Description = "List all groups")]
+    public ListAllGroupsResponse ListAllGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    {
+        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest("/groups", Method.Get, authenticationCredentialsProviders);
+        var response = client.Get<ResponseWrapper<List<GroupDto>>>(request);
+        return new ListAllGroupsResponse()
         {
-            var client = new LanguageCloudClient(authenticationCredentialsProviders);
-            var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get, authenticationCredentialsProviders);
-            return client.Get<GroupDto>(request);
-        }
+            Groups = response.Items
+        };
+    }
+
+    [Action("Get group", Description = "Get group by Id")]
+    public GroupDto? GetGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] GetCustomerRequest input)
+    {
+        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get, authenticationCredentialsProviders);
+        return client.Get<GroupDto>(request);
     }
 }
