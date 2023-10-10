@@ -18,7 +18,8 @@ public class ProjectActions
     public ListAllProjectsResponse ListAllProjects(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest("/projects", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest("/projects?fields=" +
+            "id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<ProjectDto>>>(request);
         return new ListAllProjectsResponse()
         {
@@ -31,7 +32,8 @@ public class ProjectActions
         [ActionParameter] GetProjectRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}?fields=" +
+            $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, authenticationCredentialsProviders);
         return client.Get<ProjectDto>(request);
     }
 

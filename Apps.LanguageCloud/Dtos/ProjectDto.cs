@@ -8,17 +8,23 @@ public class ProjectDto
     public string Id { get; set; }
 
     [Display("Short ID")]
+    [JsonProperty("shortId")]
     public string ShortId { get; set; }
+
     public string Name { get; set; }
 
+    [JsonProperty("description")]
     public string Description { get; set; }
 
     [Display("Due by")]
+    [JsonProperty("dueBy")]
     public string DueBy { get; set; }
 
     [Display("Created at")]
+    [JsonProperty("createdAt")]
     public string CreatedAt { get; set; }
 
+    [JsonProperty("status")]
     public string Status { get; set; }
 
     [Display("Language directions")]
