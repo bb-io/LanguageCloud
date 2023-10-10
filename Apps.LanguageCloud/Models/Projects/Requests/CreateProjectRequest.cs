@@ -15,9 +15,6 @@ public class CreateProjectRequest
     [Display("Due by")]
     public string? DueBy { get; set; }
 
-    [Display("Project template")]
-    public string? ProjectTemplate { get; set; }
-
     [Display("Source language")]
     [DataSource(typeof(LanguageDataHandler))]
     public string SourceLanguage { get; set; }

@@ -1,6 +1,10 @@
-﻿namespace Apps.LanguageCloud.Models.ProjectTemplates.Requests;
+﻿using Apps.LanguageCloud.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common.Dynamic;
+
+namespace Apps.LanguageCloud.Models.ProjectTemplates.Requests;
 
 public class GetProjectTemplateRequest
 {
-    public string Id { get; set; } 
+    [DataSource(typeof(ProjectTemplateDataHandler))]
+    public string Template { get; set; } 
 }

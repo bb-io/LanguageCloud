@@ -25,8 +25,8 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var client = new LanguageCloudClient(InvocationContext.AuthenticationCredentialsProviders);
-            var request = new LanguageCloudRequest("/translation-engines", Method.Get, InvocationContext.AuthenticationCredentialsProviders);
+            var client = new LanguageCloudClient(Creds);
+            var request = new LanguageCloudRequest("/translation-engines", Method.Get, Creds);
             var response = client.Get<ResponseWrapper<List<TranslationEngineDto>>>(request);
 
             return response.Items

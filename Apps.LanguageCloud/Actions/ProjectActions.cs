@@ -62,7 +62,7 @@ public class ProjectActions
         request.AddJsonBody(new
         {
             name = input.Name,
-            projectTemplate = new { id = input.TemplateId}
+            projectTemplate = new { id = input.Template}
         });;
         return client.Post<ProjectDto>(request);
     }

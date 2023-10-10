@@ -29,7 +29,7 @@ public class ProjectTemplateActions
         [ActionParameter] GetProjectTemplateRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/project-templates/{input.Id}", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/project-templates/{input.Template}", Method.Get, authenticationCredentialsProviders);
         return client.Get<ProjectTemplateDto>(request);
     }
 }

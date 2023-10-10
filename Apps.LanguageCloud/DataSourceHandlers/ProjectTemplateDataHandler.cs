@@ -5,35 +5,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Apps.LanguageCloud.Dtos;
-using Apps.LanguageCloud.Models.Responses;
+using Apps.LanguageCloud.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class LanguageDataHandler : BaseInvocable, IAsyncDataSourceHandler
+    public class ProjectTemplateDataHandler : BaseInvocable, IAsyncDataSourceHandler
     {
         private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-        public LanguageDataHandler(InvocationContext invocationContext) : base(invocationContext)
+        public ProjectTemplateDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
 
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var client = new LanguageCloudClient(Creds);
-            var request = new LanguageCloudRequest("/languages", Method.Get, Creds);
-            var response = client.Get<ResponseWrapper<List<LanguageDto>>>(request);
-
-            return response.Items
+            var projects = new ProjectTemplateActions().ListAllProjectTemplates(Creds);
+            return projects.ProjectTemplates
                 .Where(x => context.SearchString == null ||
-                            x.EnglishName.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+                            x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
                 .Take(20)
-                .ToDictionary(x => x.LanguageCode, x => x.EnglishName);
+                .ToDictionary(x => x.Id, x => x.Name);
         }
     }
 }
