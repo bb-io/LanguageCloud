@@ -19,11 +19,11 @@ public class QuoteActions
         [ActionParameter] DownloadQuoteReportRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/quote-report/export?format={input.FileFormat}&languageId={input.LanguageCode}",
+        var exportRequest = new LanguageCloudRequest($"/projects/{input.Project}/quote-report/export?format={input.FileFormat}&languageId={input.LanguageCode}",
             Method.Post, authenticationCredentialsProviders);
         var exportResult = client.Execute<ExportQuoteReportDto>(exportRequest).Data;
-        client.PollQuoteReportExportOperation(exportResult.Id, input.ProjectId, input.FileFormat, authenticationCredentialsProviders);
-        var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/quote-report/download?format={input.FileFormat}&exportId={exportResult.Id}",
+        client.PollQuoteReportExportOperation(exportResult.Id, input.Project, input.FileFormat, authenticationCredentialsProviders);
+        var downloadRequest = new LanguageCloudRequest($"/projects/{input.Project}/quote-report/download?format={input.FileFormat}&exportId={exportResult.Id}",
             Method.Get, authenticationCredentialsProviders);
         var fileData = client.Get(downloadRequest).RawBytes;
         var fileFormat = input.FileFormat == "pdf" ? "pdf" : "xlsx";

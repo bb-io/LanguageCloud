@@ -1,6 +1,10 @@
-﻿namespace Apps.LanguageCloud.Models.Tasks.Requests;
+﻿using Apps.LanguageCloud.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common.Dynamic;
+
+namespace Apps.LanguageCloud.Models.Tasks.Requests;
 
 public class ListAllProjectTasksRequest
 {
-    public string ProjectId { get; set; }
+    [DataSource(typeof(ProjectDataHandler))]
+    public string Project { get; set; }
 }

@@ -30,7 +30,7 @@ public class TaskActions
         [ActionParameter] ListAllProjectTasksRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/tasks", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<TaskDto>>>(request);
         return new ListAllTasksResponse()
         {

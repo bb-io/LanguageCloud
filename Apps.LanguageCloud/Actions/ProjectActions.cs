@@ -6,6 +6,8 @@ using Apps.LanguageCloud.Models.Projects.Responses;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Projects.Requests;
+using Apps.LanguageCloud.Webhooks.Payload;
+using Newtonsoft.Json;
 
 namespace Apps.LanguageCloud.Actions;
 
@@ -29,7 +31,7 @@ public class ProjectActions
         [ActionParameter] GetProjectRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Get, authenticationCredentialsProviders);
         return client.Get<ProjectDto>(request);
     }
 
@@ -45,14 +47,7 @@ public class ProjectActions
         input.TargetLanguages = input.TargetLanguages.Select(t => t.Replace('_', '-')).ToList(); 
         // ----------------------------------------------------------------------------------------------
         
-        request.AddJsonBody(new
-        {
-            name = input.Name,
-            languageDirections = input.TargetLanguages.Select(t => new {
-                sourceLanguage = new { languageCode = input.SourceLanguage },
-                targetLanguage = new { languageCode = t }
-            }).ToArray()
-        });
+        request.AddStringBody(input.GetSerializedRequest(), DataFormat.Json);
         return client.Post<ProjectDto>(request);
     }
 
@@ -75,7 +70,7 @@ public class ProjectActions
         [ActionParameter] EditProjectRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Put, authenticationCredentialsProviders);
         request.AddJsonBody(new
         {
             name = input.ProjectName,
@@ -88,7 +83,7 @@ public class ProjectActions
         [ActionParameter] DeleteProjectRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}", Method.Delete, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Delete, authenticationCredentialsProviders);
         client.Execute(request);
     }
 
@@ -97,7 +92,7 @@ public class ProjectActions
         [ActionParameter] GetProjectRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/start", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/start", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
 
@@ -106,7 +101,7 @@ public class ProjectActions
         [ActionParameter] GetProjectRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/complete", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/complete", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
 
