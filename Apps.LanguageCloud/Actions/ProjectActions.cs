@@ -39,15 +39,19 @@ public class ProjectActions
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest("/projects", Method.Post, authenticationCredentialsProviders);
+
+        // temp solution for sync from localize. Need convert operator on array to remove this workaround
+        input.SourceLanguage = input.SourceLanguage.Replace('_', '-');
+        input.TargetLanguages = input.TargetLanguages.Select(t => t.Replace('_', '-')).ToList(); 
+        // ----------------------------------------------------------------------------------------------
+        
         request.AddJsonBody(new
         {
             name = input.Name,
-            languageDirections = new[] { 
-                new { 
-                    sourceLanguage = new {languageCode = input.SourceLanguage }, 
-                    targetLanguage = new {languageCode = input.TargetLanguage }
-                } 
-            }
+            languageDirections = input.TargetLanguages.Select(t => new {
+                sourceLanguage = new { languageCode = input.SourceLanguage },
+                targetLanguage = new { languageCode = t }
+            }).ToArray()
         });
         return client.Post<ProjectDto>(request);
     }
