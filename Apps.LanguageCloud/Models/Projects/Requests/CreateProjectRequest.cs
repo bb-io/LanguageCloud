@@ -77,7 +77,6 @@ public class CreateProjectRequest
             name = Name,
             description = Description,
             dueBy = DueBy,
-            projectTemplate = ProjectTemplate,
             languageDirections = TargetLanguages.Select(t => new
             {
                 sourceLanguage = new { languageCode = SourceLanguage },

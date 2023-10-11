@@ -1,8 +1,12 @@
-﻿namespace Apps.LanguageCloud.Models.Tasks.Requests;
+﻿using Apps.LanguageCloud.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common.Dynamic;
+
+namespace Apps.LanguageCloud.Models.Tasks.Requests;
 
 public class CompleteTaskRequest
 {
-    public string Id { get; set; }
+    [DataSource(typeof(TaskDataHandler))]
+    public string Task { get; set; }
 
     public string Comment { get; set; }
 }

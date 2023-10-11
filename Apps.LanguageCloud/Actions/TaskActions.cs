@@ -17,7 +17,7 @@ public class TaskActions
     public ListAllTasksResponse ListAllTasks(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest("/tasks/assigned", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest("/tasks/assigned?fields=id,status,taskType,project", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<TaskDto>>>(request);
         return new ListAllTasksResponse()
         {
@@ -43,7 +43,7 @@ public class TaskActions
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.Id}?fields=status", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=status", Method.Get, authenticationCredentialsProviders);
         return client.Get<TaskDto>(request);
     }
 
@@ -52,7 +52,7 @@ public class TaskActions
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.Id}/accept", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}/accept", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
 
@@ -61,7 +61,7 @@ public class TaskActions
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.Id}/reject", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}/reject", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
 
@@ -70,7 +70,7 @@ public class TaskActions
         [ActionParameter] CompleteTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.Id}/complete", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}/complete", Method.Put, authenticationCredentialsProviders);
         request.AddJsonBody(new
         {
             outcome = "done",
@@ -98,7 +98,7 @@ public class TaskActions
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.Id}/release", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}/release", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
 
@@ -107,7 +107,7 @@ public class TaskActions
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.Id}/reclaim", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}/reclaim", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
 
@@ -116,7 +116,7 @@ public class TaskActions
         [ActionParameter] AssignTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.TaskId}/assign", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}/assign", Method.Put, authenticationCredentialsProviders);
         request.AddJsonBody(new
         {
             assignees = new[] {
