@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
 	<Product>Blackbird Trados</Product>
 	<Version>1.0.0</Version>
+    <Description>Your gateway to translating everything</Description>
+    <AssemblyName>Apps.LanguageCloud</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
