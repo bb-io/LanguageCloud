@@ -63,8 +63,8 @@ public class FileActions
         request.AddParameter("properties", JsonConvert.SerializeObject(new
         {
             name = input.File.Name,
-            role = "translatable",
-            type = "native",
+            role = input.Role ?? "translatable",
+            type = input.FileType ?? "native",
             language = input.SourceLanguageCode
         }), ParameterType.RequestBody);
         request.AddFile("file", input.File.Bytes, input.File.Name);
