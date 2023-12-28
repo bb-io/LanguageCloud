@@ -1,5 +1,6 @@
 ﻿using Blackbird.Applications.Sdk.Common;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+using Blackbird.Applications.Sdk.Common.Files;
+
 
 namespace Apps.LanguageCloud.Models.TranslationMemories.Responses;
 
@@ -9,7 +10,7 @@ public class ImportTmxRequest
     public string TranslationMemoryId { get; set; }
 
     [Display("File")]
-    public File File { get; set; }
+    public FileReference File { get; set; }
 
     public string SourceLanguage { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using Blackbird.Applications.Sdk.Common;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+using Blackbird.Applications.Sdk.Common.Files;
+
 
 
 namespace Apps.LanguageCloud.Models.Files.Responses;
@@ -7,5 +8,5 @@ namespace Apps.LanguageCloud.Models.Files.Responses;
 public class DownloadTargetFileResponse
 {
     [Display("File")]
-    public File File { get; set; }
+    public FileReference File { get; set; }
 }

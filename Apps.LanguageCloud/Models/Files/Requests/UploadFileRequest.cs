@@ -2,7 +2,8 @@
 using Apps.LanguageCloud.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+using Blackbird.Applications.Sdk.Common.Files;
+
 
 namespace Apps.LanguageCloud.Models.Files.Requests;
 
@@ -12,7 +13,7 @@ public class UploadFileRequest
     [DataSource(typeof(ProjectDataHandler))]
     public string ProjectId { get; set; }
 
-    public File File { get; set; }
+    public FileReference File { get; set; }
 
 
     [Display("Source language")]
