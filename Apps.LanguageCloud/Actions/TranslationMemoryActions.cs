@@ -5,6 +5,7 @@ using Apps.LanguageCloud.Models.TranslationMemories.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net.Http.Json;
@@ -14,6 +15,13 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class TranslationMemoryActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public TranslationMemoryActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+
     [Action("List translation memories", Description = "List translation memories")]
     public ListTranslationMemoriesResponse ListTranslationMemories(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
@@ -60,11 +68,12 @@ public class TranslationMemoryActions
     }
 
     [Action("Import TMX file", Description = "Import TMX file")]
-    public void ImportTmx(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public async Task ImportTmx(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ImportTmxRequest input)
     {
         var restClient = new LanguageCloudClient(authenticationCredentialsProviders);
-        using var memoryStream = new MemoryStream(input.File.Bytes);
+
+        using var memoryStream = _fileManagementClient.DownloadAsync(input.File).Result;
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Post, $"https://lc-api.sdl.com/public-api/v1/translation-memory/{input.TranslationMemoryId}/imports");
         request.Headers.Add("Authorization", authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);

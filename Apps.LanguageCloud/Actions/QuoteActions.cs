@@ -4,9 +4,10 @@ using Apps.LanguageCloud.Models.Quotes.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using RestSharp;
 using System.Net.Mime;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+
 
 
 namespace Apps.LanguageCloud.Actions;
@@ -14,8 +15,16 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class QuoteActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public QuoteActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+
+
     [Action("Download quote report", Description = "Download quote report for project")]
-    public DownloadQuoteReportResponse DownloadQuoteReport(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public async Task<DownloadQuoteReportResponse> DownloadQuoteReport(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] DownloadQuoteReportRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
@@ -27,12 +36,12 @@ public class QuoteActions
             Method.Get, authenticationCredentialsProviders);
         var fileData = client.Get(downloadRequest).RawBytes;
         var fileFormat = input.FileFormat == "pdf" ? "pdf" : "xlsx";
+
+        using var stream = new MemoryStream(fileData);
+        var file = await _fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, $"QuoteReport_{input.LanguageCode}_{DateTime.Now.ToString("yyyyMMddTHHmmss")}.{fileFormat}");
         return new DownloadQuoteReportResponse()
         {
-            File = new File(fileData) {
-                Name = $"QuoteReport_{input.LanguageCode}_{DateTime.Now.ToString("yyyyMMddTHHmmss")}.{fileFormat}",
-                ContentType = MediaTypeNames.Application.Octet
-            }
+            File = file
         };
     }
 }
