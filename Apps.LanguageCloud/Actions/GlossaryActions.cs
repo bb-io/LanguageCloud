@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace Apps.LanguageCloud.Actions
 {
+    [ActionList]
     public class GlossaryActions : BaseInvocable
     {
         private readonly IFileManagementClient _fileManagementClient;
