@@ -1,6 +1,7 @@
 ﻿using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Files.Responses;
 using Apps.LanguageCloud.Models.Glossaries.Requests;
+using Apps.LanguageCloud.Models.Glossaries.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
@@ -61,6 +62,16 @@ namespace Apps.LanguageCloud.Actions
             var importGlossaryRequest = client.Execute<ImportTmxDto>(request).Data;
 
             client.PollImportTMXOperation(importGlossaryRequest.Id, InvocationContext.AuthenticationCredentialsProviders);
+        }
+
+        [Action("Test glossary", Description = "Test glossary")]
+        public async Task<ExportGlossaryResponse> TestGlossary([ActionParameter] ImportGlossaryRequest input)
+        {
+            var fileStream = await _fileManagementClient.DownloadAsync(input.File);
+            var fileTBXV2Stream = await fileStream.ConvertFromTBXV3ToV2();
+
+            var file = await _fileManagementClient.UploadAsync(fileTBXV2Stream, MediaTypeNames.Application.Xml, $"Test11.tbx");
+            return new ExportGlossaryResponse() { File = file };
         }
     }
 }

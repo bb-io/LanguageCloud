@@ -19,7 +19,4 @@
   <ItemGroup>
     <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.jpg"></EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\Glossaries\Responses\" />
-  </ItemGroup>
 </Project>
