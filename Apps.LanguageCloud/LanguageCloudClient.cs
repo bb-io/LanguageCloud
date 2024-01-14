@@ -70,4 +70,19 @@ public class LanguageCloudClient : RestClient
         }
         return response;
     }
+
+    public ImportTmxDto PollImportGlossariesOperation(string importId, string termbaseId,
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    {
+        var request = new LanguageCloudRequest($"/termbases/{termbaseId}/imports/{importId}",
+            Method.Get, authenticationCredentialsProviders);
+        Task.Delay(2000);
+        var response = this.Get<ImportTmxDto>(request);
+        while (response?.Status == "processing" || response?.Status == "queued")
+        {
+            Task.Delay(2000);
+            response = this.Get<ImportTmxDto>(request);
+        }
+        return response;
+    }
 }
