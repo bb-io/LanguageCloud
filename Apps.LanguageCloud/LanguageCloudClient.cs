@@ -85,4 +85,23 @@ public class LanguageCloudClient : RestClient
         }
         return response;
     }
+
+    public ExportTargetVersionDto PollExportGlossariesOperation(string exportId, string termbaseId,
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    {
+        var request = new LanguageCloudRequest($"/termbases/{termbaseId}/exports/{exportId}",
+            Method.Get, authenticationCredentialsProviders);
+        Task.Delay(2000);
+        var response = this.Get<ExportTargetVersionDto>(request);
+        while (response?.Status == "processing" || response?.Status == "queued")
+        {
+            Task.Delay(2000);
+            response = this.Get<ExportTargetVersionDto>(request);
+        }
+        if (response?.Status != "done")
+        {
+            throw new Exception(response?.ErrorMessage);
+        }
+        return response;
+    }
 }
