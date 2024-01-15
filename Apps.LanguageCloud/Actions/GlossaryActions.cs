@@ -32,6 +32,7 @@ namespace Apps.LanguageCloud.Actions
             _fileManagementClient = fileManagementClient;
         }
 
+        [Action("Export glossary", Description = "Export glossary")]
         public async Task<ExportGlossaryResponse> ExportGlossary([ActionParameter] ExportGlossaryRequest input)
         {
             var client = new LanguageCloudClient(InvocationContext.AuthenticationCredentialsProviders);
