@@ -51,7 +51,7 @@ namespace Apps.LanguageCloud.Actions
 
             using var streamGlossaryData = new MemoryStream(fileData);
             using var resultStream = await streamGlossaryData.ConvertFromTBXV2ToV3(glossaryDetails.Name);
-            var file = await _fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, glossaryDetails.Name);
+            var file = await _fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, $"{glossaryDetails.Name}.tbx");
             return new ExportGlossaryResponse() { File = file };
         }
 
