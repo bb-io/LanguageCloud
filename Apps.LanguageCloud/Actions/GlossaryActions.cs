@@ -61,7 +61,7 @@ namespace Apps.LanguageCloud.Actions
             request.AddFile("file", fileTBXV2Stream.GetByteData().Result, input.File.Name);
             var importGlossaryRequest = client.Execute<ImportTmxDto>(request).Data;
 
-            client.PollImportTMXOperation(importGlossaryRequest.Id, InvocationContext.AuthenticationCredentialsProviders);
+            client.PollImportGlossariesOperation(importGlossaryRequest.Id, input.GlossaryId, InvocationContext.AuthenticationCredentialsProviders);
         }
 
         [Action("Test glossary", Description = "Test glossary")]
