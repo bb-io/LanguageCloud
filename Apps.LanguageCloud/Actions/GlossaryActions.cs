@@ -39,6 +39,7 @@ namespace Apps.LanguageCloud.Actions
 
             var exportRequest = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/exports",
                 Method.Post, InvocationContext.AuthenticationCredentialsProviders);
+            exportRequest.AddJsonBody(new { });
             var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
             var pollingResult = client.PollExportGlossariesOperation(exportOperation.Id, input.GlossaryId, InvocationContext.AuthenticationCredentialsProviders);
             var downloadRequest = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/exports/{pollingResult.Id}/download",
