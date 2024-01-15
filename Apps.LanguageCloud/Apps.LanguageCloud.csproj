@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.3-alpha1" />
     <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
-    <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.0-alpha7" />
+    <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.0-alpha8" />
     <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.19" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
