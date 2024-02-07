@@ -4,14 +4,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Product>Trados</Product>
-    <Version>1.0.7</Version>
+    <Version>1.1.0</Version>
     <Description>Your gateway to translating everything</Description>
     <AssemblyName>Apps.LanguageCloud</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.2-alpha1" />
+    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.3-alpha1" />
     <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
-    <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.16" />
+    <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.0-alpha10" />
+    <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.19" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
   </ItemGroup>
