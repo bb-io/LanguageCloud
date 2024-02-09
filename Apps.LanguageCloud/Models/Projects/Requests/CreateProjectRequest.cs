@@ -13,7 +13,7 @@ public class CreateProjectRequest
     public string? Description { get; set; }
 
     [Display("Due by")]
-    public string? DueBy { get; set; }
+    public string DueBy { get; set; }
 
     [Display("Source language")]
     [DataSource(typeof(LanguageDataHandler))]
@@ -22,12 +22,15 @@ public class CreateProjectRequest
     [Display("Target languages")]
     public List<string> TargetLanguages { get; set; }
 
-    public string? Location { get; set; }
+    [Display("Folder Location")]
+    [DataSource(typeof(LocationDataHandler))]
+    public string Location { get; set; }
+    
 
     [Display("Translation engine")]
     [DataSource(typeof(TranslationEngineDataHandler))]
     public string? TranslationEngine { get; set; }
-
+   
     [Display("Translation engine strategy")]
     [DataSource(typeof(StrategyDataHandler))]
     public string? TranslationEngineStrategy { get; set; }
