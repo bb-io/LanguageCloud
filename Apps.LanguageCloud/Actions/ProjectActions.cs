@@ -59,11 +59,7 @@ public class ProjectActions
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest($"/projects", Method.Post, authenticationCredentialsProviders);
-        request.AddJsonBody(new
-        {
-            name = input.Name,
-            projectTemplate = new { id = input.Template}
-        });;
+        request.AddStringBody(input.GetSerializedRequest(), DataFormat.Json);
         return client.Post<ProjectDto>(request);
     }
 
