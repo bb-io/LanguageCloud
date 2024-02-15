@@ -13,5 +13,6 @@ public class DownloadQuoteReportRequest
     [DataSource(typeof(LanguageDataHandler))]
     public string LanguageCode { get; set; }
 
+    [DataSource(typeof(QuoteFormatDataHandler))]
     public string FileFormat { get; set; } // pdf or excel
 }

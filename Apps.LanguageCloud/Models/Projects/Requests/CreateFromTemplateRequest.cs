@@ -9,8 +9,8 @@ public class CreateFromTemplateRequest
     public string Name { get; set; }
 
 
-    //[DataSource(typeof(ProjectTemplateDataHandler))]
-    //public string Template { get; set; }
+    [DataSource(typeof(ProjectTemplateDataHandler))]
+    public string Template { get; set; }
 
     public string DueBy { get; set; }
 
@@ -22,11 +22,12 @@ public class CreateFromTemplateRequest
 
     public List<string> TargetLanguages { get; set; }
 
-    public string TranslationEngine { get; set; }
+   [DataSource(typeof(TranslationEngineDataHandler))]
+    public string? TranslationEngine { get; set; }
 
-    public string FileProcessingConfiguration { get; set; }
+    public string? FileProcessingConfiguration { get; set; }
 
-    public string Workflow { get; set; }
+    public string? Workflow { get; set; }
 
 
 
@@ -37,7 +38,7 @@ public class CreateFromTemplateRequest
         {
             name = Name,
             dueBy = DueBy,
-          //  projectTemplate = new { id = Template },
+            projectTemplate = new { id = Template },
             location = Location,
             translationEngine = new { id = TranslationEngine },
             fileProcessingConfiguration = new { id = FileProcessingConfiguration },
