@@ -40,3 +40,15 @@ public class ProjectError
     public string Name { get; set; }
     public string Description { get; set; }
 }
+
+public class TaskType
+{
+    public string Id { get; set; }
+    public string Key { get; set; }
+    public bool Automatic { get; set; }
+}
+
+public class Location
+{
+    public string Id { get; set; }
+}
