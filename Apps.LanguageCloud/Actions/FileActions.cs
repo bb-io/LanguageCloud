@@ -100,15 +100,27 @@ public class FileActions
         [ActionParameter] DownloadFileRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-
+        byte[] fileData;
         var targetFile = GetTargetFile(authenticationCredentialsProviders, new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
-        var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format=native", 
-            Method.Post, authenticationCredentialsProviders);
-        var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
-        var pollingResult = client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, authenticationCredentialsProviders);
-        var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports/{pollingResult.Id}/download", 
+        if (targetFile.LatestVersion.Type == "native" || targetFile.LatestVersion.Type == "bcm")
+        {
+            var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/download",
             Method.Get, authenticationCredentialsProviders);
-        var fileData = client.Get(downloadRequest).RawBytes;
+            fileData = client.Get(downloadRequest).RawBytes;
+
+        }
+        else 
+        {
+            var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format={targetFile.LatestVersion.Type}",
+            Method.Post, authenticationCredentialsProviders);
+            var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
+            var pollingResult = client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, authenticationCredentialsProviders);
+            var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports/{pollingResult.Id}/download",
+                Method.Get, authenticationCredentialsProviders);
+            fileData = client.Get(downloadRequest).RawBytes;
+        }
+        
+        
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, targetFile.Name);
