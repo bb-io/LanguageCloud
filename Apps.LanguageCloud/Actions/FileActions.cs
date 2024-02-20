@@ -38,7 +38,7 @@ public class FileActions
         [ActionParameter] ListSourceFilesRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
         return new ListAllFilesResponse() { Files = response.Items };
     }
