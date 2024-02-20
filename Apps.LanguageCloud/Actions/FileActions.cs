@@ -66,6 +66,8 @@ public class FileActions
     public UploadFileResponse UploadSourceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] UploadFileRequest input)
     {
+        input.File.Name = input.File.Name.Substring(input.File.Name.LastIndexOf('\\') + 1);
+
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Post, authenticationCredentialsProviders);
         request.AddParameter("properties", JsonConvert.SerializeObject(new
