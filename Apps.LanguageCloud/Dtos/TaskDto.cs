@@ -1,5 +1,6 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace Apps.LanguageCloud.Dtos;
 
@@ -24,4 +25,28 @@ public class TaskDto
     [Display("Project")]
     [JsonProperty("project")]
     public ProjectDto Project { get; set; }
+
+    public Input input { get; set; }
+  
+}
+
+public class Input
+{
+    public string type { get; set; }
+    public SourceFile sourceFile { get; set; }
+    public TargetFile targetFile { get; set; }
+    public LanguageDirection languageDirection { get; set; }
+}
+public class SourceFile
+{
+    public string id { get; set; }
+    public string name { get; set; }
+    public string role { get; set; }
+}
+
+public class TargetFile
+{
+    public string id { get; set; }
+    public string name { get; set; }
+    public LanguageDirection languageDirection { get; set; }
 }

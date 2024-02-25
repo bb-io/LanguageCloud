@@ -17,7 +17,7 @@ public class TaskActions
     public ListAllTasksResponse ListAllTasks(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest("/tasks/assigned?fields=id,status,taskType,project", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest("/tasks/assigned?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<TaskDto>>>(request);
         return new ListAllTasksResponse()
         {
@@ -30,7 +30,7 @@ public class TaskActions
         [ActionParameter] ListAllProjectTasksRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks?fields=id,status,taskType,project", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<TaskDto>>>(request);
         return new ListAllTasksResponse()
         {
@@ -43,7 +43,7 @@ public class TaskActions
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
         return client.Get<TaskDto>(request);
     }
 
