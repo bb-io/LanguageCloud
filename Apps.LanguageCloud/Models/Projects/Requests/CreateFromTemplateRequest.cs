@@ -23,11 +23,13 @@ public class CreateFromTemplateRequest
     public List<string> TargetLanguages { get; set; }
 
    [DataSource(typeof(TranslationEngineDataHandler))]
-    public string? TranslationEngine { get; set; }
+    public string TranslationEngine { get; set; }
 
-    public string? FileProcessingConfiguration { get; set; }
+    [DataSource(typeof(FileProcessingConfigurationDataHandler))]
+    public string FileProcessingConfiguration { get; set; }
 
-    public string? Workflow { get; set; }
+    [DataSource(typeof(WorkflowDataHandler))]
+    public string Workflow { get; set; }
 
 
 

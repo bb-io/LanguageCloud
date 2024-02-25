@@ -35,6 +35,7 @@ public class CreateProjectRequest
     [DataSource(typeof(StrategyDataHandler))]
     public string? TranslationEngineStrategy { get; set; }
 
+    [DataSource(typeof(FileProcessingConfigurationDataHandler))]
     [Display("File processing configuration")]
     public string? FileProcessingConfiguration { get; set; }
 
@@ -42,6 +43,7 @@ public class CreateProjectRequest
     [DataSource(typeof(StrategyDataHandler))]
     public string? FileProcessingConfigurationStrategy { get; set; }
 
+    [DataSource(typeof(WorkflowDataHandler))]
     [Display("Workflow")]
     public string? Workflow { get; set; }
 
