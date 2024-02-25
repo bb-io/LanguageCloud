@@ -10,33 +10,32 @@ public class TaskEvent
     public bool automatic { get; set; }
     public string inputType { get; set; }
     public string inputId { get; set; }
-    public List<StatusHistory> statusHistory { get; set; }
-    public string output { get; set; }
-    public string outcome { get; set; }
+    public string? output { get; set; }
+    public string? outcome { get; set; }
     public object applicableOutcomes { get; set; }
     public object outcomes { get; set; }
     public object instructions { get; set; }
-    public string comment { get; set; }
+    public string? comment { get; set; }
     public string phaseId { get; set; }
     public Phase phase { get; set; }
     public string location { get; set; }
     public object permissions { get; set; }
     public object accessGrants { get; set; }
     public object path { get; set; }
-    public Owner owner { get; set; }
-    public List<PlannedAssignee> plannedAssignees { get; set; }
-    public List<Assignee> assignees { get; set; }
+    public Owner? owner { get; set; }
+    public List<PlannedAssignee>? plannedAssignees { get; set; }
+    public List<Assignee>? assignees { get; set; }
     public List<InputFile> inputFiles { get; set; }
     public string projectId { get; set; }
     public List<object> accountUsersWhoRejected { get; set; }
-    public DateTime dueDate { get; set; }
-    public DateTime dueBy { get; set; }
+    public DateTime? dueDate { get; set; }
+    public DateTime? dueBy { get; set; }
     public Settings settings { get; set; }
     public Metadata metadata { get; set; }
     public int batch { get; set; }
     public DateTime lastModifiedAt { get; set; }
     public DateTime createdAt { get; set; }
-    public DateTime completedAt { get; set; }
+    public DateTime? completedAt { get; set; }
     public Template template { get; set; }
     public string scope { get; set; }
     public int iteration { get; set; }
@@ -63,7 +62,7 @@ public class Metadata
     public bool forceOnline { get; set; }
     public DateTime markedLatestFromtrueOn { get; set; }
     public DateTime lastModifiedDate { get; set; }
-    public string projectDescription { get; set; }
+    public string? projectDescription { get; set; }
     public string TR_ID { get; set; }
     public string projectName { get; set; }
     public DateTime creationDate { get; set; }
@@ -94,15 +93,6 @@ public class Settings
 {
     public DateTime lastModifiedDate { get; set; }
     public DateTime creationDate { get; set; }
-}
-
-public class StatusHistory
-{
-    public string from { get; set; }
-    public string to { get; set; }
-    public DateTime timestamp { get; set; }
-    public string by { get; set; }
-    public string status { get; set; }
 }
 
 public class Template
