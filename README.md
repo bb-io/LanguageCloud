@@ -1,26 +1,26 @@
-# Blackbird.io Language Cloud
+# Blackbird.io Trados
 
 Blackbird is the new automation backbone for the language technology industry. Blackbird provides enterprise-scale automation and orchestration with a simple no-code/low-code platform. Blackbird enables ambitious organizations to identify, vet and automate as many processes as possible. Not just localization workflows, but any business and IT process. This repository represents an application that is deployable on Blackbird and usable inside the workflow editor.
 
 ## Introduction
 
-RWS Language Cloud is a translation management system (TMS) developed by RWS, a global leader in language services and technology solutions. RWS Language Cloud offers a comprehensive suite of tools and services for managing translation and localization projects efficiently. It provides capabilities such as project management, translation memory, terminology management, quality assurance, and workflow automation.
+Trados is a translation management system (TMS) developed by RWS, a global leader in language services and technology solutions. Trados offers a comprehensive suite of tools and services for managing translation and localization projects efficiently. It provides capabilities such as project management, translation memory, terminology management, quality assurance, and workflow automation.
 
 ## Before setting up
 
 Before you can connect you need to make sure that:
 
-- You have access to a Language Cloud instance and have admin rights on this instance.
-- You have your Language Cloud API key. (This can be retrieved from the RWS Trados Enterprise web UI, in the top right-hand corner, select your profile, and then select Integrations > Api Keys tab, get API KEY value. You may need to create one by clicking on the New API key button on the same tab.)
-- You have your Language Cloud Tenant ID. (This can be retrieved from the RWS Trados Enterprise web UI, in the top right-hand corner, select your profile, and then select Manage Account > Account Information tab, check the value for Trados Account ID.)
+- You have access to a Trados instance and have admin rights on this instance.
+- You have your Trados API key. (This can be retrieved from the RWS Trados Enterprise web UI, in the top right-hand corner, select your profile, and then select Integrations > Api Keys tab, get API KEY value. You may need to create one by clicking on the New API key button on the same tab.)
+- You have your Trados Tenant ID. (This can be retrieved from the RWS Trados Enterprise web UI, in the top right-hand corner, select your profile, and then select Manage Account > Account Information tab, check the value for Trados Account ID.)
 
 ## Connecting
 
 1. Navigate to Apps and search for Trados. If you cannot find Trados then click _Add App_ in the top right corner, select Trados and add the app to your Blackbird environment.
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My Trados connection'.
-4. Fill in the API Key of your Language Cloud instance.
-5. Fill in the Tenant ID of your Language Cloud instance.
+4. Fill in the API Key of your Trados instance.
+5. Fill in the Tenant ID of your Trados instance.
 7. Click _Connect_.
 
 ![TradosNewConnection](image/README/TradosNewConnection.png)
@@ -104,6 +104,16 @@ Before you can connect you need to make sure that:
 - **List all users** List all users
 
 ## Events
+
+To enable webhooks, you need to:
+- Have created a Service User in your Trados instance
+- Have created an application based on the aforementioned Service User (this can be done by expanding the account menu on the top right-hand corner of RWS Trados Enterprise web UI, selecting Integrations > Applications.) 
+- Pick up the webhook URL from your Bird, once published, in Blackbird, and use it as Webhook URL in the Webhooks section of your Trados application. You also need to choose which action(s) will trigger events to the entered URL endpoint. 
+More information about how to set up your Trados webhooks can be found [here](https://languagecloud.sdl.com/lc/api-docs/webhooks-setup).
+
+![WebhookURLinBlackbird](image/README/WebhookURL.png)
+
+![TradosWebhookURLsetup](image/README/TradosWebhookURL.png)
 
 ### File 
 
