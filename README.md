@@ -4,6 +4,8 @@ Blackbird is the new automation backbone for the language technology industry. B
 
 ## Introduction
 
+<!-- begin docs -->
+
 Trados is a translation management system (TMS) developed by RWS, a global leader in language services and technology solutions. Trados offers a comprehensive suite of tools and services for managing translation and localization projects efficiently. It provides capabilities such as project management, translation memory, terminology management, quality assurance, and workflow automation.
 
 ## Before setting up
@@ -155,3 +157,5 @@ More information about how to set up your Trados webhooks can be found [here](ht
 ## Feedback
 
 Do you want to use this app or do you have feedback on our implementation? Reach out to us using the [established channels](https://www.blackbird.io/) or create an issue.
+
+<!-- end docs -->
