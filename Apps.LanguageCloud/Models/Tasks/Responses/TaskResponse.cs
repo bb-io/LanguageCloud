@@ -35,6 +35,17 @@ namespace Apps.LanguageCloud.Models.Tasks.Responses
         [Display("Target Language")]
         public string TargetLanguage { get; set; }
 
+        [Display("Source File ID")]
+        public string SourceFileID { get; set; }
+
+        [Display("Source File Name")]
+        public string SourceFileName { get; set; }
+
+        [Display("Target File ID")]
+        public string TargetFileID { get; set; }
+
+        [Display("Target File Name")]
+        public string TargetFileName { get; set; }
 
 
     }
