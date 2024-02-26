@@ -39,12 +39,35 @@ public class TaskActions
     }
 
     [Action("Get task", Description = "Get task by Id")]
-    public TaskDto? GetTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public TaskResponse GetTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
-        return client.Get<TaskDto>(request);
+        var task =  client.Get<TaskDto>(request);
+        string tgt ="";
+        string src = "";
+        if (task.input.languageDirection != null && task.input.languageDirection != null) 
+            { tgt = task.input.languageDirection.TargetLanguage.LanguageCode;
+                src = task.input.languageDirection.SourceLanguage.LanguageCode;
+            } else if (task.input.targetFile != null)
+            {
+                tgt = task.input.targetFile.languageDirection.TargetLanguage.LanguageCode;
+                src = task.input.targetFile.languageDirection.SourceLanguage.LanguageCode;
+            }
+        return new TaskResponse
+        {
+            Id = task.Id,
+            ProjectID = task.Project.Id,
+            ProjectName = task.Project.Name,
+            Status = task.Status,
+            TaskTypeID = task.TaskType.Id,
+            TaskTypeKey = task.TaskType.Key,
+            TaskTypeDescription = task.TaskType.Description,
+            TaskTypeName = task.TaskType.Name,
+            SourceLanguage = src,
+            TargetLanguage = tgt
+        };
     }
 
     [Action("Accept task", Description = "Accept task by Id")]

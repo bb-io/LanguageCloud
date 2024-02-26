@@ -36,8 +36,8 @@ namespace Apps.LanguageCloud.Dtos
         [JsonProperty("outcomes")]
         public List<Outcome> Outcomes { get; set; }
 
-        [JsonProperty("location")]
-        public Location Location { get; set; }
+        //[JsonProperty("location")]
+        //public Location Location { get; set; }
     }
 
     public class Outcome
