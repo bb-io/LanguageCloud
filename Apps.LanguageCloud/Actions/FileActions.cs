@@ -38,7 +38,7 @@ public class FileActions
         [ActionParameter] ListSourceFilesRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files", Method.Get, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
         return new ListAllFilesResponse() { Files = response.Items };
     }
@@ -66,6 +66,8 @@ public class FileActions
     public UploadFileResponse UploadSourceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] UploadFileRequest input)
     {
+        input.File.Name = input.File.Name.Substring(input.File.Name.LastIndexOf('\\') + 1);
+
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Post, authenticationCredentialsProviders);
         request.AddParameter("properties", JsonConvert.SerializeObject(new
@@ -100,15 +102,27 @@ public class FileActions
         [ActionParameter] DownloadFileRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
-
+        byte[] fileData;
         var targetFile = GetTargetFile(authenticationCredentialsProviders, new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
-        var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format=native", 
-            Method.Post, authenticationCredentialsProviders);
-        var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
-        var pollingResult = client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, authenticationCredentialsProviders);
-        var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports/{pollingResult.Id}/download", 
+        if (targetFile.LatestVersion.Type == "native" || targetFile.LatestVersion.Type == "bcm")
+        {
+            var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/download",
             Method.Get, authenticationCredentialsProviders);
-        var fileData = client.Get(downloadRequest).RawBytes;
+            fileData = client.Get(downloadRequest).RawBytes;
+
+        }
+        else 
+        {
+            var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format={targetFile.LatestVersion.Type}",
+            Method.Post, authenticationCredentialsProviders);
+            var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
+            var pollingResult = client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, authenticationCredentialsProviders);
+            var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports/{pollingResult.Id}/download",
+                Method.Get, authenticationCredentialsProviders);
+            fileData = client.Get(downloadRequest).RawBytes;
+        }
+        
+        
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, targetFile.Name);

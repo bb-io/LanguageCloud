@@ -56,7 +56,7 @@ public class WebhookList
 
     #endregion
 
-    #region ProjectGroupWebhooks
+    #region TaskWebhooks
     [Webhook("On task accepted", Description = "On task accepted")]
     public async Task<WebhookResponse<TaskEvent>> TaskAccepted(WebhookRequest webhookRequest)
     {
@@ -325,6 +325,8 @@ public class WebhookList
     }
     #endregion
 
+    #region GroupProjectWebhooks
+
     [Webhook("On group project membership changed", Description = "On group project membership changed")]
     public async Task<WebhookResponse<ProjectGroupEvent>> MembershipChanged(WebhookRequest webhookRequest)
     {
@@ -339,4 +341,6 @@ public class WebhookList
             Result = data.Data
         };
     }
+
+    #endregion
 }

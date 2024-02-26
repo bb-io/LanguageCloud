@@ -30,6 +30,10 @@ public class ProjectDto
     [Display("Language directions")]
     [JsonProperty("languageDirections")]
     public List<LanguageDirection> LanguageDirections { get; set; }
+   
+    [Display("Folder Location")]
+    [JsonProperty("location")]
+    public folder Location { get; set; }
 }
 
 public class LanguageDirection
@@ -66,4 +70,12 @@ public class TargetLanguage
     [Display("Is neutral")]
     [JsonProperty("isNeutral")]
     public bool IsNeutral { get; set; }
+}
+
+public class folder 
+{
+    public string id { get; set; }
+
+    public string name { get; set; }
+
 }

@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Product>Trados</Product>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Description>Your gateway to translating everything</Description>
     <AssemblyName>Apps.LanguageCloud</AssemblyName>
   </PropertyGroup>
