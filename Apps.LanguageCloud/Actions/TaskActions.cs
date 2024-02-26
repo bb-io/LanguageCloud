@@ -47,6 +47,10 @@ public class TaskActions
         var task =  client.Get<TaskDto>(request);
         string tgt ="";
         string src = "";
+        string tgtfile = "";
+        string tgtfilename = "";
+        string srcfile = "";
+        string srcfilename = "";
         if (task.input.languageDirection != null && task.input.languageDirection != null) 
             { tgt = task.input.languageDirection.TargetLanguage.LanguageCode;
                 src = task.input.languageDirection.SourceLanguage.LanguageCode;
@@ -55,6 +59,17 @@ public class TaskActions
                 tgt = task.input.targetFile.languageDirection.TargetLanguage.LanguageCode;
                 src = task.input.targetFile.languageDirection.SourceLanguage.LanguageCode;
             }
+
+        if (task.input.targetFile != null)
+        { tgtfile = task.input.targetFile.id;
+          tgtfilename = task.input.targetFile.name;
+        }
+        if (task.input.sourceFile != null)
+        {
+            srcfile = task.input.sourceFile.id;
+            srcfilename = task.input.sourceFile.name;
+        }
+
         return new TaskResponse
         {
             Id = task.Id,
@@ -66,7 +81,11 @@ public class TaskActions
             TaskTypeDescription = task.TaskType.Description,
             TaskTypeName = task.TaskType.Name,
             SourceLanguage = src,
-            TargetLanguage = tgt
+            TargetLanguage = tgt,
+            SourceFileID = srcfile,
+            TargetFileID = tgtfile,
+            SourceFileName = srcfilename,
+            TargetFileName = tgtfilename
         };
     }
 
