@@ -39,12 +39,16 @@ public class TaskActions
     }
 
     [Action("Get task", Description = "Get task by Id")]
-    public TaskDto? GetTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public TaskResponse GetTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTaskRequest input)
     {
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
-        return client.Get<TaskDto>(request);
+        var task =  client.Get<TaskDto>(request);
+        return new TaskResponse
+        {
+            Id = task.Id
+        };
     }
 
     [Action("Accept task", Description = "Accept task by Id")]
