@@ -45,6 +45,16 @@ public class TaskActions
         var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
         var task =  client.Get<TaskDto>(request);
+        string tgt ="";
+        string src = "";
+        if (task.input.languageDirection != null && task.input.languageDirection != null) 
+            { tgt = task.input.languageDirection.TargetLanguage.LanguageCode;
+                src = task.input.languageDirection.SourceLanguage.LanguageCode;
+            } else if (task.input.targetFile != null)
+            {
+                tgt = task.input.targetFile.languageDirection.TargetLanguage.LanguageCode;
+                src = task.input.targetFile.languageDirection.SourceLanguage.LanguageCode;
+            }
         return new TaskResponse
         {
             Id = task.Id,
@@ -55,10 +65,8 @@ public class TaskActions
             TaskTypeKey = task.TaskType.Key,
             TaskTypeDescription = task.TaskType.Description,
             TaskTypeName = task.TaskType.Name,
-            SourceLanguage = task.input.languageDirection.SourceLanguage.LanguageCode 
-            ?? task.input.targetFile.languageDirection.SourceLanguage.LanguageCode,
-            TargetLanguage = task.input.languageDirection.TargetLanguage.LanguageCode
-            ?? task.input.targetFile.languageDirection.TargetLanguage.LanguageCode
+            SourceLanguage = src,
+            TargetLanguage = tgt
         };
     }
 
