@@ -1,6 +1,7 @@
 ﻿using Apps.LanguageCloud.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Newtonsoft.Json;
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.LanguageCloud.Models.Projects.Requests;
 
@@ -12,23 +13,30 @@ public class CreateFromTemplateRequest
     [DataSource(typeof(ProjectTemplateDataHandler))]
     public string Template { get; set; }
 
+    [Display("Due By")]
     public string DueBy { get; set; }
 
     [DataSource(typeof(LocationDataHandler))]
     public string Location { get; set; }
 
     [DataSource(typeof(LanguageDataHandler))]
+
+    [Display("Source Language")]
     public string SourceLanguage { get; set; }
 
+    [Display("Target Languages")]
     public List<string> TargetLanguages { get; set; }
 
    [DataSource(typeof(TranslationEngineDataHandler))]
+    [Display("Translation Engine")]
     public string TranslationEngine { get; set; }
 
     [DataSource(typeof(FileProcessingConfigurationDataHandler))]
+    [Display("File Processing Configuration")]
     public string FileProcessingConfiguration { get; set; }
 
     [DataSource(typeof(WorkflowDataHandler))]
+    
     public string Workflow { get; set; }
 
 

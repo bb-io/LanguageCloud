@@ -47,7 +47,18 @@ public class TaskActions
         var task =  client.Get<TaskDto>(request);
         return new TaskResponse
         {
-            Id = task.Id
+            Id = task.Id,
+            ProjectID = task.Project.Id,
+            ProjectName = task.Project.Name,
+            Status = task.Status,
+            TaskTypeID = task.TaskType.Id,
+            TaskTypeKey = task.TaskType.Key,
+            TaskTypeDescription = task.TaskType.Description,
+            TaskTypeName = task.TaskType.Name,
+            SourceLanguage = task.input.languageDirection.SourceLanguage.LanguageCode 
+            ?? task.input.targetFile.languageDirection.SourceLanguage.LanguageCode,
+            TargetLanguage = task.input.languageDirection.TargetLanguage.LanguageCode
+            ?? task.input.targetFile.languageDirection.TargetLanguage.LanguageCode
         };
     }
 
