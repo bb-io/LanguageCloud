@@ -13,7 +13,7 @@ public class CreateProjectRequest
     public string? Description { get; set; }
 
     [Display("Due by")]
-    public string DueBy { get; set; }
+    public DateTime DueBy { get; set; }
 
     [Display("Source language")]
     [DataSource(typeof(LanguageDataHandler))]
@@ -81,7 +81,7 @@ public class CreateProjectRequest
         {
             name = Name,
             description = Description,
-            dueBy = DueBy,
+            dueBy = DueBy.ToString("yyyy-MM-ddTHH:mm:ss.000Z"),
             languageDirections = TargetLanguages.Select(t => new
             {
                 sourceLanguage = new { languageCode = SourceLanguage },
