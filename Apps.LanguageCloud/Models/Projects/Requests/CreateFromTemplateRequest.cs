@@ -14,7 +14,7 @@ public class CreateFromTemplateRequest
     public string Template { get; set; }
 
     [Display("Due By")]
-    public string DueBy { get; set; }
+    public DateTime DueBy { get; set; }
 
     [DataSource(typeof(LocationDataHandler))]
     public string Location { get; set; }
@@ -47,7 +47,7 @@ public class CreateFromTemplateRequest
         return JsonConvert.SerializeObject(new
         {
             name = Name,
-            dueBy = DueBy,
+            dueBy = DueBy.ToString("yyyy-MM-ddTHH:mm:ss.000Z"),
             projectTemplate = new { id = Template },
             location = Location,
             translationEngine = new { id = TranslationEngine },
