@@ -20,6 +20,7 @@ public class CreateProjectRequest
     public string SourceLanguage { get; set; }
 
     [Display("Target languages")]
+    [DataSource(typeof(LanguageDataHandler))]
     public List<string> TargetLanguages { get; set; }
 
     [Display("Folder Location")]
@@ -37,7 +38,7 @@ public class CreateProjectRequest
 
     [DataSource(typeof(FileProcessingConfigurationDataHandler))]
     [Display("File processing configuration")]
-    public string? FileProcessingConfiguration { get; set; }
+    public string FileProcessingConfiguration { get; set; }
 
     [Display("File processing configuration strategy")]
     [DataSource(typeof(StrategyDataHandler))]
@@ -45,7 +46,7 @@ public class CreateProjectRequest
 
     [DataSource(typeof(WorkflowDataHandler))]
     [Display("Workflow")]
-    public string? Workflow { get; set; }
+    public string Workflow { get; set; }
 
     [Display("Workflow strategy")]
     [DataSource(typeof(StrategyDataHandler))]
