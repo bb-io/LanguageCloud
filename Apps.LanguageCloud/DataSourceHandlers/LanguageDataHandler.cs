@@ -1,10 +1,5 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
@@ -25,7 +20,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var client = new LanguageCloudClient(Creds);
+            var client = new LanguageCloudClient();
             var request = new LanguageCloudRequest("/languages", Method.Get, Creds);
             var response = client.Get<ResponseWrapper<List<LanguageDto>>>(request);
 

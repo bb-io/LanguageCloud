@@ -15,7 +15,7 @@ public class FolderActions
     [Action("List all folders", Description = "List all folders")]
     public ListAllFoldersResponse ListAllFolders(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest("/folders", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<FolderDto>>>(request);
         return new ListAllFoldersResponse()
@@ -28,7 +28,7 @@ public class FolderActions
     public FolderDto? GetFolder(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetFolderRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/folders/{input.FolderId}", Method.Get, authenticationCredentialsProviders);
         return client.Get<FolderDto>(request);
     }

@@ -16,7 +16,8 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
             ConnectionUsage = ConnectionUsage.Actions,
             ConnectionProperties = new List<ConnectionProperty>()
             {
-                new("apiKey") { DisplayName = "API key", Sensitive = true },
+                new(CredsNames.ClientId) { DisplayName = "Client ID" },
+                new(CredsNames.ClientSecret) { DisplayName = "Client secret", Sensitive = true },
                 new("tenantId") { DisplayName = "Tenant ID" },
             }
         },
@@ -25,12 +26,18 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
     public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(
         Dictionary<string, string> values)
     {
-        var token = values.First(v => v.Key == "apiKey");
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.Header,
-            "Authorization",
-            $"LC apiKey={token.Value}"
+            AuthenticationCredentialsRequestLocation.None,
+            CredsNames.ClientId,
+            values[CredsNames.ClientId]
         );
+
+        yield return new AuthenticationCredentialsProvider(
+            AuthenticationCredentialsRequestLocation.None,
+            CredsNames.ClientSecret,
+            values[CredsNames.ClientSecret]
+        );
+
         var url = values.First(v => v.Key == "tenantId");
         yield return new AuthenticationCredentialsProvider(
             AuthenticationCredentialsRequestLocation.None,

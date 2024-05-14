@@ -16,7 +16,7 @@ public class GroupActions
     [Action("List all groups", Description = "List all groups")]
     public ListAllGroupsResponse ListAllGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest("/groups", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<GroupDto>>>(request);
         return new ListAllGroupsResponse()
@@ -29,7 +29,7 @@ public class GroupActions
     public GroupDto? GetGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetCustomerRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get, authenticationCredentialsProviders);
         return client.Get<GroupDto>(request);
     }

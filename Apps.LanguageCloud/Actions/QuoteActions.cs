@@ -27,7 +27,7 @@ public class QuoteActions
     public async Task<DownloadQuoteReportResponse> DownloadQuoteReport(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] DownloadQuoteReportRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var exportRequest = new LanguageCloudRequest($"/projects/{input.Project}/quote-report/export?format={input.FileFormat}&languageId={input.LanguageCode}",
             Method.Post, authenticationCredentialsProviders);
         var exportResult = client.Execute<ExportQuoteReportDto>(exportRequest).Data;

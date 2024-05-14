@@ -25,7 +25,7 @@ public class TranslationMemoryActions
     [Action("List translation memories", Description = "List translation memories")]
     public ListTranslationMemoriesResponse ListTranslationMemories(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/translation-memory", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<TranslationMemoryDto>>>(request);
         return new ListTranslationMemoriesResponse()
@@ -38,7 +38,7 @@ public class TranslationMemoryActions
     public TranslationMemoryDto CreateTranslationMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] CreateTranslationMemoryRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/translation-memory", Method.Post, authenticationCredentialsProviders);
         request.AddJsonBody(new
         {
@@ -61,7 +61,7 @@ public class TranslationMemoryActions
     public TranslationMemoryDto GetTranslationMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTranslationMemoryRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/translation-memory/{input.TranslationMemoryId}", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<TranslationMemoryDto>(request);
         return response;
@@ -71,7 +71,7 @@ public class TranslationMemoryActions
     public async Task ImportTmx(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ImportTmxRequest input)
     {
-        var restClient = new LanguageCloudClient(authenticationCredentialsProviders);
+        var restClient = new LanguageCloudClient();
 
         using var memoryStream = _fileManagementClient.DownloadAsync(input.File).Result;
         var client = new HttpClient();

@@ -15,7 +15,7 @@ public class UserActions
     [Action("List all users", Description = "List all users")]
     public ListAllUsersResponse ListAllUsers(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest("/users", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<UserDto>>>(request);
         return new ListAllUsersResponse()
@@ -28,7 +28,7 @@ public class UserActions
     public UserDto? GetUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetUserRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/users/{input.UserId}", Method.Get, authenticationCredentialsProviders);
         return client.Get<UserDto>(request);
     }

@@ -6,7 +6,7 @@ namespace Apps.LanguageCloud;
 
 public class LanguageCloudClient : RestClient
 {
-    public LanguageCloudClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) : 
+    public LanguageCloudClient() : 
         base(new RestClientOptions() { ThrowOnAnyError = true, BaseUrl = new Uri("https://lc-api.sdl.com/public-api/v1/") }) { }
 
 

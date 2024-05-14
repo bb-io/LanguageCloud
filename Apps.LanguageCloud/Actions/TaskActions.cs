@@ -16,7 +16,7 @@ public class TaskActions
     [Action("List all tasks", Description = "List all tasks")]
     public ListAllTasksResponse ListAllTasks(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest("/tasks/assigned?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<TaskDto>>>(request);
         return new ListAllTasksResponse()
@@ -29,7 +29,7 @@ public class TaskActions
     public ListAllTasksResponse ListAllProjectTasks(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, 
         [ActionParameter] ListAllProjectTasksRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<TaskDto>>>(request);
         return new ListAllTasksResponse()
@@ -42,7 +42,7 @@ public class TaskActions
     public TaskResponse GetTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTaskRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project,input", Method.Get, authenticationCredentialsProviders);
         var task =  client.Get<TaskDto>(request);
         string tgt ="";
@@ -93,7 +93,7 @@ public class TaskActions
     public void AcceptTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTaskRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/accept", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
@@ -102,7 +102,7 @@ public class TaskActions
     public void RejectTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTaskRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/reject", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
@@ -111,7 +111,7 @@ public class TaskActions
     public void CompleteTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] CompleteTaskRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/complete", Method.Put, authenticationCredentialsProviders);
         request.AddJsonBody(new
         {
@@ -139,7 +139,7 @@ public class TaskActions
     public void ReleaseTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTaskRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/release", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
@@ -148,7 +148,7 @@ public class TaskActions
     public void ReclaimTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetTaskRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/reclaim", Method.Put, authenticationCredentialsProviders);
         client.Execute(request);
     }
@@ -157,7 +157,7 @@ public class TaskActions
     public void AssignTask(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] AssignTaskRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/assign", Method.Put, authenticationCredentialsProviders);
         request.AddJsonBody(new
         {

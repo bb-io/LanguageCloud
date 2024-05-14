@@ -1,24 +1,14 @@
 ﻿using Apps.LanguageCloud.Dtos;
-using Apps.LanguageCloud.Models.Files.Requests;
-using Apps.LanguageCloud.Models.Files.Responses;
 using Apps.LanguageCloud.Models.Glossaries.Requests;
 using Apps.LanguageCloud.Models.Glossaries.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using Newtonsoft.Json;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.LanguageCloud.Actions
 {
@@ -35,7 +25,7 @@ namespace Apps.LanguageCloud.Actions
         [Action("Export glossary", Description = "Export glossary")]
         public async Task<ExportGlossaryResponse> ExportGlossary([ActionParameter] ExportGlossaryRequest input)
         {
-            var client = new LanguageCloudClient(InvocationContext.AuthenticationCredentialsProviders);
+            var client = new LanguageCloudClient();
 
             var exportRequest = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/exports",
                 Method.Post, InvocationContext.AuthenticationCredentialsProviders);
@@ -61,7 +51,7 @@ namespace Apps.LanguageCloud.Actions
             var fileStream = await _fileManagementClient.DownloadAsync(input.File);
             var fileTBXV2Stream = await fileStream.ConvertFromTBXV3ToV2();
 
-            var client = new LanguageCloudClient(InvocationContext.AuthenticationCredentialsProviders);
+            var client = new LanguageCloudClient();
             var request = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/imports", Method.Post, InvocationContext.AuthenticationCredentialsProviders);
 
             request.AddFile("file", fileTBXV2Stream.GetByteData().Result, input.File.Name);

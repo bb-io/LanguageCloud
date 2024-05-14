@@ -15,7 +15,7 @@ public class ProjectTemplateActions
     [Action("List all project templates", Description = "List all project templates")]
     public ListAllProjectsTemplatesResponse ListAllProjectTemplates(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest("/project-templates", Method.Get, authenticationCredentialsProviders);
         var response = client.Get<ResponseWrapper<List<ProjectTemplateDto>>>(request);
         return new ListAllProjectsTemplatesResponse()
@@ -28,7 +28,7 @@ public class ProjectTemplateActions
     public ProjectTemplateDto? GetProjectTemplate(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetProjectTemplateRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        var client = new LanguageCloudClient();
         var request = new LanguageCloudRequest($"/project-templates/{input.Template}", Method.Get, authenticationCredentialsProviders);
         return client.Get<ProjectTemplateDto>(request);
     }
