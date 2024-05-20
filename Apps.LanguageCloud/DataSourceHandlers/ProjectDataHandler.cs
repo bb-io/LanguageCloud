@@ -18,7 +18,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var projects = new ProjectActions().ListAllProjects(Creds);
+            var projects = new ProjectActions(InvocationContext).ListAllProjects();
             return projects.Projects
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))

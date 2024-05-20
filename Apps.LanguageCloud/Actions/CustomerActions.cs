@@ -5,19 +5,27 @@ using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class CustomerActions
+public class CustomerActions : LanguageCloudInvocable
 {
-    [Action("List all customers", Description = "List all customers")]
-    public ListAllCustomersResponse ListAllCustomers(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    private AuthenticationCredentialsProvider[] Creds =>
+            InvocationContext.AuthenticationCredentialsProviders.ToArray();
+
+    public CustomerActions(InvocationContext invocationContext) : base(invocationContext)
     {
-        var client = new LanguageCloudClient();
-        var request = new LanguageCloudRequest("/customers", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<CustomerDto>>>(request);
+    }
+
+    [Action("List all customers", Description = "List all customers")]
+    public ListAllCustomersResponse ListAllCustomers()
+    {
+        
+        var request = new LanguageCloudRequest("/customers", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<CustomerDto>>>(request);
         return new ListAllCustomersResponse()
         {
             Customers = response.Items
@@ -25,11 +33,10 @@ public class CustomerActions
     }
 
     [Action("Get customer", Description = "Get customer by Id")]
-    public CustomerDto? GetCustomer(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetCustomerRequest input)
+    public CustomerDto? GetCustomer([ActionParameter] GetCustomerRequest input)
     {
-        var client = new LanguageCloudClient();
-        var request = new LanguageCloudRequest($"/customers/{input.Id}", Method.Get, authenticationCredentialsProviders);
-        return client.Get<CustomerDto>(request);
+        
+        var request = new LanguageCloudRequest($"/customers/{input.Id}", Method.Get, Creds);
+        return Client.Get<CustomerDto>(request);
     }
 }

@@ -19,7 +19,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
             CancellationToken cancellationToken)
         {
             var client = new LanguageCloudClient();
-            var folders = new FolderActions().ListAllFolders(Creds);
+            var folders = new FolderActions(InvocationContext).ListAllFolders();
             
 
             return folders.Folders

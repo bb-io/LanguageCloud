@@ -5,19 +5,26 @@ using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class FolderActions
+public class FolderActions : LanguageCloudInvocable
 {
-    [Action("List all folders", Description = "List all folders")]
-    public ListAllFoldersResponse ListAllFolders(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    private AuthenticationCredentialsProvider[] Creds =>
+            InvocationContext.AuthenticationCredentialsProviders.ToArray();
+
+    public FolderActions(InvocationContext invocationContext) : base(invocationContext)
     {
-        var client = new LanguageCloudClient();
-        var request = new LanguageCloudRequest("/folders", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<FolderDto>>>(request);
+    }
+
+    [Action("List all folders", Description = "List all folders")]
+    public ListAllFoldersResponse ListAllFolders()
+    {
+        var request = new LanguageCloudRequest("/folders", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<FolderDto>>>(request);
         return new ListAllFoldersResponse()
         {
             Folders = response.Items
@@ -25,11 +32,9 @@ public class FolderActions
     }
 
     [Action("Get folder", Description = "Get folder by Id")]
-    public FolderDto? GetFolder(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetFolderRequest input)
+    public FolderDto? GetFolder([ActionParameter] GetFolderRequest input)
     {
-        var client = new LanguageCloudClient();
-        var request = new LanguageCloudRequest($"/folders/{input.FolderId}", Method.Get, authenticationCredentialsProviders);
-        return client.Get<FolderDto>(request);
+        var Client = new LanguageCloudClient();var request = new LanguageCloudRequest($"/folders/{input.FolderId}", Method.Get, Creds);
+        return Client.Get<FolderDto>(request);
     }
 }

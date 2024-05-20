@@ -13,11 +13,12 @@ using System.Net.Mime;
 namespace Apps.LanguageCloud.Actions
 {
     [ActionList]
-    public class GlossaryActions : BaseInvocable
+    public class GlossaryActions : LanguageCloudInvocable
     {
         private readonly IFileManagementClient _fileManagementClient;
 
-        public GlossaryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(invocationContext)
+        public GlossaryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
+            invocationContext)
         {
             _fileManagementClient = fileManagementClient;
         }
@@ -25,19 +26,17 @@ namespace Apps.LanguageCloud.Actions
         [Action("Export glossary", Description = "Export glossary")]
         public async Task<ExportGlossaryResponse> ExportGlossary([ActionParameter] ExportGlossaryRequest input)
         {
-            var client = new LanguageCloudClient();
-
             var exportRequest = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/exports",
-                Method.Post, InvocationContext.AuthenticationCredentialsProviders);
+                Method.Post, Creds);
             exportRequest.AddJsonBody(new { });
-            var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
-            var pollingResult = client.PollExportGlossariesOperation(exportOperation.Id, input.GlossaryId, InvocationContext.AuthenticationCredentialsProviders);
+            var exportOperation = Client.Execute<ExportTargetVersionDto>(exportRequest).Data;
+            var pollingResult = Client.PollExportGlossariesOperation(exportOperation.Id, input.GlossaryId, Creds);
             var downloadRequest = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/exports/{pollingResult.Id}/download",
-                Method.Get, InvocationContext.AuthenticationCredentialsProviders);
-            var fileData = client.Get(downloadRequest).RawBytes;
+                Method.Get, Creds);
+            var fileData = Client.Get(downloadRequest).RawBytes;
 
-            var requestGlossaryDetails = new LanguageCloudRequest($"/termbases/{input.GlossaryId}", Method.Get, InvocationContext.AuthenticationCredentialsProviders);
-            var glossaryDetails = client.Get<TermbaseDto>(requestGlossaryDetails);
+            var requestGlossaryDetails = new LanguageCloudRequest($"/termbases/{input.GlossaryId}", Method.Get, Creds);
+            var glossaryDetails = Client.Get<TermbaseDto>(requestGlossaryDetails);
 
             using var streamGlossaryData = new MemoryStream(fileData);
             using var resultStream = await streamGlossaryData.ConvertFromTBXV2ToV3(glossaryDetails.Name);
@@ -51,13 +50,12 @@ namespace Apps.LanguageCloud.Actions
             var fileStream = await _fileManagementClient.DownloadAsync(input.File);
             var fileTBXV2Stream = await fileStream.ConvertFromTBXV3ToV2();
 
-            var client = new LanguageCloudClient();
-            var request = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/imports", Method.Post, InvocationContext.AuthenticationCredentialsProviders);
+            var request = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/imports", Method.Post, Creds);
 
             request.AddFile("file", fileTBXV2Stream.GetByteData().Result, input.File.Name);
-            var importGlossaryRequest = client.Execute<ImportTmxDto>(request).Data;
+            var importGlossaryRequest = Client.Execute<ImportTmxDto>(request).Data;
 
-            client.PollImportGlossariesOperation(importGlossaryRequest.Id, input.GlossaryId, InvocationContext.AuthenticationCredentialsProviders);
+            Client.PollImportGlossariesOperation(importGlossaryRequest.Id, input.GlossaryId, Creds);
         }
     }
 }
