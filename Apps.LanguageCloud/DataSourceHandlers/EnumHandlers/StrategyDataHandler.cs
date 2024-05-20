@@ -1,13 +1,17 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.LanguageCloud.DataSourceHandlers.EnumHandlers
 {
-    public class StrategyDataHandler : EnumDataHandler
+    public class StrategyDataHandler : IStaticDataSourceHandler
     {
-        protected override Dictionary<string, string> EnumValues => new()
+        private static Dictionary<string, string> EnumValues => new()
         {
             {"Copy", "copy"},
             {"Use", "use"},
         };
+        public Dictionary<string, string> GetData()
+        {
+            return EnumValues;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Apps.LanguageCloud.DataSourceHandlers;
 using Apps.LanguageCloud.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.LanguageCloud.Models.Quotes.Requests;
@@ -16,6 +17,6 @@ public class DownloadQuoteReportRequest
     public string LanguageCode { get; set; }
 
     [Display("File format")]
-    [DataSource(typeof(QuoteFormatDataHandler))]
+    [StaticDataSource(typeof(QuoteFormatDataHandler))]
     public string FileFormat { get; set; } // pdf or excel
 }

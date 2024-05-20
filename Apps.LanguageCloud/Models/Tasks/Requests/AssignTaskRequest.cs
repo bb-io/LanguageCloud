@@ -1,6 +1,7 @@
 ﻿using Apps.LanguageCloud.DataSourceHandlers;
 using Apps.LanguageCloud.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.LanguageCloud.Models.Tasks.Requests;
@@ -15,6 +16,6 @@ public class AssignTaskRequest
     public string AssigneeId { get; set; }
 
     [Display("User type")]
-    [DataSource(typeof(UserTypeDataHandler))]
+    [StaticDataSource(typeof(UserTypeDataHandler))]
     public string Type { get; set; }
 }
