@@ -7,6 +7,7 @@ namespace Apps.LanguageCloud.Models.Quotes.Requests;
 
 public class DownloadQuoteReportRequest
 {
+    [Display("Project ID")]
     [DataSource(typeof(ProjectDataHandler))]
     public string Project { get; set; }
 
@@ -14,6 +15,7 @@ public class DownloadQuoteReportRequest
     [DataSource(typeof(LanguageDataHandler))]
     public string LanguageCode { get; set; }
 
+    [Display("File format")]
     [DataSource(typeof(QuoteFormatDataHandler))]
     public string FileFormat { get; set; } // pdf or excel
 }

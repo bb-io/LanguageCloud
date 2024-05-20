@@ -23,7 +23,7 @@ public class UploadFileRequest
     [DataSource(typeof(FileRoleDataHandler))]
     public string? Role { get; set; }
 
-    [Display("Type")]
+    [Display("File Type")]
     [DataSource(typeof(FileTypeDataHandler))]
     public string? FileType { get; set; }
 }

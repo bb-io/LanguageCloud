@@ -7,6 +7,7 @@ namespace Apps.LanguageCloud.Models.Projects.Requests;
 
 public class CreateFromTemplateRequest
 {
+    [Display("Project Name")]
     public string Name { get; set; }
 
 

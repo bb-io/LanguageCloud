@@ -9,10 +9,11 @@ public class ImportTmxRequest
     [Display("Translation memory ID")]
     public string TranslationMemoryId { get; set; }
 
-    [Display("File")]
     public FileReference File { get; set; }
 
+    [Display("Source Language")]
     public string SourceLanguage { get; set; }
 
+    [Display("Target Language")]
     public string TargetLanguage { get; set; }
 }

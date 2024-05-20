@@ -5,12 +5,14 @@ namespace Apps.LanguageCloud.Dtos;
 
 public class ProjectDto
 {
+    [Display("Project ID")]
     public string Id { get; set; }
 
     [Display("Short ID")]
     [JsonProperty("shortId")]
     public string ShortId { get; set; }
 
+    [Display("Project Name")]
     public string Name { get; set; }
 
     [JsonProperty("description")]

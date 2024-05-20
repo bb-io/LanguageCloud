@@ -5,6 +5,7 @@ namespace Apps.LanguageCloud.Dtos;
 
 public class TaskDto
 {
+    [Display("Task ID")]
     public string Id { get; set; }
 
     public string Status { get; set; }
