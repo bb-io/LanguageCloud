@@ -10,9 +10,11 @@ public class CreateTranslationMemoryRequest
     public string Name { get; set; }
 
     [Display("Language Processing Rule ID")]
+    [DataSource(typeof(LanguageProcessingRuleDataHandler))]
     public string LanguageProcessingRuleId { get; set; }
 
     [Display("Field Template ID")]
+    [DataSource(typeof(FieldTemplateDataHandler))]
     public string FieldTemplateId { get; set; }
 
     [Display("Source Language")]
