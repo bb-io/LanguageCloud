@@ -1,6 +1,7 @@
 ﻿using Apps.LanguageCloud.DataSourceHandlers;
 using Apps.LanguageCloud.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Files;
 
@@ -18,12 +19,12 @@ public class UploadFileRequest
 
     [Display("Source language")]
     [DataSource(typeof(LanguageDataHandler))]
-    public string SourceLanguageCode { get; set; }
+    public string? SourceLanguageCode { get; set; }
 
-    [DataSource(typeof(FileRoleDataHandler))]
+    [StaticDataSource(typeof(FileRoleDataHandler))]
     public string? Role { get; set; }
 
-    [Display("Type")]
-    [DataSource(typeof(FileTypeDataHandler))]
+    [Display("File Type")]
+    [StaticDataSource(typeof(FileTypeDataHandler))]
     public string? FileType { get; set; }
 }

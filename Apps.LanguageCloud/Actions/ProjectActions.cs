@@ -6,21 +6,26 @@ using Apps.LanguageCloud.Models.Projects.Responses;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Projects.Requests;
-using Apps.LanguageCloud.Webhooks.Payload;
-using Newtonsoft.Json;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class ProjectActions
+public class ProjectActions : LanguageCloudInvocable
 {
-    [Action("List all projects", Description = "List all projects")]
-    public ListAllProjectsResponse ListAllProjects(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    private AuthenticationCredentialsProvider[] Creds =>
+            InvocationContext.AuthenticationCredentialsProviders.ToArray();
+
+    public ProjectActions(InvocationContext invocationContext) : base(invocationContext)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+    }
+
+    [Action("List all projects", Description = "List all projects")]
+    public ListAllProjectsResponse ListAllProjects()
+    {
         var request = new LanguageCloudRequest("/projects?fields=" +
-            "id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<ProjectDto>>>(request);
+            "id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<ProjectDto>>>(request);
         return new ListAllProjectsResponse()
         {
             Projects = response.Items
@@ -28,20 +33,18 @@ public class ProjectActions
     }
 
     [Action("Get project", Description = "Get project by Id")]
-    public ProjectDto GetProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public ProjectDto GetProject(
         [ActionParameter] GetProjectRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest($"/projects/{input.Project}?fields=" +
-            $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, authenticationCredentialsProviders);
-        return client.Get<ProjectDto>(request);
+            $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
+        return Client.Get<ProjectDto>(request);
     }
 
     [Action("Create project", Description = "Create project")]
     public ProjectDto CreateProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] CreateProjectRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var request = new LanguageCloudRequest("/projects", Method.Post, authenticationCredentialsProviders);
 
         // temp solution for sync from localize. Need convert operator on array to remove this workaround
@@ -50,65 +53,54 @@ public class ProjectActions
         // ----------------------------------------------------------------------------------------------
         
         request.AddStringBody(input.GetSerializedRequest(), DataFormat.Json);
-        return client.Post<ProjectDto>(request);
+        return Client.Post<ProjectDto>(request);
     }
 
     [Action("Create project from template", Description = "Create project from template")]
-    public ProjectDto CreateProjectFromTemplate(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] CreateFromTemplateRequest input)
+    public ProjectDto CreateProjectFromTemplate([ActionParameter] CreateFromTemplateRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects", Method.Post, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects", Method.Post, Creds);
         request.AddStringBody(input.GetSerializedRequest(), DataFormat.Json);
-        return client.Post<ProjectDto>(request);
+        return Client.Post<ProjectDto>(request);
     }
 
     [Action("Edit project", Description = "Edit project")]
-    public void EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] EditProjectRequest input)
+    public void EditProject([ActionParameter] EditProjectRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Put, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Put, Creds);
         request.AddJsonBody(new
         {
             name = input.ProjectName,
         });
-        client.Execute(request);
+        Client.Execute(request);
     }
 
     [Action("Delete project", Description = "Delete project")]
-    public void DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] DeleteProjectRequest input)
+    public void DeleteProject([ActionParameter] DeleteProjectRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Delete, authenticationCredentialsProviders);
-        client.Execute(request);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Delete, Creds);
+        Client.Execute(request);
     }
 
     [Action("Start project", Description = "Start project by Id")]
-    public void StartProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetProjectRequest input)
+    public void StartProject([ActionParameter] GetProjectRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.Project}/start", Method.Put, authenticationCredentialsProviders);
-        client.Execute(request);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/start", Method.Put, Creds);
+        Client.Execute(request);
     }
 
     [Action("Complete project", Description = "Complete project by Id")]
-    public void CompleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetProjectRequest input)
+    public void CompleteProject([ActionParameter] GetProjectRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.Project}/complete", Method.Put, authenticationCredentialsProviders);
-        client.Execute(request);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/complete", Method.Put, Creds);
+        Client.Execute(request);
     }
 
     [Action("List all languages", Description = "List all languages")]
-    public ListAllLanguagesResponse ListAllLanguages(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    public ListAllLanguagesResponse ListAllLanguages()
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest("/languages", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<LanguageDto>>>(request);
+        var request = new LanguageCloudRequest("/languages", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<LanguageDto>>>(request);
         return new ListAllLanguagesResponse()
         {
             Languages = response.Items

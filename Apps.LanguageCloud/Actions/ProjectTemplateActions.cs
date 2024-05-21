@@ -5,19 +5,25 @@ using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class ProjectTemplateActions
+public class ProjectTemplateActions : LanguageCloudInvocable
 {
-    [Action("List all project templates", Description = "List all project templates")]
-    public ListAllProjectsTemplatesResponse ListAllProjectTemplates(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    private AuthenticationCredentialsProvider[] Creds =>
+            InvocationContext.AuthenticationCredentialsProviders.ToArray();
+
+    public ProjectTemplateActions(InvocationContext invocationContext) : base(invocationContext)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest("/project-templates", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<ProjectTemplateDto>>>(request);
+    }
+    [Action("List all project templates", Description = "List all project templates")]
+    public ListAllProjectsTemplatesResponse ListAllProjectTemplates()
+    {
+        var request = new LanguageCloudRequest("/project-templates", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<ProjectTemplateDto>>>(request);
         return new ListAllProjectsTemplatesResponse()
         {
             ProjectTemplates = response.Items
@@ -25,11 +31,9 @@ public class ProjectTemplateActions
     }
 
     [Action("Get project template", Description = "Get project template by Id")]
-    public ProjectTemplateDto? GetProjectTemplate(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetProjectTemplateRequest input)
+    public ProjectTemplateDto? GetProjectTemplate([ActionParameter] GetProjectTemplateRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/project-templates/{input.Template}", Method.Get, authenticationCredentialsProviders);
-        return client.Get<ProjectTemplateDto>(request);
+        var request = new LanguageCloudRequest($"/project-templates/{input.Template}", Method.Get, Creds);
+        return Client.Get<ProjectTemplateDto>(request);
     }
 }

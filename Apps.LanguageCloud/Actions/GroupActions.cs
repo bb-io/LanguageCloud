@@ -5,20 +5,26 @@ using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class GroupActions
+public class GroupActions : LanguageCloudInvocable
 {
-        
-    [Action("List all groups", Description = "List all groups")]
-    public ListAllGroupsResponse ListAllGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    private AuthenticationCredentialsProvider[] Creds =>
+            InvocationContext.AuthenticationCredentialsProviders.ToArray();
+
+    public GroupActions(InvocationContext invocationContext) : base(invocationContext)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest("/groups", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<GroupDto>>>(request);
+    }
+
+    [Action("List all groups", Description = "List all groups")]
+    public ListAllGroupsResponse ListAllGroups()
+    {
+        var request = new LanguageCloudRequest("/groups", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<GroupDto>>>(request);
         return new ListAllGroupsResponse()
         {
             Groups = response.Items
@@ -26,11 +32,9 @@ public class GroupActions
     }
 
     [Action("Get group", Description = "Get group by Id")]
-    public GroupDto? GetGroups(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetCustomerRequest input)
+    public GroupDto? GetGroups([ActionParameter] GetCustomerRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get, authenticationCredentialsProviders);
-        return client.Get<GroupDto>(request);
+        var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get, Creds);
+        return Client.Get<GroupDto>(request);
     }
 }

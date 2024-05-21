@@ -8,6 +8,7 @@ namespace Apps.LanguageCloud.Models.Projects.Requests;
 
 public class CreateProjectRequest
 {
+    [Display("Project Name")]
     public string Name { get; set; }
 
     public string? Description { get; set; }

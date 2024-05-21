@@ -1,11 +1,11 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
-using System.Diagnostics;
 
 namespace Apps.LanguageCloud.Dtos;
 
 public class TaskDto
 {
+    [Display("Task ID")]
     public string Id { get; set; }
 
     public string Status { get; set; }

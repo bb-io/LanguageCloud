@@ -1,3 +1,4 @@
+
 # Blackbird.io Trados
 
 Blackbird is the new automation backbone for the language technology industry. Blackbird provides enterprise-scale automation and orchestration with a simple no-code/low-code platform. Blackbird enables ambitious organizations to identify, vet and automate as many processes as possible. Not just localization workflows, but any business and IT process. This repository represents an application that is deployable on Blackbird and usable inside the workflow editor.
@@ -13,16 +14,18 @@ Trados is a translation management system (TMS) developed by RWS, a global leade
 Before you can connect you need to make sure that:
 
 - You have access to a Trados instance and have admin rights on this instance.
-- You have your Trados API key. (This can be retrieved from the RWS Trados Enterprise web UI, in the top right-hand corner, select your profile, and then select Integrations > Api Keys tab, get API KEY value. You may need to create one by clicking on the New API key button on the same tab.)
+- You have a service user created for your instance. (This can be retrieved from the RWS Trados Enterprise web UI, in the top, select Users, in the tab below select Service users, in top right click _New Service User_. Fill in all the fields and click Create.
+- You have your Trados client ID and client secret (This can be retrieved from the RWS Trados Enterprise web UI, in the top right-hand corner, select your profile, and then select Integrations > Applications tab. Create a new application if you do not have any, then open it, go to _API access_ and copy the requested values.
 - You have your Trados Tenant ID. (This can be retrieved from the RWS Trados Enterprise web UI, in the top right-hand corner, select your profile, and then select Manage Account > Account Information tab, check the value for Trados Account ID.)
 
 ## Connecting
 
-1. Navigate to Apps and search for Trados. If you cannot find Trados then click _Add App_ in the top right corner, select Trados and add the app to your Blackbird environment.
+1. Navigate to Apps and search for Trados.
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My Trados connection'.
-4. Fill in the API Key of your Trados instance.
-5. Fill in the Tenant ID of your Trados instance.
+4. Fill in the Client ID of your Trados instance auth app.
+5. Fill in the Client secret of your Trados instance auth app.
+6. Fill in the Tenant ID of your Trados instance.
 7. Click _Connect_.
 
 ![TradosNewConnection](image/README/TradosNewConnection.png)

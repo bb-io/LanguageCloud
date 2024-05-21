@@ -3,15 +3,10 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class TaskDataHandler : BaseInvocable, IAsyncDataSourceHandler
+    public class TaskDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
         private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
@@ -23,7 +18,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var tasks = new TaskActions().ListAllTasks(Creds);
+            var tasks = new TaskActions(InvocationContext).ListAllTasks();
             return tasks.Tasks
                 .Where(x => context.SearchString == null ||
                             x.TaskType.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase) ||

@@ -1,10 +1,5 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Apps.LanguageCloud.Dtos;
@@ -13,7 +8,7 @@ using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class FileProcessingConfigurationDataHandler : BaseInvocable, IAsyncDataSourceHandler
+    public class FileProcessingConfigurationDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
         private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
@@ -25,9 +20,8 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var client = new LanguageCloudClient(Creds);
             var request = new LanguageCloudRequest("/file-processing-configurations", Method.Get, Creds);
-            var response = client.Get<ResponseWrapper<List<FileProcessingConfigurationDto>>>(request);
+            var response = Client.Get<ResponseWrapper<List<FileProcessingConfigurationDto>>>(request);
 
             return response.Items
                 .Where(x => context.SearchString == null ||

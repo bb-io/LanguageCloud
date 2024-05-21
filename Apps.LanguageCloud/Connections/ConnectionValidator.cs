@@ -1,7 +1,4 @@
-﻿using Apps.LanguageCloud.Dtos;
-using Apps.LanguageCloud.Models.Projects.Responses;
-using Apps.LanguageCloud.Models.Responses;
-using Blackbird.Applications.Sdk.Common.Authentication;
+﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 using RestSharp;
 
@@ -14,7 +11,7 @@ public class ConnectionValidator : IConnectionValidator
     {
         try
         {
-            var client = new LanguageCloudClient(authProviders);
+            var client = new LanguageCloudClient();
             var request = new LanguageCloudRequest("/projects", Method.Get, authProviders);
             await client.ExecuteAsync(request, cancellationToken);
 

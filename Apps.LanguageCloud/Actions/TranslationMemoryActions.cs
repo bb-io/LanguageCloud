@@ -5,6 +5,7 @@ using Apps.LanguageCloud.Models.TranslationMemories.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
@@ -13,21 +14,21 @@ using System.Net.Http.Json;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class TranslationMemoryActions
+public class TranslationMemoryActions : LanguageCloudInvocable
 {
     private readonly IFileManagementClient _fileManagementClient;
 
-    public TranslationMemoryActions(IFileManagementClient fileManagementClient)
+    public TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
+        invocationContext)
     {
         _fileManagementClient = fileManagementClient;
     }
 
     [Action("List translation memories", Description = "List translation memories")]
-    public ListTranslationMemoriesResponse ListTranslationMemories(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    public ListTranslationMemoriesResponse ListTranslationMemories()
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/translation-memory", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<TranslationMemoryDto>>>(request);
+        var request = new LanguageCloudRequest($"/translation-memory", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<TranslationMemoryDto>>>(request);
         return new ListTranslationMemoriesResponse()
         {
             Memories = response.Items
@@ -35,11 +36,9 @@ public class TranslationMemoryActions
     }
 
     [Action("Create translation memory", Description = "Create translation memory")]
-    public TranslationMemoryDto CreateTranslationMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] CreateTranslationMemoryRequest input)
+    public TranslationMemoryDto CreateTranslationMemory([ActionParameter] CreateTranslationMemoryRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/translation-memory", Method.Post, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/translation-memory", Method.Post, Creds);
         request.AddJsonBody(new
         {
             name = input.Name,
@@ -54,29 +53,26 @@ public class TranslationMemoryActions
             languageProcessingRuleId = input.LanguageProcessingRuleId,
             fieldTemplateId = input.FieldTemplateId
         });
-        return client.Execute<TranslationMemoryDto>(request).Data;
+        return Client.Execute<TranslationMemoryDto>(request).Data;
     }
 
     [Action("Get translation memory", Description = "Get translation memory")]
-    public TranslationMemoryDto GetTranslationMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetTranslationMemoryRequest input)
+    public TranslationMemoryDto GetTranslationMemory([ActionParameter] GetTranslationMemoryRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/translation-memory/{input.TranslationMemoryId}", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<TranslationMemoryDto>(request);
+        var request = new LanguageCloudRequest($"/translation-memory/{input.TranslationMemoryId}", Method.Get, Creds);
+        var response = Client.Get<TranslationMemoryDto>(request);
         return response;
     }
 
     [Action("Import TMX file", Description = "Import TMX file")]
-    public async Task ImportTmx(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ImportTmxRequest input)
+    public async Task ImportTmx([ActionParameter] ImportTmxRequest input)
     {
-        var restClient = new LanguageCloudClient(authenticationCredentialsProviders);
+        var restClient = new LanguageCloudClient();
 
         using var memoryStream = _fileManagementClient.DownloadAsync(input.File).Result;
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Post, $"https://lc-api.sdl.com/public-api/v1/translation-memory/{input.TranslationMemoryId}/imports");
-        request.Headers.Add("Authorization", authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+        request.Headers.Add("Authorization", Creds.First(p => p.KeyName == "Authorization").Value);
         var content = new MultipartFormDataContent();
         content.Add(new StringContent(JsonConvert.SerializeObject(new
         {
@@ -88,6 +84,6 @@ public class TranslationMemoryActions
         var response = client.Send(request);
         response.EnsureSuccessStatusCode();
         var importOperationResult = response.Content.ReadFromJsonAsync<ImportTmxDto>().Result;
-        restClient.PollImportTMXOperation(importOperationResult.Id, authenticationCredentialsProviders);
+        restClient.PollImportTMXOperation(importOperationResult.Id, Creds);
     }
 }

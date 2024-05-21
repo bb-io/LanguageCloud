@@ -10,77 +10,80 @@ using Newtonsoft.Json;
 using System.Net.Mime;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class FileActions
+public class FileActions : LanguageCloudInvocable
 {
     private readonly IFileManagementClient _fileManagementClient;
 
-    public FileActions(IFileManagementClient fileManagementClient)
+    public FileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
+        invocationContext)
     {
         _fileManagementClient = fileManagementClient;
     }
 
     [Action("List project source files", Description = "List project source files")]
-    public ListAllFilesResponse ListSourceFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, 
-        [ActionParameter] ListSourceFilesRequest input)
+    public ListAllFilesResponse ListSourceFiles([ActionParameter] ListSourceFilesRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
         return new ListAllFilesResponse() { Files = response.Items };
     }
 
     [Action("List project target files", Description = "List target source files")]
-    public ListAllFilesResponse ListTargetFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListSourceFilesRequest input)
+    public ListAllFilesResponse ListTargetFiles([ActionParameter] ListSourceFilesRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion", Method.Get, authenticationCredentialsProviders);
-        var response = client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion", Method.Get, Creds);
+        var response = Client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
         return new ListAllFilesResponse() { Files = response.Items };
     }
 
     [Action("Get source file info", Description = "Get source file info")]
-    public FileInfoDto? GetSourceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetFileRequest input)
+    public FileInfoDto? GetSourceFile([ActionParameter] GetFileRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/{input.FileId}", Method.Get, authenticationCredentialsProviders);
-        return client.Get<FileInfoDto>(request);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/{input.FileId}", Method.Get, Creds);
+        return Client.Get<FileInfoDto>(request);
     }
 
     [Action("Get target file info", Description = "Get target file info")]
-    public FileInfoDto? GetTargetFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetFileRequest input)
+    public FileInfoDto? GetTargetFile([ActionParameter] GetFileRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
         var fields = new string[] { "name", "languageDirection", "latestVersion" };
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get, authenticationCredentialsProviders);
-        return client.Get<FileInfoDto>(request);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get, Creds);
+        return Client.Get<FileInfoDto>(request);
     }
 
     [Action("Upload source file", Description = "Upload source file to project")]
-    public UploadFileResponse UploadSourceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] UploadFileRequest input)
+    public UploadFileResponse UploadSourceFile([ActionParameter] UploadFileRequest input)
     {
+        var sourceLanguage = "";
+        if (input.SourceLanguageCode is null)
+        {
+            var projectrequest = new LanguageCloudRequest($"/projects/{input.ProjectId}?fields=" +
+            $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
+            sourceLanguage = Client.Get<ProjectDto>(projectrequest).LanguageDirections.FirstOrDefault().SourceLanguage.LanguageCode;
+        }
+        else 
+        {
+            sourceLanguage = input.SourceLanguageCode;
+        }
         input.File.Name = input.File.Name.Substring(input.File.Name.LastIndexOf('\\') + 1);
 
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Post, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Post, Creds);
         request.AddParameter("properties", JsonConvert.SerializeObject(new
         {
             name = input.File.Name,
             role = input.Role ?? "translatable",
             type = input.FileType ?? "native",
-            language = input.SourceLanguageCode
+            language = sourceLanguage
         }), ParameterType.RequestBody);
 
         var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddFile("file", fileBytes, input.File.Name);
-        var response = client.Execute<UploadFileResponse>(request).Data;
+        var response = Client.Execute<UploadFileResponse>(request).Data;
         return response;
     }
 
@@ -88,38 +91,36 @@ public class FileActions
     public ImportZipDto UploadZipArchive(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] UploadZipRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
+        
         var request = new LanguageCloudRequest($"/files", Method.Post, authenticationCredentialsProviders);
         var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddFile("file", fileBytes, input.File.Name);
-        var importOperation = client.Execute<ZipFileStatusDto>(request).Data;
-        var pollingResult = client.PollImportZipArchiveOperation(importOperation.Id, authenticationCredentialsProviders);
+        var importOperation = Client.Execute<ZipFileStatusDto>(request).Data;
+        var pollingResult = Client.PollImportZipArchiveOperation(importOperation.Id, authenticationCredentialsProviders);
         return pollingResult;
     }
 
     [Action("Download target file", Description = "Download target file by id")]
-    public async Task<DownloadTargetFileResponse> DownloadTargetFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] DownloadFileRequest input)
+    public async Task<DownloadTargetFileResponse> DownloadTargetFile([ActionParameter] DownloadFileRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
         byte[] fileData;
-        var targetFile = GetTargetFile(authenticationCredentialsProviders, new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
+        var targetFile = GetTargetFile(new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
         if (targetFile.LatestVersion.Type == "native" || targetFile.LatestVersion.Type == "bcm")
         {
             var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/download",
-            Method.Get, authenticationCredentialsProviders);
-            fileData = client.Get(downloadRequest).RawBytes;
+            Method.Get, Creds);
+            fileData = Client.Get(downloadRequest).RawBytes;
 
         }
         else 
         {
             var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format={targetFile.LatestVersion.Type}",
-            Method.Post, authenticationCredentialsProviders);
-            var exportOperation = client.Execute<ExportTargetVersionDto>(exportRequest).Data;
-            var pollingResult = client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, authenticationCredentialsProviders);
+            Method.Post, Creds);
+            var exportOperation = Client.Execute<ExportTargetVersionDto>(exportRequest).Data;
+            var pollingResult = Client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, Creds);
             var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports/{pollingResult.Id}/download",
-                Method.Get, authenticationCredentialsProviders);
-            fileData = client.Get(downloadRequest).RawBytes;
+                Method.Get, Creds);
+            fileData = Client.Get(downloadRequest).RawBytes;
         }
         
         
@@ -133,11 +134,10 @@ public class FileActions
     }
 
     [Action("Attach source file to project", Description = "Attach source file to project")]
-    public void AttachSourceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] AttachSourceFileRequest input)
+    public void AttachSourceFile([ActionParameter] AttachSourceFileRequest input)
     {
-        var client = new LanguageCloudClient(authenticationCredentialsProviders);
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/attach-files", Method.Post, authenticationCredentialsProviders);
+        
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/attach-files", Method.Post, Creds);
         request.AddJsonBody(new
         {
             sourceFilesAttachment = new[]
@@ -154,7 +154,7 @@ public class FileActions
                 }
             }
         });
-        client.Execute(request);
+        Client.Execute(request);
     }
 
 }
