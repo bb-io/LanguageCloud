@@ -6,7 +6,7 @@ using Apps.LanguageCloud.Actions;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class ProjectDataHandler : BaseInvocable, IAsyncDataSourceHandler
+    public class ProjectDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
         private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;

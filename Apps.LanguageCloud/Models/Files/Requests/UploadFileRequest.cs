@@ -19,7 +19,7 @@ public class UploadFileRequest
 
     [Display("Source language")]
     [DataSource(typeof(LanguageDataHandler))]
-    public string SourceLanguageCode { get; set; }
+    public string? SourceLanguageCode { get; set; }
 
     [StaticDataSource(typeof(FileRoleDataHandler))]
     public string? Role { get; set; }

@@ -6,7 +6,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class TaskDataHandler : BaseInvocable, IAsyncDataSourceHandler
+    public class TaskDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
         private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;

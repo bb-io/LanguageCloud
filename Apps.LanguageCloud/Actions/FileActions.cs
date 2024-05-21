@@ -59,6 +59,17 @@ public class FileActions : LanguageCloudInvocable
     [Action("Upload source file", Description = "Upload source file to project")]
     public UploadFileResponse UploadSourceFile([ActionParameter] UploadFileRequest input)
     {
+        var sourceLanguage = "";
+        if (input.SourceLanguageCode is null)
+        {
+            var projectrequest = new LanguageCloudRequest($"/projects/{input.ProjectId}?fields=" +
+            $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
+            sourceLanguage = Client.Get<ProjectDto>(projectrequest).LanguageDirections.FirstOrDefault().SourceLanguage.LanguageCode;
+        }
+        else 
+        {
+            sourceLanguage = input.SourceLanguageCode;
+        }
         input.File.Name = input.File.Name.Substring(input.File.Name.LastIndexOf('\\') + 1);
 
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Post, Creds);
@@ -67,7 +78,7 @@ public class FileActions : LanguageCloudInvocable
             name = input.File.Name,
             role = input.Role ?? "translatable",
             type = input.FileType ?? "native",
-            language = input.SourceLanguageCode
+            language = sourceLanguage
         }), ParameterType.RequestBody);
 
         var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
