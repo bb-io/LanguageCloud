@@ -1,6 +1,7 @@
 ﻿using Apps.LanguageCloud.DataSourceHandlers;
 using Apps.LanguageCloud.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Newtonsoft.Json;
 
@@ -34,7 +35,7 @@ public class CreateProjectRequest
     public string? TranslationEngine { get; set; }
    
     [Display("Translation engine strategy")]
-    [DataSource(typeof(StrategyDataHandler))]
+    [StaticDataSource(typeof(StrategyDataHandler))]
     public string? TranslationEngineStrategy { get; set; }
 
     [DataSource(typeof(FileProcessingConfigurationDataHandler))]
@@ -42,7 +43,7 @@ public class CreateProjectRequest
     public string FileProcessingConfiguration { get; set; }
 
     [Display("File processing configuration strategy")]
-    [DataSource(typeof(StrategyDataHandler))]
+    [StaticDataSource(typeof(StrategyDataHandler))]
     public string? FileProcessingConfigurationStrategy { get; set; }
 
     [DataSource(typeof(WorkflowDataHandler))]
@@ -50,21 +51,21 @@ public class CreateProjectRequest
     public string Workflow { get; set; }
 
     [Display("Workflow strategy")]
-    [DataSource(typeof(StrategyDataHandler))]
+    [StaticDataSource(typeof(StrategyDataHandler))]
     public string? WorkflowStrategy { get; set; }
 
     [Display("Pricing model")]
     public string? PricingModel { get; set; }
 
     [Display("Pricing model strategy")]
-    [DataSource(typeof(StrategyDataHandler))]
+    [StaticDataSource(typeof(StrategyDataHandler))]
     public string? PricingModelStrategy { get; set; }
 
     [Display("TQA profile")]
     public string? TQAProfile { get; set; }
 
     [Display("TQA profile strategy")]
-    [DataSource(typeof(StrategyDataHandler))]
+    [StaticDataSource(typeof(StrategyDataHandler))]
     public string? TQAProfileStrategy { get; set; }
 
     [Display("Force online")]
@@ -74,7 +75,7 @@ public class CreateProjectRequest
     public string? ScheduleTemplate { get; set; }
 
     [Display("Schedule template strategy")]
-    [DataSource(typeof(StrategyDataHandler))]
+    [StaticDataSource(typeof(StrategyDataHandler))]
     public string? ScheduleTemplateStrategy { get; set; }
 
     public string GetSerializedRequest()
