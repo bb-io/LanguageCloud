@@ -49,11 +49,12 @@ public class FileActions : LanguageCloudInvocable
     }
 
     [Action("Get target file info", Description = "Get target file info")]
-    public FileInfoDto? GetTargetFile([ActionParameter] GetFileRequest input)
+    public GetTargetFileInfoResponse? GetTargetFile([ActionParameter] GetFileRequest input)
     {
-        var fields = new string[] { "name", "languageDirection", "latestVersion" };
+        var fields = new string[] { "name", "languageDirection", "latestVersion", "analysisStatistics", "status" };
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get, Creds);
-        return Client.Get<FileInfoDto>(request);
+        var response = Client.Get<TargetFileInfoDto>(request);
+        return new GetTargetFileInfoResponse(response);
     }
 
     [Action("Upload source file", Description = "Upload source file to project")]
