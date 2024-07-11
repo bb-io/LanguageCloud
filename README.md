@@ -41,12 +41,13 @@ Before you can connect you need to make sure that:
 
 - **Upload source file** Upload source file to project
 - **Attach source file to project** Attach source file to project
-- **Download target file** Download target file by id
+- **Download target file** Download target file by id. File format can be specified as optional input.
 - **Get source file info** Get source file info
 - **Get target file info** Get target file info
 - **List project source files** List project source files
 - **List project target files** List target source files
 - **Upload zip archive** Upload zip archive with source files
+- **Update target file from SDLXLIFF** Creates a new version of a target file
 
 ### Folders 
 

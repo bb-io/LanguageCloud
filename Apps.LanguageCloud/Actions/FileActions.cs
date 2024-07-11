@@ -49,11 +49,12 @@ public class FileActions : LanguageCloudInvocable
     }
 
     [Action("Get target file info", Description = "Get target file info")]
-    public FileInfoDto? GetTargetFile([ActionParameter] GetFileRequest input)
+    public GetTargetFileInfoResponse? GetTargetFile([ActionParameter] GetFileRequest input)
     {
-        var fields = new string[] { "name", "languageDirection", "latestVersion" };
+        var fields = new string[] { "name", "languageDirection", "latestVersion", "analysisStatistics", "status" };
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get, Creds);
-        return Client.Get<FileInfoDto>(request);
+        var response = Client.Get<TargetFileInfoDto>(request);
+        return new GetTargetFileInfoResponse(response);
     }
 
     [Action("Upload source file", Description = "Upload source file to project")]
@@ -88,24 +89,25 @@ public class FileActions : LanguageCloudInvocable
     }
 
     [Action("Upload zip archive", Description = "Upload zip archive with source files")]
-    public ImportZipDto UploadZipArchive(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] UploadZipRequest input)
+    public ImportZipDto UploadZipArchive([ActionParameter] UploadZipRequest input)
     {
         
-        var request = new LanguageCloudRequest($"/files", Method.Post, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/files", Method.Post, Creds);
         var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddFile("file", fileBytes, input.File.Name);
         var importOperation = Client.Execute<ZipFileStatusDto>(request).Data;
-        var pollingResult = Client.PollImportZipArchiveOperation(importOperation.Id, authenticationCredentialsProviders);
+        var pollingResult = Client.PollImportZipArchiveOperation(importOperation.Id, Creds);
         return pollingResult;
     }
 
     [Action("Download target file", Description = "Download target file by id")]
     public async Task<DownloadTargetFileResponse> DownloadTargetFile([ActionParameter] DownloadFileRequest input)
     {
+        
         byte[] fileData;
         var targetFile = GetTargetFile(new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
-        if (targetFile.LatestVersion.Type == "native" || targetFile.LatestVersion.Type == "bcm")
+        var format = input.Format == null ? targetFile.LatestVersion.Type : input.Format;
+        if (format == "native" || format == "bcm")
         {
             var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/download",
             Method.Get, Creds);
@@ -114,7 +116,7 @@ public class FileActions : LanguageCloudInvocable
         }
         else 
         {
-            var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format={targetFile.LatestVersion.Type}",
+            var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format={format}",
             Method.Post, Creds);
             var exportOperation = Client.Execute<ExportTargetVersionDto>(exportRequest).Data;
             var pollingResult = Client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, Creds);
@@ -123,8 +125,6 @@ public class FileActions : LanguageCloudInvocable
             fileData = Client.Get(downloadRequest).RawBytes;
         }
         
-        
-
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, targetFile.Name);
         return new DownloadTargetFileResponse()
@@ -155,6 +155,21 @@ public class FileActions : LanguageCloudInvocable
             }
         });
         Client.Execute(request);
+    }
+
+    [Action("Update target file from SDLXLIFF", Description = "Creates a new version of a target file")]
+    public UpdateTargetFileResponse UpdateTargetFile([ActionParameter] UpdateTargetRequest input)
+    {
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/imports", Method.Post, Creds);
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        request.AddFile("file", fileBytes, input.File.Name);
+        var importOperation = Client.Execute<UpdateFileImportDto>(request).Data;
+        var pollingResult = Client.PollTargetFileVersionImport(importOperation.Id, input.ProjectId, input.FileId, Creds);
+        if (pollingResult.Status == "failed") 
+        {
+            throw new Exception(pollingResult.errorMessage);
+        } else
+        return new UpdateTargetFileResponse {ImportStatus = pollingResult.Status, FileVersionId = pollingResult.fileVersionId };
     }
 
 }
