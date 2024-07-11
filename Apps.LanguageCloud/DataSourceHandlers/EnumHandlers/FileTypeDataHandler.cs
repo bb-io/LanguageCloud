@@ -9,7 +9,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers.EnumHandlers
         {
             {"native", "Native"},
             {"bcm", "BCM"},
-            {"sdlxliff", "SDL XLIFF" }
+            {"sdlxliff", "SDLXLIFF" }
         };
         public Dictionary<string, string> GetData()
         {

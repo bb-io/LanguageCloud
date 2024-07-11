@@ -104,9 +104,11 @@ public class FileActions : LanguageCloudInvocable
     [Action("Download target file", Description = "Download target file by id")]
     public async Task<DownloadTargetFileResponse> DownloadTargetFile([ActionParameter] DownloadFileRequest input)
     {
+        
         byte[] fileData;
         var targetFile = GetTargetFile(new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
-        if (targetFile.LatestVersion.Type == "native" || targetFile.LatestVersion.Type == "bcm")
+        var format = input.Format == null ? targetFile.LatestVersion.Type : input.Format;
+        if (format == "native" || format == "bcm")
         {
             var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/download",
             Method.Get, Creds);
@@ -115,7 +117,7 @@ public class FileActions : LanguageCloudInvocable
         }
         else 
         {
-            var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format={targetFile.LatestVersion.Type}",
+            var exportRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports?format={format}",
             Method.Post, Creds);
             var exportOperation = Client.Execute<ExportTargetVersionDto>(exportRequest).Data;
             var pollingResult = Client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, Creds);
