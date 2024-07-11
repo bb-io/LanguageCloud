@@ -57,6 +57,21 @@ public class LanguageCloudClient : RestClient
         return response;
     }
 
+    public UpdateFileImportDto PollTargetFileVersionImport(string importId, string projectId, string targetFileId,
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    {
+        var request = new LanguageCloudRequest($"/projects/{projectId}/target-files/{targetFileId}/versions/imports/{importId}",
+            Method.Get, authenticationCredentialsProviders);
+        Task.Delay(2000);
+        var response = this.Get<UpdateFileImportDto>(request);
+        while (response?.Status == "inProgress" || response?.Status == "created")
+        {
+            Task.Delay(2000);
+            response = this.Get<UpdateFileImportDto>(request);
+        }
+        return response;
+    }
+
     public ImportZipDto PollImportZipArchiveOperation(string fileId,
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {

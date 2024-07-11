@@ -89,15 +89,14 @@ public class FileActions : LanguageCloudInvocable
     }
 
     [Action("Upload zip archive", Description = "Upload zip archive with source files")]
-    public ImportZipDto UploadZipArchive(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] UploadZipRequest input)
+    public ImportZipDto UploadZipArchive([ActionParameter] UploadZipRequest input)
     {
         
-        var request = new LanguageCloudRequest($"/files", Method.Post, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest($"/files", Method.Post, Creds);
         var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddFile("file", fileBytes, input.File.Name);
         var importOperation = Client.Execute<ZipFileStatusDto>(request).Data;
-        var pollingResult = Client.PollImportZipArchiveOperation(importOperation.Id, authenticationCredentialsProviders);
+        var pollingResult = Client.PollImportZipArchiveOperation(importOperation.Id, Creds);
         return pollingResult;
     }
 
@@ -126,8 +125,6 @@ public class FileActions : LanguageCloudInvocable
             fileData = Client.Get(downloadRequest).RawBytes;
         }
         
-        
-
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, targetFile.Name);
         return new DownloadTargetFileResponse()
@@ -158,6 +155,21 @@ public class FileActions : LanguageCloudInvocable
             }
         });
         Client.Execute(request);
+    }
+
+    [Action("Update target file from SDLXLIFF", Description = "Creates a new version of a target file")]
+    public UpdateTargetFileResponse UpdateTargetFile([ActionParameter] UpdateTargetRequest input)
+    {
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/imports", Method.Post, Creds);
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        request.AddFile("file", fileBytes, input.File.Name);
+        var importOperation = Client.Execute<UpdateFileImportDto>(request).Data;
+        var pollingResult = Client.PollTargetFileVersionImport(importOperation.Id, input.ProjectId, input.FileId, Creds);
+        if (pollingResult.Status == "failed") 
+        {
+            throw new Exception(pollingResult.errorMessage);
+        } else
+        return new UpdateTargetFileResponse {ImportStatus = pollingResult.Status, FileVersionId = pollingResult.fileVersionId };
     }
 
 }
