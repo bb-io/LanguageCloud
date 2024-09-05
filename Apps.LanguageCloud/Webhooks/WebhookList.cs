@@ -1,4 +1,5 @@
-﻿using Apps.LanguageCloud.Webhooks.Payload;
+﻿using Apps.LanguageCloud.Models.Accounts;
+using Apps.LanguageCloud.Webhooks.Payload;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
 
@@ -10,13 +11,24 @@ public class WebhookList
     #region ProjectWebhooks
 
     [Webhook("On project created", Description = "On project created")]
-    public async Task<WebhookResponse<ProjectEvent>> ProjectCreation(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<ProjectEvent>> ProjectCreation(WebhookRequest webhookRequest,
+        [WebhookParameter] AccountOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString());
+        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString()!);
         if(data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if (!string.IsNullOrEmpty(request.AccountId) && data.AccountId != request.AccountId)
+        {
+            return new WebhookResponse<ProjectEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
         return new WebhookResponse<ProjectEvent>
         {
             HttpResponseMessage = null,
@@ -25,13 +37,24 @@ public class WebhookList
     }
 
     [Webhook("On project updated", Description = "On project updated")]
-    public async Task<WebhookResponse<ProjectEvent>> ProjectUpdated(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<ProjectEvent>> ProjectUpdated(WebhookRequest webhookRequest,
+        [WebhookParameter] AccountOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString());
+        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString()!);
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if (!string.IsNullOrEmpty(request.AccountId) && data.AccountId != request.AccountId)
+        {
+            return new WebhookResponse<ProjectEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
         return new WebhookResponse<ProjectEvent>
         {
             HttpResponseMessage = null,
@@ -40,13 +63,24 @@ public class WebhookList
     }
 
     [Webhook("On project deleted", Description = "On project deleted")]
-    public async Task<WebhookResponse<ProjectEvent>> ProjectDeleted(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<ProjectEvent>> ProjectDeleted(WebhookRequest webhookRequest,
+        [WebhookParameter] AccountOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString());
+        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString()!);
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if (!string.IsNullOrEmpty(request.AccountId) && data.AccountId != request.AccountId)
+        {
+            return new WebhookResponse<ProjectEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
         return new WebhookResponse<ProjectEvent>
         {
             HttpResponseMessage = null,
