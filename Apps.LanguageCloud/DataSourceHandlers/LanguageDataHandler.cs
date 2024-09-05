@@ -8,14 +8,11 @@ using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class LanguageDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
+    public class LanguageDataHandler(InvocationContext invocationContext)
+        : LanguageCloudInvocable(invocationContext), IAsyncDataSourceHandler
     {
         private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
-
-        public LanguageDataHandler(InvocationContext invocationContext) : base(invocationContext)
-        {
-        }
 
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
