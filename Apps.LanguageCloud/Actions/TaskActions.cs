@@ -12,14 +12,10 @@ using System.Net;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class TaskActions : LanguageCloudInvocable
+public class TaskActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     private AuthenticationCredentialsProvider[] Creds =>
             InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
-    public TaskActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
     [Action("List all tasks", Description = "List all tasks")]
     public ListAllTasksResponse ListAllTasks()
@@ -43,7 +39,7 @@ public class TaskActions : LanguageCloudInvocable
         };
     }
 
-    [Action("Get task", Description = "Get task by Id")]
+    [Action("Get task", Description = "Get task by ID")]
     public TaskResponse GetTask([ActionParameter] GetTaskRequest input)
     {
         var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project,input", Method.Get, Creds);
@@ -92,21 +88,21 @@ public class TaskActions : LanguageCloudInvocable
         };
     }
 
-    [Action("Accept task", Description = "Accept task by Id")]
+    [Action("Accept task", Description = "Accept task by ID")]
     public void AcceptTask([ActionParameter] GetTaskRequest input)
     {
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/accept", Method.Put, Creds);
         Client.Execute(request);
     }
 
-    [Action("Reject task", Description = "Reject task by Id")]
+    [Action("Reject task", Description = "Reject task by ID")]
     public void RejectTask([ActionParameter] GetTaskRequest input)
     {
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/reject", Method.Put, Creds);
         Client.Execute(request);
     }
 
-    [Action("Complete task", Description = "Complete task by Id")]
+    [Action("Complete task", Description = "Complete task by ID")]
     public void CompleteTask([ActionParameter] CompleteTaskRequest input)
     {
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/complete", Method.Put, Creds);
@@ -132,21 +128,21 @@ public class TaskActions : LanguageCloudInvocable
         }
     }
 
-    [Action("Release task", Description = "Release task by Id")]
+    [Action("Release task", Description = "Release task by ID")]
     public void ReleaseTask([ActionParameter] GetTaskRequest input)
     {
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/release", Method.Put, Creds);
         Client.Execute(request);
     }
 
-    [Action("Reclaim task", Description = "Reclaim task by Id")]
+    [Action("Reclaim task", Description = "Reclaim task by ID")]
     public void ReclaimTask([ActionParameter] GetTaskRequest input)
     {
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/reclaim", Method.Put, Creds);
         Client.Execute(request);
     }
 
-    [Action("Assign task", Description = "Assign task by Id")]
+    [Action("Assign task", Description = "Assign task by ID")]
     public void AssignTask([ActionParameter] AssignTaskRequest input)
     {
         var request = new LanguageCloudRequest($"/tasks/{input.Task}/assign", Method.Put, Creds);

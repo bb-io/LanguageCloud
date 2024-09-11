@@ -11,14 +11,10 @@ using RestSharp;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class CustomerActions : LanguageCloudInvocable
+public class CustomerActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     private AuthenticationCredentialsProvider[] Creds =>
             InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
-    public CustomerActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
     [Action("List all customers", Description = "List all customers")]
     public ListAllCustomersResponse ListAllCustomers()

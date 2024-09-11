@@ -11,9 +11,9 @@ public class ImportTmxRequest
 
     public FileReference File { get; set; }
 
-    [Display("Source Language")]
+    [Display("Source language")]
     public string SourceLanguage { get; set; }
 
-    [Display("Target Language")]
+    [Display("Target language")]
     public string TargetLanguage { get; set; }
 }

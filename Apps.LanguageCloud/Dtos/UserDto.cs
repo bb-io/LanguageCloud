@@ -6,11 +6,13 @@ public class UserDto
 {
     [Display("User ID")]
     public string Id { get; set; }
+    
+    [Display("Email")]
     public string Email { get; set; }
 
-    [Display("First Name")]
+    [Display("First name")]
     public string FirstName { get; set; }
 
-    [Display("Last Name")]
+    [Display("Last name")]
     public string LastName { get; set; }
 }

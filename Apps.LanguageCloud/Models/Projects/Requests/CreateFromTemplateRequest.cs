@@ -7,9 +7,8 @@ namespace Apps.LanguageCloud.Models.Projects.Requests;
 
 public class CreateFromTemplateRequest
 {
-    [Display("Project Name")]
+    [Display("Project name")]
     public string Name { get; set; }
-
 
     [DataSource(typeof(ProjectTemplateDataHandler))]
     public string Template { get; set; }
@@ -22,27 +21,23 @@ public class CreateFromTemplateRequest
 
     [DataSource(typeof(LanguageDataHandler))]
 
-    [Display("Source Language")]
+    [Display("Source language")]
     public string SourceLanguage { get; set; }
 
-    [Display("Target Languages")]
+    [Display("Target languages")]
     public List<string> TargetLanguages { get; set; }
 
    [DataSource(typeof(TranslationEngineDataHandler))]
-    [Display("Translation Engine")]
+    [Display("Translation engine")]
     public string TranslationEngine { get; set; }
 
     [DataSource(typeof(FileProcessingConfigurationDataHandler))]
-    [Display("File Processing Configuration")]
+    [Display("File processing configuration")]
     public string FileProcessingConfiguration { get; set; }
 
     [DataSource(typeof(WorkflowDataHandler))]
-    
     public string Workflow { get; set; }
-
-
-
-
+    
     public string GetSerializedRequest()
     {
         return JsonConvert.SerializeObject(new

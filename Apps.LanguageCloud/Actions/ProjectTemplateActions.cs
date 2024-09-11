@@ -11,14 +11,11 @@ using RestSharp;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class ProjectTemplateActions : LanguageCloudInvocable
+public class ProjectTemplateActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     private AuthenticationCredentialsProvider[] Creds =>
             InvocationContext.AuthenticationCredentialsProviders.ToArray();
 
-    public ProjectTemplateActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
     [Action("List all project templates", Description = "List all project templates")]
     public ListAllProjectsTemplatesResponse ListAllProjectTemplates()
     {

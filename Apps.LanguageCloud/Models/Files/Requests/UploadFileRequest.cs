@@ -21,10 +21,10 @@ public class UploadFileRequest
     [DataSource(typeof(LanguageDataHandler))]
     public string? SourceLanguageCode { get; set; }
 
-    [StaticDataSource(typeof(FileRoleDataHandler))]
+    [Display("Role"), StaticDataSource(typeof(FileRoleDataHandler))]
     public string? Role { get; set; }
 
-    [Display("File Type")]
+    [Display("File type")]
     [StaticDataSource(typeof(FileTypeDataHandler))]
     public string? FileType { get; set; }
 }

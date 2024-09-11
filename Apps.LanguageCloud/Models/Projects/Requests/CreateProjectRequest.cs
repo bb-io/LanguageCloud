@@ -9,7 +9,7 @@ namespace Apps.LanguageCloud.Models.Projects.Requests;
 
 public class CreateProjectRequest
 {
-    [Display("Project Name")]
+    [Display("Project name")]
     public string Name { get; set; }
 
     public string? Description { get; set; }
@@ -25,7 +25,7 @@ public class CreateProjectRequest
     [DataSource(typeof(LanguageDataHandler))]
     public List<string> TargetLanguages { get; set; }
 
-    [Display("Folder Location")]
+    [Display("Folder location")]
     [DataSource(typeof(LocationDataHandler))]
     public string Location { get; set; }
     

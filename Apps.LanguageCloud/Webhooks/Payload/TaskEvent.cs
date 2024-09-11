@@ -1,10 +1,18 @@
-﻿namespace Apps.LanguageCloud.Webhooks.Payload;
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.LanguageCloud.Webhooks.Payload;
 
 public class TaskEvent
 {
+    [Display("Task ID")]
     public string id { get; set; }
+    
+    [Display("Status")]
     public string status { get; set; }
+    
+    [Display("Task type")]
     public string type { get; set; }
+    
     //public string taskInfrastructureStatus { get; set; }
     //public string typeId { get; set; }
     //public bool automatic { get; set; }
@@ -43,7 +51,10 @@ public class TaskEvent
 
 public class Assignee
 {
+    [Display("Assignee type")]
     public string type { get; set; }
+    
+    [Display("Assignee ID")]
     public string id { get; set; }
 }
 
@@ -72,7 +83,10 @@ public class Assignee
 
 public class Owner
 {
+    [Display("Owner type")]
     public string type { get; set; }
+    
+    [Display("Owner ID")]
     public string id { get; set; }
 }
 

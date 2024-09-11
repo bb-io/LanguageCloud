@@ -11,14 +11,11 @@ using RestSharp;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class UserActions : LanguageCloudInvocable
+public class UserActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     private AuthenticationCredentialsProvider[] Creds =>
             InvocationContext.AuthenticationCredentialsProviders.ToArray();
 
-    public UserActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
     [Action("List all users", Description = "List all users")]
     public ListAllUsersResponse ListAllUsers()
     {
@@ -30,7 +27,7 @@ public class UserActions : LanguageCloudInvocable
         };
     }
 
-    [Action("Get user", Description = "Get user by Id")]
+    [Action("Get user", Description = "Get user by ID")]
     public UserDto? GetUser([ActionParameter] GetUserRequest input)
     {
         var request = new LanguageCloudRequest($"/users/{input.UserId}", Method.Get, Creds);

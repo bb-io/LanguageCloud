@@ -11,14 +11,10 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class ProjectActions : LanguageCloudInvocable
+public class ProjectActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     private AuthenticationCredentialsProvider[] Creds =>
             InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
-    public ProjectActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
     [Action("List all projects", Description = "List all projects")]
     public ListAllProjectsResponse ListAllProjects()
