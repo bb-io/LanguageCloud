@@ -6,5 +6,7 @@ public class GroupDto
 {
     [Display("Group ID")]
     public string Id { get; set; }
+    
+    [Display("Group name")]
     public string Name { get; set; }
 }

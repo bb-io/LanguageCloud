@@ -14,16 +14,9 @@ using System.Net.Http.Json;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class TranslationMemoryActions : LanguageCloudInvocable
+public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : LanguageCloudInvocable(invocationContext)
 {
-    private readonly IFileManagementClient _fileManagementClient;
-
-    public TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
-        invocationContext)
-    {
-        _fileManagementClient = fileManagementClient;
-    }
-
     [Action("List translation memories", Description = "List translation memories")]
     public ListTranslationMemoriesResponse ListTranslationMemories()
     {
@@ -69,7 +62,7 @@ public class TranslationMemoryActions : LanguageCloudInvocable
     {
         var restClient = new LanguageCloudClient();
 
-        using var memoryStream = _fileManagementClient.DownloadAsync(input.File).Result;
+        using var memoryStream = fileManagementClient.DownloadAsync(input.File).Result;
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Post, $"https://lc-api.sdl.com/public-api/v1/translation-memory/{input.TranslationMemoryId}/imports");
         request.Headers.Add("Authorization", Creds.First(p => p.KeyName == "Authorization").Value);

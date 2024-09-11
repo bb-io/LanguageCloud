@@ -6,5 +6,7 @@ public class FolderDto
 {
     [Display("Folder ID")]
     public string Id { get; set; }
+    
+    [Display("Folder name")]
     public string Name { get; set; }
 }

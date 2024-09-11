@@ -5,6 +5,6 @@ namespace Apps.LanguageCloud.Models.ProjectTemplates.Responses;
 
 public class ListAllProjectsTemplatesResponse
 {
-    [Display("Project Templates")]
+    [Display("Project templates")]
     public IEnumerable<ProjectTemplateDto> ProjectTemplates { get; set; }
 }

@@ -4,6 +4,6 @@ namespace Apps.LanguageCloud.Models.TranslationMemories.Requests;
 
 public class GetTranslationMemoryRequest
 {
-    [Display("Translation Memory ID")]
+    [Display("Translation memory ID")]
     public string TranslationMemoryId { get; set; }
 }

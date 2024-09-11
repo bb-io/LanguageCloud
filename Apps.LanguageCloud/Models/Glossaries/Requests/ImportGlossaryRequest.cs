@@ -7,7 +7,7 @@ namespace Apps.LanguageCloud.Models.Glossaries.Requests
 {
     public class ImportGlossaryRequest
     {
-        [Display("Glossary", Description = "Existing glossary for import")]
+        [Display("Glossary ID", Description = "Existing glossary for import")]
         [DataSource(typeof(TermBaseDataHandler))]
         public string GlossaryId { get; set; }
 

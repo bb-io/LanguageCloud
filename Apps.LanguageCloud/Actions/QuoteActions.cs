@@ -9,21 +9,12 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using RestSharp;
 using System.Net.Mime;
 
-
-
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class QuoteActions : LanguageCloudInvocable
+public class QuoteActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : LanguageCloudInvocable(invocationContext)
 {
-    private readonly IFileManagementClient _fileManagementClient;
-
-    public QuoteActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
-        invocationContext)
-    {
-        _fileManagementClient = fileManagementClient;
-    }
-
     [Action("Download quote report", Description = "Download quote report for project")]
     public async Task<DownloadQuoteReportResponse> DownloadQuoteReport([ActionParameter] DownloadQuoteReportRequest input)
     {
@@ -37,7 +28,7 @@ public class QuoteActions : LanguageCloudInvocable
         var fileFormat = input.FileFormat == "pdf" ? "pdf" : "xlsx";
 
         using var stream = new MemoryStream(fileData);
-        var file = await _fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, $"QuoteReport_{input.LanguageCode}_{DateTime.Now.ToString("yyyyMMddTHHmmss")}.{fileFormat}");
+        var file = await fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, $"QuoteReport_{input.LanguageCode}_{DateTime.Now.ToString("yyyyMMddTHHmmss")}.{fileFormat}");
         return new DownloadQuoteReportResponse()
         {
             File = file

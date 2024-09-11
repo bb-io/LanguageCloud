@@ -15,6 +15,6 @@ public class DownloadFileRequest
     [Display("File ID")]
     public string FileId { get; set; }
 
-    [StaticDataSource(typeof(FileTypeDataHandler))]
+    [Display("File format"), StaticDataSource(typeof(FileTypeDataHandler))]
     public string? Format { get; set; }
 }

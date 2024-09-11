@@ -4,9 +4,9 @@ namespace Apps.LanguageCloud.Dtos;
 
 public class LanguageDto
 {
-    [Display("Language Code")]
+    [Display("Language code")]
     public string LanguageCode { get; set; }
 
-    [Display("English Name")]
+    [Display("English name")]
     public string EnglishName { get; set; }
 }

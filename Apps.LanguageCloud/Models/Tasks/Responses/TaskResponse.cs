@@ -11,37 +11,37 @@ namespace Apps.LanguageCloud.Models.Tasks.Responses
         [Display("Project ID")]
         public string ProjectID { get; set; }
 
-        [Display("Project Name")]
+        [Display("Project name")]
         public string ProjectName { get; set; }
 
-        [Display("Task Type ID")]
+        [Display("Task type ID")]
         public string TaskTypeID { get; set; }
 
-        [Display("Task Type Name")]
+        [Display("Task type name")]
         public string TaskTypeName { get; set; }
 
-        [Display("Task Type Key")]
+        [Display("Task type key")]
         public string TaskTypeKey { get; set; }
 
-        [Display("Task Type Description")]
+        [Display("Task type description")]
         public string TaskTypeDescription { get; set; }
-        [Display("Source Language")]
+        
+        [Display("Source language")]
         public string SourceLanguage { get; set; }
-        [Display("Target Language")]
+        
+        [Display("Target language")]
         public string TargetLanguage { get; set; }
 
-        [Display("Source File ID")]
+        [Display("Source file ID")]
         public string SourceFileID { get; set; }
 
-        [Display("Source File Name")]
+        [Display("Source file name")]
         public string SourceFileName { get; set; }
 
-        [Display("Target File ID")]
+        [Display("Target file ID")]
         public string TargetFileID { get; set; }
 
-        [Display("Target File Name")]
+        [Display("Target file name")]
         public string TargetFileName { get; set; }
-
-
     }
 }

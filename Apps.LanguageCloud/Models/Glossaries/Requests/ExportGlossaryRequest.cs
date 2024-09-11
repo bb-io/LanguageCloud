@@ -6,7 +6,7 @@ namespace Apps.LanguageCloud.Models.Glossaries.Requests
 {
     public class ExportGlossaryRequest
     {
-        [Display("Glossary")]
+        [Display("Glossary ID")]
         [DataSource(typeof(TermBaseDataHandler))]
         public string GlossaryId { get; set; }
     }

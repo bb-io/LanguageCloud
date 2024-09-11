@@ -10,6 +10,6 @@ public class EditProjectRequest
     [DataSource(typeof(ProjectDataHandler))]
     public string Project { get; set; }
 
-    [Display("Project Name")]
+    [Display("Project name")]
     public string ProjectName { get; set; }
 }

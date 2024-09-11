@@ -15,16 +15,9 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class FileActions : LanguageCloudInvocable
+public class FileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : LanguageCloudInvocable(invocationContext)
 {
-    private readonly IFileManagementClient _fileManagementClient;
-
-    public FileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
-        invocationContext)
-    {
-        _fileManagementClient = fileManagementClient;
-    }
-
     [Action("List project source files", Description = "List project source files")]
     public ListAllFilesResponse ListSourceFiles([ActionParameter] ListSourceFilesRequest input)
     {
@@ -82,7 +75,7 @@ public class FileActions : LanguageCloudInvocable
             language = sourceLanguage
         }), ParameterType.RequestBody);
 
-        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddFile("file", fileBytes, input.File.Name);
         var response = Client.Execute<UploadFileResponse>(request).Data;
         return response;
@@ -93,7 +86,7 @@ public class FileActions : LanguageCloudInvocable
     {
         
         var request = new LanguageCloudRequest($"/files", Method.Post, Creds);
-        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddFile("file", fileBytes, input.File.Name);
         var importOperation = Client.Execute<ZipFileStatusDto>(request).Data;
         var pollingResult = Client.PollImportZipArchiveOperation(importOperation.Id, Creds);
@@ -126,7 +119,7 @@ public class FileActions : LanguageCloudInvocable
         }
         
         using var stream = new MemoryStream(fileData);
-        var file = await _fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, targetFile.Name);
+        var file = await fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, targetFile.Name);
         return new DownloadTargetFileResponse()
         {
             File = file
@@ -161,15 +154,15 @@ public class FileActions : LanguageCloudInvocable
     public UpdateTargetFileResponse UpdateTargetFile([ActionParameter] UpdateTargetRequest input)
     {
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/imports", Method.Post, Creds);
-        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddFile("file", fileBytes, input.File.Name);
         var importOperation = Client.Execute<UpdateFileImportDto>(request).Data;
         var pollingResult = Client.PollTargetFileVersionImport(importOperation.Id, input.ProjectId, input.FileId, Creds);
         if (pollingResult.Status == "failed") 
         {
             throw new Exception(pollingResult.errorMessage);
-        } else
+        }
+        
         return new UpdateTargetFileResponse {ImportStatus = pollingResult.Status, FileVersionId = pollingResult.fileVersionId };
     }
-
 }

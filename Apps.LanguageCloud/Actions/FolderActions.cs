@@ -11,14 +11,10 @@ using RestSharp;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class FolderActions : LanguageCloudInvocable
+public class FolderActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     private AuthenticationCredentialsProvider[] Creds =>
             InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
-    public FolderActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
     [Action("List all folders", Description = "List all folders")]
     public ListAllFoldersResponse ListAllFolders()

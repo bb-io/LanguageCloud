@@ -12,7 +12,7 @@ public class ProjectDto
     [JsonProperty("shortId")]
     public string ShortId { get; set; }
 
-    [Display("Project Name")]
+    [Display("Project name")]
     public string Name { get; set; }
 
     [JsonProperty("description")]
@@ -33,14 +33,14 @@ public class ProjectDto
     [JsonProperty("languageDirections")]
     public List<LanguageDirection> LanguageDirections { get; set; }
    
-    [Display("Folder Location")]
+    [Display("Location")]
     [JsonProperty("location")]
     public folder Location { get; set; }
 }
 
 public class LanguageDirection
 {
-    [JsonProperty("id")]
+    [JsonProperty("id"), Display("Language direction ID")]
     public string Id { get; set; }
 
     [Display("Source language")]
@@ -76,8 +76,9 @@ public class TargetLanguage
 
 public class folder 
 {
+    [Display("Folder ID")]
     public string id { get; set; }
 
+    [Display("Folder name")]
     public string name { get; set; }
-
 }

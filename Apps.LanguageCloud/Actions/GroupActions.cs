@@ -11,14 +11,10 @@ using RestSharp;
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
-public class GroupActions : LanguageCloudInvocable
+public class GroupActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     private AuthenticationCredentialsProvider[] Creds =>
             InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
-    public GroupActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
     [Action("List all groups", Description = "List all groups")]
     public ListAllGroupsResponse ListAllGroups()
@@ -31,7 +27,7 @@ public class GroupActions : LanguageCloudInvocable
         };
     }
 
-    [Action("Get group", Description = "Get group by Id")]
+    [Action("Get group", Description = "Get group by ID")]
     public GroupDto? GetGroups([ActionParameter] GetCustomerRequest input)
     {
         var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get, Creds);
