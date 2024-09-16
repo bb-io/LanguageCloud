@@ -35,13 +35,7 @@ public class ProjectActions(InvocationContext invocationContext) : LanguageCloud
         var request = new LanguageCloudRequest($"/projects/{input.Project}?fields=" +
             $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
         var project = Client.Get<ProjectDto>(request)!;
-        project.GroupedLanguageDirections = project.LanguageDirections
-            .GroupBy(ld => ld.SourceLanguage)
-            .Select(g => new GroupedLanguageDirections()
-            {
-                SourceLanguage = g.Key,
-                TargetLanguages = g.Select(ld => ld.TargetLanguage).ToList()
-            }).ToList();
+        project.GroupLanguageDirections();
         
         return project;
     }

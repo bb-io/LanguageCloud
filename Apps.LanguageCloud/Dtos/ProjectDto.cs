@@ -39,6 +39,17 @@ public class ProjectDto
     [Display("Location")]
     [JsonProperty("location")]
     public folder Location { get; set; }
+    
+    public void GroupLanguageDirections()
+    {
+        GroupedLanguageDirections = LanguageDirections
+            .GroupBy(ld => ld.SourceLanguage)
+            .Select(g => new GroupedLanguageDirections()
+            {
+                SourceLanguage = g.Key,
+                TargetLanguages = g.Select(ld => ld.TargetLanguage).ToList()
+            }).ToList();
+    }
 }
 
 public class GroupedLanguageDirections
@@ -75,6 +86,16 @@ public class SourceLanguage
     [Display("Is neutral")]
     [JsonProperty("isNeutral")]
     public bool IsNeutral { get; set; }
+
+    public override int GetHashCode()
+    {
+        return LanguageCode.GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is SourceLanguage language && language.LanguageCode == LanguageCode;
+    }
 }
 
 public class TargetLanguage
@@ -86,6 +107,16 @@ public class TargetLanguage
     [Display("Is neutral")]
     [JsonProperty("isNeutral")]
     public bool IsNeutral { get; set; }
+    
+    public override int GetHashCode()
+    {
+        return LanguageCode.GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is SourceLanguage language && language.LanguageCode == LanguageCode;
+    }
 }
 
 public class folder 

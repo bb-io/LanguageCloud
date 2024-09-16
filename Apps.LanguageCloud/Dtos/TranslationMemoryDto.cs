@@ -11,7 +11,7 @@ public class TranslationMemoryDto
     public string Name { get; set; }
 
     [DefinitionIgnore]
-    public IEnumerable<LanguageDirectionItem> LanguageDirections { get; set; }
+    public List<LanguageDirectionItem> LanguageDirections { get; set; }
     
     [Display("Language directions")]
     public List<GroupedLanguageDirectionItems> GroupedLanguageDirections { get; set; }
@@ -59,4 +59,14 @@ public class LanguageObj
     
     [Display("Language name")]
     public string EnglishName { get; set; }
+    
+    public override int GetHashCode()
+    {
+        return LanguageCode.GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is SourceLanguage language && language.LanguageCode == LanguageCode;
+    }
 }
