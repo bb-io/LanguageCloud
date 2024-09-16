@@ -10,8 +10,31 @@ public class TranslationMemoryDto
     [Display("Translation memory name")]
     public string Name { get; set; }
 
-    [Display("Language directions")]
+    [DefinitionIgnore]
     public IEnumerable<LanguageDirectionItem> LanguageDirections { get; set; }
+    
+    [Display("Language directions")]
+    public List<GroupedLanguageDirectionItems> GroupedLanguageDirections { get; set; }
+    
+    public void GroupLanguageDirections()
+    {
+        GroupedLanguageDirections = LanguageDirections
+            .GroupBy(p => p.LanguageDirection.SourceLanguage.LanguageCode)
+            .Select(p => new GroupedLanguageDirectionItems
+            {
+                SourceLanguage = p.First().LanguageDirection.SourceLanguage,
+                TargetLanguages = p.Select(q => q.LanguageDirection.TargetLanguage).ToList()
+            }).ToList();
+    }
+}
+
+public class GroupedLanguageDirectionItems
+{
+    [Display("Source language")]
+    public LanguageObj SourceLanguage { get; set; } = new();
+    
+    [Display("Target languages")]
+    public List<LanguageObj> TargetLanguages { get; set; } = new();
 }
 
 public class LanguageDirectionItem

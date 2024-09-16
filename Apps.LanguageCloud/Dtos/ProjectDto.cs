@@ -29,13 +29,27 @@ public class ProjectDto
     [JsonProperty("status")]
     public string Status { get; set; }
 
-    [Display("Language directions")]
+    [DefinitionIgnore]
     [JsonProperty("languageDirections")]
     public List<LanguageDirection> LanguageDirections { get; set; }
+    
+    [Display("Language directions")]
+    public List<GroupedLanguageDirections> GroupedLanguageDirections { get; set; }
    
     [Display("Location")]
     [JsonProperty("location")]
     public folder Location { get; set; }
+}
+
+public class GroupedLanguageDirections
+{
+    [Display("Source language")]
+    [JsonProperty("sourceLanguage")]
+    public SourceLanguage SourceLanguage { get; set; }
+
+    [Display("Target languages")]
+    [JsonProperty("targetLanguages")]
+    public List<TargetLanguage> TargetLanguages { get; set; }
 }
 
 public class LanguageDirection
