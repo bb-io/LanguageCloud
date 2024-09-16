@@ -29,13 +29,38 @@ public class ProjectDto
     [JsonProperty("status")]
     public string Status { get; set; }
 
-    [Display("Language directions")]
+    [DefinitionIgnore]
     [JsonProperty("languageDirections")]
     public List<LanguageDirection> LanguageDirections { get; set; }
+    
+    [Display("Language directions")]
+    public List<GroupedLanguageDirections> GroupedLanguageDirections { get; set; }
    
     [Display("Location")]
     [JsonProperty("location")]
     public folder Location { get; set; }
+    
+    public void GroupLanguageDirections()
+    {
+        GroupedLanguageDirections = LanguageDirections
+            .GroupBy(ld => ld.SourceLanguage)
+            .Select(g => new GroupedLanguageDirections()
+            {
+                SourceLanguage = g.Key,
+                TargetLanguages = g.Select(ld => ld.TargetLanguage).ToList()
+            }).ToList();
+    }
+}
+
+public class GroupedLanguageDirections
+{
+    [Display("Source language")]
+    [JsonProperty("sourceLanguage")]
+    public SourceLanguage SourceLanguage { get; set; }
+
+    [Display("Target languages")]
+    [JsonProperty("targetLanguages")]
+    public List<TargetLanguage> TargetLanguages { get; set; }
 }
 
 public class LanguageDirection
@@ -61,6 +86,16 @@ public class SourceLanguage
     [Display("Is neutral")]
     [JsonProperty("isNeutral")]
     public bool IsNeutral { get; set; }
+
+    public override int GetHashCode()
+    {
+        return LanguageCode.GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is SourceLanguage language && language.LanguageCode == LanguageCode;
+    }
 }
 
 public class TargetLanguage
@@ -72,6 +107,16 @@ public class TargetLanguage
     [Display("Is neutral")]
     [JsonProperty("isNeutral")]
     public bool IsNeutral { get; set; }
+    
+    public override int GetHashCode()
+    {
+        return LanguageCode.GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is SourceLanguage language && language.LanguageCode == LanguageCode;
+    }
 }
 
 public class folder 

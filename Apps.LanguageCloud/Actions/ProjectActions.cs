@@ -28,13 +28,16 @@ public class ProjectActions(InvocationContext invocationContext) : LanguageCloud
         };
     }
 
-    [Action("Get project", Description = "Get project by Id")]
+    [Action("Get project", Description = "Get project by ID")]
     public ProjectDto GetProject(
         [ActionParameter] GetProjectRequest input)
     {
         var request = new LanguageCloudRequest($"/projects/{input.Project}?fields=" +
             $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
-        return Client.Get<ProjectDto>(request);
+        var project = Client.Get<ProjectDto>(request)!;
+        project.GroupLanguageDirections();
+        
+        return project;
     }
 
     [Action("Create project", Description = "Create project")]
