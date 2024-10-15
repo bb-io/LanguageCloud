@@ -1,4 +1,7 @@
 ﻿using Apps.LanguageCloud.Models.Accounts;
+using Apps.LanguageCloud.Models.Files.Requests;
+using Apps.LanguageCloud.Models.Projects.Requests;
+using Apps.LanguageCloud.Models.Tasks.Requests;
 using Apps.LanguageCloud.Webhooks.Payload;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
@@ -38,7 +41,8 @@ public class WebhookList
 
     [Webhook("On project updated", Description = "On project updated")]
     public async Task<WebhookResponse<ProjectEvent>> ProjectUpdated(WebhookRequest webhookRequest,
-        [WebhookParameter] AccountOptionalRequest request)
+        [WebhookParameter] AccountOptionalRequest request,
+        [WebhookParameter] GetProjectOptionalRequest projectRequest)
     {
         var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString()!);
         if (data is null)
@@ -47,6 +51,15 @@ public class WebhookList
         }
         
         if (!string.IsNullOrEmpty(request.AccountId) && data.AccountId != request.AccountId)
+        {
+            return new WebhookResponse<ProjectEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
+        if(projectRequest.ProjectId != null && data.Data.Id != projectRequest.ProjectId)
         {
             return new WebhookResponse<ProjectEvent>
             {
@@ -91,14 +104,26 @@ public class WebhookList
     #endregion
 
     #region TaskWebhooks
+    
     [Webhook("On task accepted", Description = "On task accepted")]
-    public async Task<WebhookResponse<TaskEvent>> TaskAccepted(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<TaskEvent>> TaskAccepted(WebhookRequest webhookRequest,
+        [WebhookParameter] GetTaskOptionalRequest taskOptionalRequest)
     {
         var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<TaskEvent>>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if (taskOptionalRequest.TaskId != null && data.Data.id != taskOptionalRequest.TaskId)
+        {
+            return new WebhookResponse<TaskEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
         return new WebhookResponse<TaskEvent>
         {
             HttpResponseMessage = null,
@@ -122,13 +147,24 @@ public class WebhookList
     }
 
     [Webhook("On task completed", Description = "On task completed")]
-    public async Task<WebhookResponse<TaskEvent>> TaskCompleted(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<TaskEvent>> TaskCompleted(WebhookRequest webhookRequest,
+        [WebhookParameter] GetTaskOptionalRequest taskOptionalRequest)
     {
         var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<TaskEvent>>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if (taskOptionalRequest.TaskId != null && data.Data.id != taskOptionalRequest.TaskId)
+        {
+            return new WebhookResponse<TaskEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
         return new WebhookResponse<TaskEvent>
         {
             HttpResponseMessage = null,
@@ -137,13 +173,24 @@ public class WebhookList
     }
 
     [Webhook("On task updated", Description = "On task updated")]
-    public async Task<WebhookResponse<TaskEvent>> TaskUpdated(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<TaskEvent>> TaskUpdated(WebhookRequest webhookRequest,
+        [WebhookParameter] GetTaskOptionalRequest taskOptionalRequest)
     {
         var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<TaskEvent>>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if (taskOptionalRequest.TaskId != null && data.Data.id != taskOptionalRequest.TaskId)
+        {
+            return new WebhookResponse<TaskEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
         return new WebhookResponse<TaskEvent>
         {
             HttpResponseMessage = null,
@@ -234,13 +281,33 @@ public class WebhookList
     }
 
     [Webhook("On source file updated", Description = "On source file updated")]
-    public async Task<WebhookResponse<SourceFileEvent>> SourceFileUpdated(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<SourceFileEvent>> SourceFileUpdated(WebhookRequest webhookRequest,
+        [WebhookParameter] GetFileOptionalRequest sourceFileOptionalRequest)
     {
         var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<SourceFileEvent>>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if (sourceFileOptionalRequest.FileId != null && data.Data.Id != sourceFileOptionalRequest.FileId)
+        {
+            return new WebhookResponse<SourceFileEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
+        if (sourceFileOptionalRequest.ProjectId != null && data.Data.Project.Id != sourceFileOptionalRequest.ProjectId)
+        {
+            return new WebhookResponse<SourceFileEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
         return new WebhookResponse<SourceFileEvent>
         {
             HttpResponseMessage = null,
@@ -283,12 +350,31 @@ public class WebhookList
     }
 
     [Webhook("On target file updated", Description = "On target file updated")]
-    public async Task<WebhookResponse<TargetFileEvent>> TargetFileUpdated(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<TargetFileEvent>> TargetFileUpdated(WebhookRequest webhookRequest,
+        [WebhookParameter] GetFileOptionalRequest fileOptionalRequest)
     {
         var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<TargetFileEvent>>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
+        }
+        
+        if (fileOptionalRequest.FileId != null && data.Data.Id != fileOptionalRequest.FileId)
+        {
+            return new WebhookResponse<TargetFileEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+        
+        if (fileOptionalRequest.ProjectId != null && data.Data.Project.Id != fileOptionalRequest.ProjectId)
+        {
+            return new WebhookResponse<TargetFileEvent>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
         }
         
         return new WebhookResponse<TargetFileEvent>
