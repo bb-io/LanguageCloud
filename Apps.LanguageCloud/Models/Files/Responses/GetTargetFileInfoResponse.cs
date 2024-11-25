@@ -12,16 +12,16 @@ namespace Apps.LanguageCloud.Models.Files.Responses
         public string Status { get; set; }
 
         [Display("Language direction")]
-        public LanguageDirection languageDirection { get; set; }
+        public LanguageDirection? languageDirection { get; set; }
 
         [Display("Source file")]
-        public SourceFile sourceFile { get; set; }
+        public SourceFile? sourceFile { get; set; }
 
         [Display("Latest version")]
         public VersionDto LatestVersion { get; set; }
 
         [Display("Analysis statistics")]
-        public analysis Analysis { get; set; }
+        public analysis? Analysis { get; set; }
 
         public GetTargetFileInfoResponse(TargetFileInfoDto info) 
         {
@@ -31,7 +31,7 @@ namespace Apps.LanguageCloud.Models.Files.Responses
             languageDirection = info.languageDirection;
             sourceFile = info.sourceFile;
             LatestVersion = info.LatestVersion;
-            Analysis = new analysis 
+            Analysis = info.analysisStatistics == null ? null : new analysis 
             {
                 exactMatch = info.analysisStatistics.exactMatch.words,
                 inContextExactMatch = info.analysisStatistics.inContextExactMatch.words,
@@ -53,39 +53,39 @@ namespace Apps.LanguageCloud.Models.Files.Responses
     public class analysis 
     {
         [Display("Exact matches")]
-        public int exactMatch { get; set; }
+        public int? exactMatch { get; set; }
 
         [Display("In-context exact matches")]
-        public int inContextExactMatch { get; set; }
+        public int? inContextExactMatch { get; set; }
 
         [Display("Perfect matches")]
-        public int perfectMatch { get; set; }
+        public int? perfectMatch { get; set; }
 
         [Display("New words")]
-        public int newWords { get; set; }
+        public int? newWords { get; set; }
 
         [Display("Repetitions")]
-        public int repetitions { get; set; }
+        public int? repetitions { get; set; }
 
         [Display("Cross-document repetitions")]
-        public int crossDocumentRepetitions { get; set; }
+        public int? crossDocumentRepetitions { get; set; }
 
         [Display("Machine Translation")]
-        public int machineTranslation { get; set; }
+        public int? machineTranslation { get; set; }
 
         [Display("Fuzzy 50 - 74")]
-        public int Fuzzy_50_74 { get; set; }
+        public int? Fuzzy_50_74 { get; set; }
 
         [Display("Fuzzy 75 - 84")]
-        public int Fuzzy_75_84 { get; set; }
+        public int? Fuzzy_75_84 { get; set; }
 
         [Display("Fuzzy 85 - 94")]
-        public int Fuzzy_85_94 { get; set; }
+        public int? Fuzzy_85_94 { get; set; }
 
         [Display("Fuzzy 95 - 99")]
-        public int Fuzzy_95_99 { get; set; }
+        public int? Fuzzy_95_99 { get; set; }
 
         [Display("Total")]
-        public int total { get; set; }
+        public int? total { get; set; }
     }
 }
