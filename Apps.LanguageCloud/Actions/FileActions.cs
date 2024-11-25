@@ -96,9 +96,10 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Download target file", Description = "Download target file by id")]
     public async Task<DownloadTargetFileResponse> DownloadTargetFile([ActionParameter] DownloadFileRequest input)
     {
-        
+        var fields = new string[] { "name","latestVersion" };
         byte[] fileData;
-        var targetFile = GetTargetFile(new GetFileRequest() { ProjectId = input.ProjectId, FileId = input.FileId });
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get, Creds);
+        var targetFile = Client.Get<FileInfoDto>(request);
         var format = input.Format == null ? targetFile.LatestVersion.Type : input.Format;
         if (format == "native" || format == "bcm")
         {

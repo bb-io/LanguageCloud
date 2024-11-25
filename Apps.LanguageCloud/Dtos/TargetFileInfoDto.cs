@@ -7,9 +7,9 @@ public class TargetFileInfoDto
 {
     public string id { get; set; }
     public string Name { get; set; }
-    public LanguageDirection languageDirection { get; set; }
-    public SourceFile sourceFile { get; set; }
-    public AnalysisStatistics analysisStatistics { get; set; }
+    public LanguageDirection? languageDirection { get; set; }
+    public SourceFile? sourceFile { get; set; }
+    public AnalysisStatistics? analysisStatistics { get; set; }
     public string status { get; set; }
 
     [JsonProperty("latestVersion")]
