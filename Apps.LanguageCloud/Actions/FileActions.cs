@@ -11,6 +11,8 @@ using System.Net.Mime;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Apps.LanguageCloud.Actions;
 
@@ -29,7 +31,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("List project target files", Description = "List target source files")]
     public ListAllFilesResponse ListTargetFiles([ActionParameter] ListSourceFilesRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion", Method.Get, Creds);
+        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion,name", Method.Get, Creds);
         var response = Client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
         return new ListAllFilesResponse() { Files = response.Items };
     }
@@ -97,7 +99,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     public async Task<DownloadTargetFileResponse> DownloadTargetFile([ActionParameter] DownloadFileRequest input)
     {
         var fields = new string[] { "name","latestVersion" };
-        byte[] fileData;
+        RestResponse fileData;
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get, Creds);
         var targetFile = Client.Get<FileInfoDto>(request);
         var format = input.Format == null ? targetFile.LatestVersion.Type : input.Format;
@@ -105,7 +107,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
         {
             var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/download",
             Method.Get, Creds);
-            fileData = Client.Get(downloadRequest).RawBytes;
+            fileData = Client.Get(downloadRequest);
 
         }
         else 
@@ -116,11 +118,13 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
             var pollingResult = Client.PollTargetFileExportOperation(exportOperation.Id, targetFile.LatestVersion.Id, input.ProjectId, input.FileId, Creds);
             var downloadRequest = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/{targetFile.LatestVersion.Id}/exports/{pollingResult.Id}/download",
                 Method.Get, Creds);
-            fileData = Client.Get(downloadRequest).RawBytes;
+            fileData = Client.Get(downloadRequest);
         }
-        
-        using var stream = new MemoryStream(fileData);
-        var file = await fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, targetFile.Name);
+
+        var filename = Regex.Match(
+            fileData.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition").Value.ToString(), "filename=\"(.*?)\"").Groups[1].Value;
+        using var stream = new MemoryStream(fileData.RawBytes);
+        var file = await fileManagementClient.UploadAsync(stream, MediaTypeNames.Application.Octet, String.IsNullOrEmpty(filename) ? targetFile.Name : filename);
         return new DownloadTargetFileResponse()
         {
             File = file
