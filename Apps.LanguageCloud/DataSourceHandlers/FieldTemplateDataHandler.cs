@@ -9,9 +9,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers;
 
 public class FieldTemplateDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
 {
-    private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
     public FieldTemplateDataHandler(InvocationContext invocationContext) : base(invocationContext)
     {
     }
@@ -19,8 +16,8 @@ public class FieldTemplateDataHandler : LanguageCloudInvocable, IAsyncDataSource
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
-        var request = new LanguageCloudRequest("/translation-memory/field-templates", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<FieldTemplateDto>>>(request);
+        var request = new LanguageCloudRequest("/translation-memory/field-templates", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FieldTemplateDto>>>(request);
 
         return response.Items
             .Where(x => context.SearchString == null ||

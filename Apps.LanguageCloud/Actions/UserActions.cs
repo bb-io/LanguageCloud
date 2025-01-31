@@ -13,14 +13,11 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class UserActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    private AuthenticationCredentialsProvider[] Creds =>
-            InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
     [Action("List all users", Description = "List all users")]
-    public ListAllUsersResponse ListAllUsers()
+    public async Task<ListAllUsersResponse> ListAllUsers()
     {
-        var request = new LanguageCloudRequest("/users", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<UserDto>>>(request);
+        var request = new LanguageCloudRequest("/users", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<UserDto>>>(request);
         return new ListAllUsersResponse()
         {
             Users = response.Items.Where(x => !string.IsNullOrEmpty(x.Email))
@@ -28,9 +25,9 @@ public class UserActions(InvocationContext invocationContext) : LanguageCloudInv
     }
 
     [Action("Get user", Description = "Get user by ID")]
-    public UserDto? GetUser([ActionParameter] GetUserRequest input)
+    public async Task<UserDto?> GetUser([ActionParameter] GetUserRequest input)
     {
-        var request = new LanguageCloudRequest($"/users/{input.UserId}", Method.Get, Creds);
-        return Client.Get<UserDto>(request);
+        var request = new LanguageCloudRequest($"/users/{input.UserId}", Method.Get);
+        return await Client.ExecuteWithErrorHandling<UserDto>(request);
     }
 }

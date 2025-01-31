@@ -13,14 +13,11 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class GroupActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    private AuthenticationCredentialsProvider[] Creds =>
-            InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
     [Action("List all groups", Description = "List all groups")]
-    public ListAllGroupsResponse ListAllGroups()
+    public async Task<ListAllGroupsResponse> ListAllGroups()
     {
-        var request = new LanguageCloudRequest("/groups", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<GroupDto>>>(request);
+        var request = new LanguageCloudRequest("/groups", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<GroupDto>>>(request);
         return new ListAllGroupsResponse()
         {
             Groups = response.Items
@@ -28,9 +25,9 @@ public class GroupActions(InvocationContext invocationContext) : LanguageCloudIn
     }
 
     [Action("Get group", Description = "Get group by ID")]
-    public GroupDto? GetGroups([ActionParameter] GetCustomerRequest input)
+    public async Task<GroupDto?> GetGroups([ActionParameter] GetCustomerRequest input)
     {
-        var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get, Creds);
-        return Client.Get<GroupDto>(request);
+        var request = new LanguageCloudRequest($"/groups/{input.Id}", Method.Get);
+        return await Client.ExecuteWithErrorHandling<GroupDto>(request);
     }
 }

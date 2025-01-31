@@ -18,7 +18,7 @@ namespace Apps.LanguageCloud
 
         public LanguageCloudInvocable(InvocationContext invocationContext) : base(invocationContext)
         {
-            Client = new();
+            Client = new(Creds);
         }
     }
 }

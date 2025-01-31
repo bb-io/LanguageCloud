@@ -8,9 +8,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class WorkflowDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public WorkflowDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
@@ -18,8 +15,8 @@ namespace Apps.LanguageCloud.DataSourceHandlers
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var request = new LanguageCloudRequest("/workflows", Method.Get, Creds);
-            var response = Client.Get<ResponseWrapper<List<WorkflowDto>>>(request);
+            var request = new LanguageCloudRequest("/workflows", Method.Get);
+            var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<WorkflowDto>>>(request);
 
             return response.Items
                 .Where(x => context.SearchString == null ||

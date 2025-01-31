@@ -365,3 +365,4 @@ FodyWeavers.xsd
 .idea/
 /ConsoleApp1
 /Tests.LanguageCloud/appsettings.json
+/Tests.LanguageCloud/Output/*

@@ -13,14 +13,11 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class FolderActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    private AuthenticationCredentialsProvider[] Creds =>
-            InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
     [Action("List all folders", Description = "List all folders")]
-    public ListAllFoldersResponse ListAllFolders()
+    public async Task<ListAllFoldersResponse> ListAllFolders()
     {
-        var request = new LanguageCloudRequest("/folders", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<FolderDto>>>(request);
+        var request = new LanguageCloudRequest("/folders", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FolderDto>>>(request);
         return new ListAllFoldersResponse()
         {
             Folders = response.Items
@@ -28,9 +25,9 @@ public class FolderActions(InvocationContext invocationContext) : LanguageCloudI
     }
 
     [Action("Get folder", Description = "Get folder by Id")]
-    public FolderDto? GetFolder([ActionParameter] GetFolderRequest input)
+    public async Task<FolderDto?> GetFolder([ActionParameter] GetFolderRequest input)
     {
-        var Client = new LanguageCloudClient();var request = new LanguageCloudRequest($"/folders/{input.FolderId}", Method.Get, Creds);
-        return Client.Get<FolderDto>(request);
+        var request = new LanguageCloudRequest($"/folders/{input.FolderId}", Method.Get);
+        return await Client.ExecuteWithErrorHandling<FolderDto>(request);
     }
 }

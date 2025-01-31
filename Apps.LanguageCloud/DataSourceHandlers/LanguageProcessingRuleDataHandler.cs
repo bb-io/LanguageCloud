@@ -9,9 +9,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class LanguageProcessingRuleDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public LanguageProcessingRuleDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
@@ -19,8 +16,8 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var request = new LanguageCloudRequest("/language-processing-rules", Method.Get, Creds);
-            var response = Client.Get<ResponseWrapper<List<LanguageProcessingRuleDto>>>(request);
+            var request = new LanguageCloudRequest("/language-processing-rules", Method.Get);
+            var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<LanguageProcessingRuleDto>>>(request);
 
             return response.Items
                 .Where(x => context.SearchString == null ||

@@ -13,14 +13,11 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class ProjectTemplateActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    private AuthenticationCredentialsProvider[] Creds =>
-            InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
     [Action("List all project templates", Description = "List all project templates")]
-    public ListAllProjectsTemplatesResponse ListAllProjectTemplates()
+    public async Task<ListAllProjectsTemplatesResponse> ListAllProjectTemplates()
     {
-        var request = new LanguageCloudRequest("/project-templates", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<ProjectTemplateDto>>>(request);
+        var request = new LanguageCloudRequest("/project-templates", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<ProjectTemplateDto>>>(request);
         return new ListAllProjectsTemplatesResponse()
         {
             ProjectTemplates = response.Items
@@ -28,9 +25,9 @@ public class ProjectTemplateActions(InvocationContext invocationContext) : Langu
     }
 
     [Action("Get project template", Description = "Get project template by Id")]
-    public ProjectTemplateDto? GetProjectTemplate([ActionParameter] GetProjectTemplateRequest input)
+    public async Task<ProjectTemplateDto?> GetProjectTemplate([ActionParameter] GetProjectTemplateRequest input)
     {
-        var request = new LanguageCloudRequest($"/project-templates/{input.Template}", Method.Get, Creds);
-        return Client.Get<ProjectTemplateDto>(request);
+        var request = new LanguageCloudRequest($"/project-templates/{input.Template}", Method.Get);
+        return await Client.ExecuteWithErrorHandling<ProjectTemplateDto>(request);
     }
 }

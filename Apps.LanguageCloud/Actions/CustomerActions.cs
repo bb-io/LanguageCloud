@@ -13,15 +13,12 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class CustomerActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    private AuthenticationCredentialsProvider[] Creds =>
-            InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
     [Action("List all customers", Description = "List all customers")]
-    public ListAllCustomersResponse ListAllCustomers()
+    public async Task<ListAllCustomersResponse> ListAllCustomers()
     {
         
-        var request = new LanguageCloudRequest("/customers", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<CustomerDto>>>(request);
+        var request = new LanguageCloudRequest("/customers", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<CustomerDto>>>(request);
         return new ListAllCustomersResponse()
         {
             Customers = response.Items
@@ -29,10 +26,10 @@ public class CustomerActions(InvocationContext invocationContext) : LanguageClou
     }
 
     [Action("Get customer", Description = "Get customer by Id")]
-    public CustomerDto? GetCustomer([ActionParameter] GetCustomerRequest input)
+    public async Task<CustomerDto?> GetCustomer([ActionParameter] GetCustomerRequest input)
     {
         
-        var request = new LanguageCloudRequest($"/customers/{input.Id}", Method.Get, Creds);
-        return Client.Get<CustomerDto>(request);
+        var request = new LanguageCloudRequest($"/customers/{input.Id}", Method.Get);
+        return await Client.ExecuteWithErrorHandling<CustomerDto>(request);
     }
 }

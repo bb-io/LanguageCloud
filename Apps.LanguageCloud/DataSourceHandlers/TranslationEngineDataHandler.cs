@@ -10,9 +10,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class TranslationEngineDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public TranslationEngineDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
@@ -20,8 +17,8 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var request = new LanguageCloudRequest("/translation-engines", Method.Get, Creds);
-            var response = Client.Get<ResponseWrapper<List<TranslationEngineDto>>>(request);
+            var request = new LanguageCloudRequest("/translation-engines", Method.Get);
+            var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TranslationEngineDto>>>(request);
 
             return response.Items
                 .Where(x => context.SearchString == null ||

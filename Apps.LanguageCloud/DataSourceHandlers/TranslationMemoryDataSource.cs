@@ -8,20 +8,18 @@ namespace Apps.LanguageCloud.DataSourceHandlers;
 public class TranslationMemoryDataSource(InvocationContext invocationContext)
     : LanguageCloudInvocable(invocationContext), IAsyncDataSourceHandler
 {
-    private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
 
-    public Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var actions = new TranslationMemoryActions(InvocationContext, null!);
-        var translationMemories = actions.ListTranslationMemories().Memories.ToList();
+        var translationMemories = (await actions.ListTranslationMemories()).Memories.ToList();
 
-        return Task.FromResult(translationMemories
+        return translationMemories
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .ToDictionary(
                 memory => memory.Id.ToString(),
-                memory => memory.Name));
+                memory => memory.Name);
     }
 }

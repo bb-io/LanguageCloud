@@ -3,7 +3,7 @@ using Blackbird.Applications.Sdk.Common.Connections;
 
 namespace Apps.LanguageCloud.Connections;
 
-public class OAuth2ConnectionDefinition : IConnectionDefinition
+public class ConnectionDefinition : IConnectionDefinition
 {
     private const string ApiKeyName = "apiToken";
 
@@ -13,7 +13,6 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
         {
             Name = "ApiToken",
             AuthenticationType = ConnectionAuthenticationType.Undefined,
-            ConnectionUsage = ConnectionUsage.Actions,
             ConnectionProperties = new List<ConnectionProperty>()
             {
                 new(CredsNames.ClientId) { DisplayName = "Client ID" },
@@ -27,20 +26,17 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
         Dictionary<string, string> values)
     {
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.None,
             CredsNames.ClientId,
             values[CredsNames.ClientId]
         );
 
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.None,
             CredsNames.ClientSecret,
             values[CredsNames.ClientSecret]
         );
 
         var url = values.First(v => v.Key == "tenantId");
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.None,
             "tenantId",
             url.Value
         );

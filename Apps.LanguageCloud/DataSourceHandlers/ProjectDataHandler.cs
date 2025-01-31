@@ -8,9 +8,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class ProjectDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public ProjectDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
@@ -18,7 +15,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var projects = new ProjectActions(InvocationContext).ListAllProjects();
+            var projects = await new ProjectActions(InvocationContext).ListAllProjects();
             return projects.Projects
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))

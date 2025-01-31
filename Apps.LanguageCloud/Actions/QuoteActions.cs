@@ -19,12 +19,12 @@ public class QuoteActions(InvocationContext invocationContext, IFileManagementCl
     public async Task<DownloadQuoteReportResponse> DownloadQuoteReport([ActionParameter] DownloadQuoteReportRequest input)
     {
         var exportRequest = new LanguageCloudRequest($"/projects/{input.Project}/quote-report/export?format={input.FileFormat}&languageId={input.LanguageCode}",
-            Method.Post, Creds);
-        var exportResult = Client.Execute<ExportQuoteReportDto>(exportRequest).Data;
-        Client.PollQuoteReportExportOperation(exportResult.Id, input.Project, input.FileFormat, Creds);
+            Method.Post);
+        var exportResult = await Client.ExecuteWithErrorHandling<ExportQuoteReportDto>(exportRequest);
+        await Client.PollQuoteReportExportOperation(exportResult.Id, input.Project, input.FileFormat);
         var downloadRequest = new LanguageCloudRequest($"/projects/{input.Project}/quote-report/download?format={input.FileFormat}&exportId={exportResult.Id}",
-            Method.Get, Creds);
-        var fileData = Client.Get(downloadRequest).RawBytes;
+            Method.Get);
+        var fileData = (await Client.ExecuteWithErrorHandling(downloadRequest)).RawBytes;
         var fileFormat = input.FileFormat == "pdf" ? "pdf" : "xlsx";
 
         using var stream = new MemoryStream(fileData);

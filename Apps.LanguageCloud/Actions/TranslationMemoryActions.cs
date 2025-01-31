@@ -17,10 +17,10 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
     : LanguageCloudInvocable(invocationContext)
 {
     [Action("List translation memories", Description = "List translation memories")]
-    public ListTranslationMemoriesResponse ListTranslationMemories()
+    public async Task<ListTranslationMemoriesResponse> ListTranslationMemories()
     {
-        var request = new LanguageCloudRequest($"/translation-memory", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<TranslationMemoryDto>>>(request)!;
+        var request = new LanguageCloudRequest($"/translation-memory", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TranslationMemoryDto>>>(request)!;
         response.Items.ForEach(p => p.GroupLanguageDirections());
 
         return new ListTranslationMemoriesResponse
@@ -30,9 +30,9 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
     }
 
     [Action("Create translation memory", Description = "Create translation memory")]
-    public TranslationMemoryDto CreateTranslationMemory([ActionParameter] CreateTranslationMemoryRequest input)
+    public async Task<TranslationMemoryDto> CreateTranslationMemory([ActionParameter] CreateTranslationMemoryRequest input)
     {
-        var request = new LanguageCloudRequest($"/translation-memory", Method.Post, Creds)
+        var request = new LanguageCloudRequest($"/translation-memory", Method.Post)
             .AddJsonBody(new
             {
                 name = input.Name,
@@ -47,16 +47,16 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
                 languageProcessingRuleId = input.LanguageProcessingRuleId,
                 fieldTemplateId = input.FieldTemplateId
             });
-        var translationMemory = Client.Execute<TranslationMemoryDto>(request).Data!;
+        var translationMemory = await Client.ExecuteWithErrorHandling<TranslationMemoryDto>(request);
         translationMemory.GroupLanguageDirections();
         return translationMemory;
     }
 
     [Action("Get translation memory", Description = "Get translation memory")]
-    public TranslationMemoryDto GetTranslationMemory([ActionParameter] GetTranslationMemoryRequest input)
+    public async Task<TranslationMemoryDto> GetTranslationMemory([ActionParameter] GetTranslationMemoryRequest input)
     {
-        var request = new LanguageCloudRequest($"/translation-memory/{input.TranslationMemoryId}", Method.Get, Creds);
-        var response = Client.Get<TranslationMemoryDto>(request)!;
+        var request = new LanguageCloudRequest($"/translation-memory/{input.TranslationMemoryId}", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<TranslationMemoryDto>(request);
         response.GroupLanguageDirections();
         return response;
     }
@@ -64,8 +64,6 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
     [Action("Import TMX file", Description = "Import TMX file")]
     public async Task ImportTmx([ActionParameter] ImportTmxRequest input)
     {
-        var restClient = new LanguageCloudClient();
-
         await using var memoryStream = await fileManagementClient.DownloadAsync(input.File);
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Post,
@@ -82,6 +80,6 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         var response = client.Send(request);
         response.EnsureSuccessStatusCode();
         var importOperationResult = response.Content.ReadFromJsonAsync<ImportTmxDto>().Result;
-        restClient.PollImportTMXOperation(importOperationResult.Id, Creds);
+        await Client.PollImportTMXOperation(importOperationResult.Id);
     }
 }

@@ -11,14 +11,11 @@ namespace Apps.LanguageCloud.DataSourceHandlers
     public class LanguageDataHandler(InvocationContext invocationContext)
         : LanguageCloudInvocable(invocationContext), IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var request = new LanguageCloudRequest("/languages", Method.Get, Creds);
-            var response = Client.Get<ResponseWrapper<List<LanguageDto>>>(request);
+            var request = new LanguageCloudRequest("/languages", Method.Get);
+            var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<LanguageDto>>>(request);
 
             return response.Items
                 .Where(x => context.SearchString == null ||
