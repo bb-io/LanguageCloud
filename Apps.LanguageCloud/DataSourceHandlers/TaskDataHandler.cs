@@ -8,9 +8,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class TaskDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public TaskDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
@@ -18,7 +15,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var tasks = new TaskActions(InvocationContext).ListAllTasks();
+            var tasks = await new TaskActions(InvocationContext).ListAllTasks();
             return tasks.Tasks
                 .Where(x => context.SearchString == null ||
                             x.TaskType.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase) ||

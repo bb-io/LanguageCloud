@@ -20,16 +20,16 @@ namespace Apps.LanguageCloud.Actions
         public async Task<ExportGlossaryResponse> ExportGlossary([ActionParameter] ExportGlossaryRequest input)
         {
             var exportRequest = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/exports",
-                Method.Post, Creds);
+                Method.Post);
             exportRequest.AddJsonBody(new { });
-            var exportOperation = Client.Execute<ExportTargetVersionDto>(exportRequest).Data;
-            var pollingResult = Client.PollExportGlossariesOperation(exportOperation.Id, input.GlossaryId, Creds);
+            var exportOperation = await Client.ExecuteWithErrorHandling<ExportTargetVersionDto>(exportRequest);
+            var pollingResult = await Client.PollExportGlossariesOperation(exportOperation.Id, input.GlossaryId);
             var downloadRequest = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/exports/{pollingResult.Id}/download",
-                Method.Get, Creds);
-            var fileData = Client.Get(downloadRequest).RawBytes;
+                Method.Get);
+            var fileData = (await Client.ExecuteWithErrorHandling(downloadRequest)).RawBytes;
 
-            var requestGlossaryDetails = new LanguageCloudRequest($"/termbases/{input.GlossaryId}", Method.Get, Creds);
-            var glossaryDetails = Client.Get<TermbaseDto>(requestGlossaryDetails);
+            var requestGlossaryDetails = new LanguageCloudRequest($"/termbases/{input.GlossaryId}", Method.Get);
+            var glossaryDetails = await Client.ExecuteWithErrorHandling<TermbaseDto>(requestGlossaryDetails);
 
             using var streamGlossaryData = new MemoryStream(fileData);
             using var resultStream = await streamGlossaryData.ConvertFromTBXV2ToV3(glossaryDetails.Name);
@@ -43,12 +43,12 @@ namespace Apps.LanguageCloud.Actions
             var fileStream = await fileManagementClient.DownloadAsync(input.File);
             var fileTBXV2Stream = await fileStream.ConvertFromTBXV3ToV2();
 
-            var request = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/imports", Method.Post, Creds);
+            var request = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/imports", Method.Post);
 
             request.AddFile("file", fileTBXV2Stream.GetByteData().Result, input.File.Name);
-            var importGlossaryRequest = Client.Execute<ImportTmxDto>(request).Data;
+            var importGlossaryRequest = await Client.ExecuteWithErrorHandling<ImportTmxDto>(request);
 
-            Client.PollImportGlossariesOperation(importGlossaryRequest.Id, input.GlossaryId, Creds);
+            await Client.PollImportGlossariesOperation(importGlossaryRequest.Id, input.GlossaryId);
         }
     }
 }

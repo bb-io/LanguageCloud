@@ -10,9 +10,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class FileProcessingConfigurationDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public FileProcessingConfigurationDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
@@ -20,8 +17,8 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var request = new LanguageCloudRequest("/file-processing-configurations", Method.Get, Creds);
-            var response = Client.Get<ResponseWrapper<List<FileProcessingConfigurationDto>>>(request);
+            var request = new LanguageCloudRequest("/file-processing-configurations", Method.Get);
+            var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileProcessingConfigurationDto>>>(request);
 
             return response.Items
                 .Where(x => context.SearchString == null ||

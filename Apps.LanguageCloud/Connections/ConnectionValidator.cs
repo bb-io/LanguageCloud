@@ -11,9 +11,9 @@ public class ConnectionValidator : IConnectionValidator
     {
         try
         {
-            var client = new LanguageCloudClient();
-            var request = new LanguageCloudRequest("/projects", Method.Get, authProviders);
-            await client.ExecuteAsync(request, cancellationToken);
+            var client = new LanguageCloudClient(authProviders);
+            var request = new LanguageCloudRequest("/projects", Method.Get);
+            await client.ExecuteWithErrorHandling(request);
 
             return new()
             {

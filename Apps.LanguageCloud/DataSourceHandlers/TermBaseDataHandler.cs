@@ -10,9 +10,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class TermBaseDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public TermBaseDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
             
@@ -20,8 +17,8 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
         {
-            var request = new LanguageCloudRequest($"/termbases", Method.Get, Creds);
-            var response = Client.Get<ResponseWrapper<List<TermbaseDto>>>(request);
+            var request = new LanguageCloudRequest($"/termbases", Method.Get);
+            var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TermbaseDto>>>(request);
             return response.Items
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))

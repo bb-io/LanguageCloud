@@ -8,9 +8,6 @@ namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class LocationDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
     {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
         public LocationDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
@@ -18,7 +15,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var folders = new FolderActions(InvocationContext).ListAllFolders();
+            var folders = await new FolderActions(InvocationContext).ListAllFolders();
             
 
             return folders.Folders

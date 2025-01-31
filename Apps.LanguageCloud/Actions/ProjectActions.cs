@@ -13,15 +13,12 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class ProjectActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    private AuthenticationCredentialsProvider[] Creds =>
-            InvocationContext.AuthenticationCredentialsProviders.ToArray();
-
     [Action("List all projects", Description = "List all projects")]
-    public ListAllProjectsResponse ListAllProjects()
+    public async Task<ListAllProjectsResponse> ListAllProjects()
     {
         var request = new LanguageCloudRequest("/projects?fields=" +
-            "id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<ProjectDto>>>(request);
+            "id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<ProjectDto>>>(request);
         return new ListAllProjectsResponse()
         {
             Projects = response.Items
@@ -29,22 +26,20 @@ public class ProjectActions(InvocationContext invocationContext) : LanguageCloud
     }
 
     [Action("Get project", Description = "Get project by ID")]
-    public ProjectDto GetProject(
-        [ActionParameter] GetProjectRequest input)
+    public async Task<ProjectDto> GetProject([ActionParameter] GetProjectRequest input)
     {
         var request = new LanguageCloudRequest($"/projects/{input.Project}?fields=" +
-            $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get, Creds);
-        var project = Client.Get<ProjectDto>(request)!;
+            $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get);
+        var project = await Client.ExecuteWithErrorHandling<ProjectDto>(request)!;
         project.GroupLanguageDirections();
         
         return project;
     }
 
     [Action("Create project", Description = "Create project")]
-    public ProjectDto CreateProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] CreateProjectRequest input)
+    public async Task<ProjectDto> CreateProject([ActionParameter] CreateProjectRequest input)
     {
-        var request = new LanguageCloudRequest("/projects", Method.Post, authenticationCredentialsProviders);
+        var request = new LanguageCloudRequest("/projects", Method.Post);
 
         // temp solution for sync from localize. Need convert operator on array to remove this workaround
         input.SourceLanguage = input.SourceLanguage.Replace('_', '-');
@@ -52,54 +47,54 @@ public class ProjectActions(InvocationContext invocationContext) : LanguageCloud
         // ----------------------------------------------------------------------------------------------
         
         request.AddStringBody(input.GetSerializedRequest(), DataFormat.Json);
-        return Client.Post<ProjectDto>(request);
+        return await Client.ExecuteWithErrorHandling<ProjectDto>(request);
     }
 
     [Action("Create project from template", Description = "Create project from template")]
-    public ProjectDto CreateProjectFromTemplate([ActionParameter] CreateFromTemplateRequest input)
+    public async Task<ProjectDto> CreateProjectFromTemplate([ActionParameter] CreateFromTemplateRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects", Method.Post, Creds);
+        var request = new LanguageCloudRequest($"/projects", Method.Post);
         request.AddStringBody(input.GetSerializedRequest(), DataFormat.Json);
-        return Client.Post<ProjectDto>(request);
+        return await Client.ExecuteWithErrorHandling<ProjectDto>(request);
     }
 
     [Action("Edit project", Description = "Edit project")]
-    public void EditProject([ActionParameter] EditProjectRequest input)
+    public async Task EditProject([ActionParameter] EditProjectRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Put, Creds);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Put);
         request.AddJsonBody(new
         {
             name = input.ProjectName,
         });
-        Client.Execute(request);
+        await Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Delete project", Description = "Delete project")]
-    public void DeleteProject([ActionParameter] DeleteProjectRequest input)
+    public async Task DeleteProject([ActionParameter] DeleteProjectRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Delete, Creds);
-        Client.Execute(request);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Delete);
+        await Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Start project", Description = "Start project by Id")]
-    public void StartProject([ActionParameter] GetProjectRequest input)
+    public async Task StartProject([ActionParameter] GetProjectRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects/{input.Project}/start", Method.Put, Creds);
-        Client.Execute(request);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/start", Method.Put);
+        await Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Complete project", Description = "Complete project by Id")]
-    public void CompleteProject([ActionParameter] GetProjectRequest input)
+    public async Task CompleteProject([ActionParameter] GetProjectRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects/{input.Project}/complete", Method.Put, Creds);
-        Client.Execute(request);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/complete", Method.Put);
+        await Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("List all languages", Description = "List all languages")]
-    public ListAllLanguagesResponse ListAllLanguages()
+    public async Task<ListAllLanguagesResponse> ListAllLanguages()
     {
-        var request = new LanguageCloudRequest("/languages", Method.Get, Creds);
-        var response = Client.Get<ResponseWrapper<List<LanguageDto>>>(request);
+        var request = new LanguageCloudRequest("/languages", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<LanguageDto>>>(request);
         return new ListAllLanguagesResponse()
         {
             Languages = response.Items
