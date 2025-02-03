@@ -8,14 +8,14 @@ using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class TermBaseDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
+    public class TermBaseDataHandler : LanguageCloudInvocable, IAsyncDataSourceItemHandler
     {
         public TermBaseDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
             
         }
 
-        public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
         {
             var request = new LanguageCloudRequest($"/termbases", Method.Get);
             var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TermbaseDto>>>(request);
@@ -23,7 +23,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
                 .Take(20)
-                .ToDictionary(x => x.Id, x => x.Name);
+                .Select(x => new DataSourceItem(x.Id, x.Name));
         }
     }
 }

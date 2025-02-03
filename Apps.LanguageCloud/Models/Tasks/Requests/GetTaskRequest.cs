@@ -7,6 +7,5 @@ namespace Apps.LanguageCloud.Models.Tasks.Requests;
 public class GetTaskRequest
 {
     [Display("Task ID")]
-    [DataSource(typeof(TaskDataHandler))]
     public string Task { get; set; }
 }

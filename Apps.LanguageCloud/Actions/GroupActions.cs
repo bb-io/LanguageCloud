@@ -1,4 +1,5 @@
 ﻿using Apps.LanguageCloud.Dtos;
+using Apps.LanguageCloud.Models;
 using Apps.LanguageCloud.Models.Customers.Requests;
 using Apps.LanguageCloud.Models.Groups.Responses;
 using Apps.LanguageCloud.Models.Responses;
@@ -13,10 +14,12 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class GroupActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    [Action("List all groups", Description = "List all groups")]
-    public async Task<ListAllGroupsResponse> ListAllGroups()
+    [Action("Search groups", Description = "Search for groups, optionally by location")]
+    public async Task<ListAllGroupsResponse> SearchGroups([ActionParameter] OptionalLocationRequest location)
     {
         var request = new LanguageCloudRequest("/groups", Method.Get);
+        if (location.Location != null)
+            request.AddQueryParameter("location", location.Location);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<GroupDto>>>(request);
         return new ListAllGroupsResponse()
         {

@@ -7,17 +7,52 @@ using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using System.Globalization;
 
 namespace Apps.LanguageCloud.Actions;
 
 [ActionList]
 public class ProjectActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    [Action("List all projects", Description = "List all projects")]
-    public async Task<ListAllProjectsResponse> ListAllProjects()
+    [Action("Search projects", Description = "Search for projects given certain filters")]
+    public async Task<ListAllProjectsResponse> SearchProjects([ActionParameter] SearchProjectsRequest input)
     {
-        var request = new LanguageCloudRequest("/projects?fields=" +
-            "id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get);
+        var request = new LanguageCloudRequest("/projects", Method.Get);
+        request.AddQueryParameter("fields", "id,shortId,name,description,dueBy,createdAt,status,languageDirections");
+
+        if (input.CreatedFrom.HasValue)
+            request.AddQueryParameter("createdFrom", input.CreatedFrom.Value.ToString("o", CultureInfo.InvariantCulture));
+
+        if (input.CreatedTo.HasValue)
+            request.AddQueryParameter("createdTo", input.CreatedTo.Value.ToString("o", CultureInfo.InvariantCulture));
+
+        if (input.DueFrom.HasValue)
+            request.AddQueryParameter("dueFrom", input.DueFrom.Value.ToString("o", CultureInfo.InvariantCulture));
+
+        if (input.DueTo.HasValue)
+            request.AddQueryParameter("dueTo", input.DueTo.Value.ToString("o", CultureInfo.InvariantCulture));
+
+        if (input.ExcludeOnline.HasValue)
+            request.AddQueryParameter("excludeOnline", input.ExcludeOnline.Value.ToString());
+
+        if (input.Location != null)
+            request.AddQueryParameter("location", input.Location);
+
+        if (input.ProjectName != null)
+            request.AddQueryParameter("projectName", input.ProjectName);
+
+        if (input.ProjectTemplateId != null)
+            request.AddQueryParameter("projectTemplateId", input.ProjectTemplateId);
+
+        if (input.SourceLanguage != null)
+            request.AddQueryParameter("sourceLanguage", input.SourceLanguage);
+
+        if (input.TargetLanguage != null)
+            request.AddQueryParameter("targetLanguage", input.TargetLanguage);
+
+        if (input.Status != null)
+            request.AddQueryParameter("status", input.Status);
+
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<ProjectDto>>>(request);
         return new ListAllProjectsResponse()
         {
@@ -30,10 +65,7 @@ public class ProjectActions(InvocationContext invocationContext) : LanguageCloud
     {
         var request = new LanguageCloudRequest($"/projects/{input.Project}?fields=" +
             $"id,shortId,name,description,dueBy,createdAt,status,languageDirections", Method.Get);
-        var project = await Client.ExecuteWithErrorHandling<ProjectDto>(request)!;
-        project.GroupLanguageDirections();
-        
-        return project;
+        return await Client.ExecuteWithErrorHandling<ProjectDto>(request)!;
     }
 
     [Action("Create project", Description = "Create project")]
@@ -58,7 +90,7 @@ public class ProjectActions(InvocationContext invocationContext) : LanguageCloud
         return await Client.ExecuteWithErrorHandling<ProjectDto>(request);
     }
 
-    [Action("Edit project", Description = "Edit project")]
+    [Action("Update project", Description = "Edit project")]
     public async Task EditProject([ActionParameter] EditProjectRequest input)
     {
         var request = new LanguageCloudRequest($"/projects/{input.Project}", Method.Put);
@@ -88,16 +120,5 @@ public class ProjectActions(InvocationContext invocationContext) : LanguageCloud
     {
         var request = new LanguageCloudRequest($"/projects/{input.Project}/complete", Method.Put);
         await Client.ExecuteWithErrorHandling(request);
-    }
-
-    [Action("List all languages", Description = "List all languages")]
-    public async Task<ListAllLanguagesResponse> ListAllLanguages()
-    {
-        var request = new LanguageCloudRequest("/languages", Method.Get);
-        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<LanguageDto>>>(request);
-        return new ListAllLanguagesResponse()
-        {
-            Languages = response.Items
-        };
     }
 }

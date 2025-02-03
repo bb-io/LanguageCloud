@@ -15,20 +15,8 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class TaskActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-
-    [Action("List all tasks", Description = "List all tasks")]
-    public async Task<ListAllTasksResponse> ListAllTasks()
-    {
-        var request = new LanguageCloudRequest("/tasks/assigned?fields=id,status,taskType,project,input", Method.Get);
-        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TaskDto>>>(request);
-        return new ListAllTasksResponse()
-        {
-            Tasks = response.Items
-        };
-    }
-
-    [Action("List all project tasks", Description = "List all project tasks")]
-    public async Task<ListAllTasksResponse> ListAllProjectTasks([ActionParameter] ListAllProjectTasksRequest input)
+    [Action("Get project tasks", Description = "Get tasks related to a project")]
+    public async Task<ListAllTasksResponse> GetProjectTasks([ActionParameter] ListAllProjectTasksRequest input)
     {
         var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks?fields=id,status,taskType,project,input", Method.Get);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TaskDto>>>(request);

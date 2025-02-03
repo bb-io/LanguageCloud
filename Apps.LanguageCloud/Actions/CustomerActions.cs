@@ -1,4 +1,5 @@
 ﻿using Apps.LanguageCloud.Dtos;
+using Apps.LanguageCloud.Models;
 using Apps.LanguageCloud.Models.Customers.Requests;
 using Apps.LanguageCloud.Models.Customers.Responses;
 using Apps.LanguageCloud.Models.Responses;
@@ -13,11 +14,13 @@ namespace Apps.LanguageCloud.Actions;
 [ActionList]
 public class CustomerActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
-    [Action("List all customers", Description = "List all customers")]
-    public async Task<ListAllCustomersResponse> ListAllCustomers()
+    [Action("Search customers", Description = "Search for customers, optionally by location")]
+    public async Task<ListAllCustomersResponse> SearchCustomers([ActionParameter] OptionalLocationRequest location)
     {
         
         var request = new LanguageCloudRequest("/customers", Method.Get);
+        if (location.Location != null)
+            request.AddQueryParameter("location", location.Location);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<CustomerDto>>>(request);
         return new ListAllCustomersResponse()
         {
@@ -25,7 +28,7 @@ public class CustomerActions(InvocationContext invocationContext) : LanguageClou
         };
     }
 
-    [Action("Get customer", Description = "Get customer by Id")]
+    [Action("Get customer", Description = "Get customer by ID")]
     public async Task<CustomerDto?> GetCustomer([ActionParameter] GetCustomerRequest input)
     {
         

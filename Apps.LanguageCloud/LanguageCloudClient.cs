@@ -29,9 +29,23 @@ public class LanguageCloudClient : BlackBirdRestClient
         {
             return new PluginMisconfigurationException("The connection is unauthorized. Please check your Tenant ID in the connection settings.");
         }
-        return new PluginApplicationException(response.Content);
-        //var error = JsonConvert.DeserializeObject<ErrorResponse>(response.Content!)!;
-        //return new PluginApplicationException(error.Error);
+        try
+        {
+            var error = JsonConvert.DeserializeObject<ErrorDto>(response.Content);
+            if (error?.ErrorCode == "invalid")
+            {
+                if (error.Details != null && error.Details.Select(x => x.Name).Any())
+                {
+                    return new PluginMisconfigurationException($"The following input parameters were invalid: {string.Join(", ", error.Details.Select(x => x.Name))}. Please reconfigure these input values.");
+                }
+                return new PluginMisconfigurationException("One or more of the input values are invalid. Please reconfigure the input values.");
+            }
+            return new PluginApplicationException(error.Message);
+        }
+        catch (Exception ex)
+        {
+            return new PluginApplicationException(response.Content);
+        } 
     }
 
 

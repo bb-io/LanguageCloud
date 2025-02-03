@@ -7,6 +7,5 @@ namespace Apps.LanguageCloud.Models.Tasks.Requests;
 public class GetTaskOptionalRequest
 {
     [Display("Task ID")]
-    [DataSource(typeof(TaskDataHandler))]
     public string? TaskId { get; set; }
 }

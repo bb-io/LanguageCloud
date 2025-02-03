@@ -8,9 +8,9 @@ using RestSharp;
 namespace Apps.LanguageCloud.DataSourceHandlers;
 
 public class AccountDataSource(InvocationContext invocationContext)
-    : LanguageCloudInvocable(invocationContext), IAsyncDataSourceHandler
+    : LanguageCloudInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var request = new LanguageCloudRequest("/accounts", Method.Get);
@@ -19,6 +19,7 @@ public class AccountDataSource(InvocationContext invocationContext)
         return response.Items
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-            .ToDictionary(x => x.Id, x => x.Name);
+            .Take(20)
+            .Select(x => new DataSourceItem(x.Id, x.Name));
     }
 }
