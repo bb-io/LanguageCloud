@@ -1,20 +1,24 @@
-﻿using Apps.LanguageCloud.Models.Accounts;
+﻿using Apps.LanguageCloud.Actions;
+using Apps.LanguageCloud.Dtos;
+using Apps.LanguageCloud.Models;
+using Apps.LanguageCloud.Models.Accounts;
 using Apps.LanguageCloud.Models.Files.Requests;
 using Apps.LanguageCloud.Models.Projects.Requests;
 using Apps.LanguageCloud.Models.Tasks.Requests;
 using Apps.LanguageCloud.Webhooks.Payload;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
 
 namespace Apps.LanguageCloud.Webhooks;
 
 [WebhookList]
-public class WebhookList 
+public class WebhookList(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     #region ProjectWebhooks
 
     [Webhook("On project created", Description = "On project created")]
-    public async Task<WebhookResponse<ProjectEvent>> ProjectCreation(WebhookRequest webhookRequest,
+    public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest,
         [WebhookParameter] AccountOptionalRequest request)
     {
         var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString()!);
@@ -25,22 +29,74 @@ public class WebhookList
         
         if (!string.IsNullOrEmpty(request.AccountId) && data.AccountId != request.AccountId)
         {
-            return new WebhookResponse<ProjectEvent>
+            return new WebhookResponse<ProjectDto>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+
+        var actions = new ProjectActions(InvocationContext);
+        var project = await actions.GetProject(new GetProjectRequest { Project = data.Data.Id });
+
+        return new WebhookResponse<ProjectDto>
+        {
+            HttpResponseMessage = null,
+            Result = project
+        };
+    }
+
+    [Webhook("On project updated", Description = "On project updated")]
+    public async Task<WebhookResponse<ProjectDto>> ProjectUpdated(WebhookRequest webhookRequest,
+        [WebhookParameter] AccountOptionalRequest request,
+        [WebhookParameter] GetProjectOptionalRequest projectRequest,
+        [WebhookParameter] OptionalProjectStatusRequest statusRequest)
+    {
+        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString()!);
+        if (data is null)
+        {
+            throw new InvalidCastException(nameof(webhookRequest.Body));
+        }
+        
+        if (!string.IsNullOrEmpty(request.AccountId) && data.AccountId != request.AccountId)
+        {
+            return new WebhookResponse<ProjectDto>
             {
                 ReceivedWebhookRequestType = WebhookRequestType.Preflight,
                 Result = null
             };
         }
         
-        return new WebhookResponse<ProjectEvent>
+        if(projectRequest.ProjectId != null && data.Data.Id != projectRequest.ProjectId)
+        {
+            return new WebhookResponse<ProjectDto>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+
+        var actions = new ProjectActions(InvocationContext);
+        var project = await actions.GetProject(new GetProjectRequest { Project = data.Data.Id });
+
+        if (statusRequest.Status != null && project.Status != statusRequest.Status)
+        {
+            return new WebhookResponse<ProjectDto>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
+                Result = null
+            };
+        }
+
+        return new WebhookResponse<ProjectDto>
         {
             HttpResponseMessage = null,
-            Result = data.Data
+            Result = project
         };
     }
 
-    [Webhook("On project updated", Description = "On project updated")]
-    public async Task<WebhookResponse<ProjectEvent>> ProjectUpdated(WebhookRequest webhookRequest,
+    [Webhook("On project deleted", Description = "On project deleted")]
+    public async Task<WebhookResponse<ProjectEvent>> ProjectDeleted(WebhookRequest webhookRequest,
         [WebhookParameter] AccountOptionalRequest request,
         [WebhookParameter] GetProjectOptionalRequest projectRequest)
     {
@@ -58,34 +114,8 @@ public class WebhookList
                 Result = null
             };
         }
-        
-        if(projectRequest.ProjectId != null && data.Data.Id != projectRequest.ProjectId)
-        {
-            return new WebhookResponse<ProjectEvent>
-            {
-                ReceivedWebhookRequestType = WebhookRequestType.Preflight,
-                Result = null
-            };
-        }
-        
-        return new WebhookResponse<ProjectEvent>
-        {
-            HttpResponseMessage = null,
-            Result = data.Data
-        };
-    }
 
-    [Webhook("On project deleted", Description = "On project deleted")]
-    public async Task<WebhookResponse<ProjectEvent>> ProjectDeleted(WebhookRequest webhookRequest,
-        [WebhookParameter] AccountOptionalRequest request)
-    {
-        var data = JsonConvert.DeserializeObject<WebhookPayloadWrapper<ProjectEvent>>(webhookRequest.Body.ToString()!);
-        if (data is null)
-        {
-            throw new InvalidCastException(nameof(webhookRequest.Body));
-        }
-        
-        if (!string.IsNullOrEmpty(request.AccountId) && data.AccountId != request.AccountId)
+        if (projectRequest.ProjectId != null && data.Data.Id != projectRequest.ProjectId)
         {
             return new WebhookResponse<ProjectEvent>
             {
@@ -93,7 +123,7 @@ public class WebhookList
                 Result = null
             };
         }
-        
+
         return new WebhookResponse<ProjectEvent>
         {
             HttpResponseMessage = null,

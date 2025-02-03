@@ -8,13 +8,13 @@ using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class TranslationEngineDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
+    public class TranslationEngineDataHandler : LanguageCloudInvocable, IAsyncDataSourceItemHandler
     {
         public TranslationEngineDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
 
-        public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+        public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
             var request = new LanguageCloudRequest("/translation-engines", Method.Get);
@@ -23,8 +23,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
             return response.Items
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .Take(20)
-                .ToDictionary(x => x.Id, x => x.Name);
+                .Select(x => new DataSourceItem(x.Id, x.Name));
         }
     }
 }

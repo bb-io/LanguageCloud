@@ -9,19 +9,19 @@ using RestSharp;
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
     public class LanguageDataHandler(InvocationContext invocationContext)
-        : LanguageCloudInvocable(invocationContext), IAsyncDataSourceHandler
+        : LanguageCloudInvocable(invocationContext), IAsyncDataSourceItemHandler
     {
-        public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+        public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
             var request = new LanguageCloudRequest("/languages", Method.Get);
+            request.AddQueryParameter("fields", "languageCode,englishName");
             var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<LanguageDto>>>(request);
 
             return response.Items
                 .Where(x => context.SearchString == null ||
                             x.EnglishName.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .Take(20)
-                .ToDictionary(x => x.LanguageCode, x => x.EnglishName);
+                .Select(x => new DataSourceItem(x.LanguageCode, x.EnglishName));
         }
     }
 }

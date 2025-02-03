@@ -1,25 +1,26 @@
 ﻿using Apps.LanguageCloud.Actions;
+using Apps.LanguageCloud.Dtos;
+using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers;
 
 public class TranslationMemoryDataSource(InvocationContext invocationContext)
-    : LanguageCloudInvocable(invocationContext), IAsyncDataSourceHandler
+    : LanguageCloudInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
-        var actions = new TranslationMemoryActions(InvocationContext, null!);
-        var translationMemories = (await actions.ListTranslationMemories()).Memories.ToList();
+        var request = new LanguageCloudRequest($"/translation-memory", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TranslationMemoryDto>>>(request);
 
-        return translationMemories
+        return response.Items
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-            .ToDictionary(
-                memory => memory.Id.ToString(),
-                memory => memory.Name);
+            .Select(x => new DataSourceItem(x.Id, x.Name));
     }
 }

@@ -7,13 +7,13 @@ using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers;
 
-public class FieldTemplateDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
+public class FieldTemplateDataHandler : LanguageCloudInvocable, IAsyncDataSourceItemHandler
 {
     public FieldTemplateDataHandler(InvocationContext invocationContext) : base(invocationContext)
     {
     }
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var request = new LanguageCloudRequest("/translation-memory/field-templates", Method.Get);
@@ -22,7 +22,6 @@ public class FieldTemplateDataHandler : LanguageCloudInvocable, IAsyncDataSource
         return response.Items
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-            .Take(20)
-            .ToDictionary(x => x.Id, x => x.Name);
+            .Select(x => new DataSourceItem(x.Id, x.Name));
     }
 }

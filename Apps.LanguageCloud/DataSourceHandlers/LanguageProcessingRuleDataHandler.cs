@@ -7,13 +7,13 @@ using RestSharp;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class LanguageProcessingRuleDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
+    public class LanguageProcessingRuleDataHandler : LanguageCloudInvocable, IAsyncDataSourceItemHandler
     {
         public LanguageProcessingRuleDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
 
-        public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+        public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
             var request = new LanguageCloudRequest("/language-processing-rules", Method.Get);
@@ -22,8 +22,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
             return response.Items
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .Take(20)
-                .ToDictionary(x => x.Id, x => x.Name);
+                .Select(x => new DataSourceItem(x.Id, x.Name));
         }
     }
 }

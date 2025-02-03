@@ -6,13 +6,13 @@ using Apps.LanguageCloud.Models.Responses;
 using RestSharp;
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class WorkflowDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
+    public class WorkflowDataHandler : LanguageCloudInvocable, IAsyncDataSourceItemHandler
     {
         public WorkflowDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
             var request = new LanguageCloudRequest("/workflows", Method.Get);
@@ -21,8 +21,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
             return response.Items
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .Take(20)
-                .ToDictionary(x => x.Id, x => x.Name);
+                .Select(x => new DataSourceItem(x.Id, x.Name));
         }
     }
 }

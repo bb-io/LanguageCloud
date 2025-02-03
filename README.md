@@ -34,8 +34,8 @@ Before you can connect you need to make sure that:
 
 ### Customers 
 
-- **Get customer** Get customer by Id
-- **List all customers** List all customers
+- **Get customer** Get customer by a customer ID
+- **Search customers** Search for customers, optionally by location
 
 ### Files 
 
@@ -44,15 +44,10 @@ Before you can connect you need to make sure that:
 - **Download target file** Download target file by id. File format can be specified as optional input.
 - **Get source file info** Get source file info
 - **Get target file info** Get target file info
-- **List project source files** List project source files
-- **List project target files** List target source files
+- **Search project source files** Search project source files
+- **Search project target files** Search target source files
 - **Upload zip archive** Upload zip archive with source files
 - **Update target file from SDLXLIFF** Creates a new version of a target file
-
-### Folders 
-
-- **Get folder** Get folder by Id
-- **List all folders** List all folders
 
 ### Glossaries 
 
@@ -61,23 +56,17 @@ Before you can connect you need to make sure that:
 
 ### Groups 
 
-- **Get group** Get group by Id
-- **List all groups** List all groups
-
-### Languages 
-
-- **List all languages** List all languages
+- **Get group** Get group by groupID
+- **Search groups** Search for groups, optionally by location
 
 ### Projects 
 
-- **Get project** Get project by Id
-- **Complete project** Complete project by Id
+- **Get project** Get project by project ID
+- **Complete project** Complete project
 - **Create project** Create project
 - **Create project from template** Create project from template
 - **Edit project** Edit project
-- **Get project template** Get project template by Id
-- **List all project templates** List all project templates
-- **List all projects** List all projects
+- **Search projects** Search for projects given certain filters
 - **Start project** Start project by Id
 - **Delete project** Delete project
 
@@ -91,8 +80,7 @@ Before you can connect you need to make sure that:
 - **Assign task** Assign task by Id
 - **Complete task** Complete task by Id
 - **Get task** Get task by Id
-- **List all project tasks** List all project tasks
-- **List all tasks** List all tasks
+- **Get project tasks** Retrieves all the tasks contained in a project
 - **Reclaim task** Reclaim task by Id
 - **Reject task** Reject task by Id
 - **Release task** Release task by Id
@@ -103,11 +91,6 @@ Before you can connect you need to make sure that:
 - **Get translation memory** Get translation memory
 - **Import TMX file** Import TMX file
 - **List translation memories** List translation memories
-
-### Users 
-
-- **Get user** Get user by Id
-- **List all users** List all users
 
 ## Events
 

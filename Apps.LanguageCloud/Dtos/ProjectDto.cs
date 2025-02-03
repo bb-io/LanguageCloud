@@ -34,22 +34,18 @@ public class ProjectDto
     public List<LanguageDirection> LanguageDirections { get; set; }
     
     [Display("Language directions")]
-    public List<GroupedLanguageDirections> GroupedLanguageDirections { get; set; }
-   
-    [Display("Location")]
-    [JsonProperty("location")]
-    public folder Location { get; set; }
-    
-    public void GroupLanguageDirections()
-    {
-        GroupedLanguageDirections = LanguageDirections
+    public List<GroupedLanguageDirections> GroupedLanguageDirections { get => LanguageDirections
             .GroupBy(ld => ld.SourceLanguage)
             .Select(g => new GroupedLanguageDirections()
             {
                 SourceLanguage = g.Key,
                 TargetLanguages = g.Select(ld => ld.TargetLanguage).ToList()
             }).ToList();
-    }
+        }
+   
+    [Display("Location")]
+    [JsonProperty("location")]
+    public folder Location { get; set; }
 }
 
 public class GroupedLanguageDirections

@@ -16,18 +16,6 @@ namespace Apps.LanguageCloud.Actions;
 public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : LanguageCloudInvocable(invocationContext)
 {
-    [Action("List translation memories", Description = "List translation memories")]
-    public async Task<ListTranslationMemoriesResponse> ListTranslationMemories()
-    {
-        var request = new LanguageCloudRequest($"/translation-memory", Method.Get);
-        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TranslationMemoryDto>>>(request)!;
-        response.Items.ForEach(p => p.GroupLanguageDirections());
-
-        return new ListTranslationMemoriesResponse
-        {
-            Memories = response.Items
-        };
-    }
 
     [Action("Create translation memory", Description = "Create translation memory")]
     public async Task<TranslationMemoryDto> CreateTranslationMemory([ActionParameter] CreateTranslationMemoryRequest input)

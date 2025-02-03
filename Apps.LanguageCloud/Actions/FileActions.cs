@@ -22,7 +22,7 @@ namespace Apps.LanguageCloud.Actions;
 public class FileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : LanguageCloudInvocable(invocationContext)
 {
-    [Action("List project source files", Description = "List project source files")]
+    [Action("Search project source files", Description = "Search project source files")]
     public async Task<ListAllFilesResponse> ListSourceFiles([ActionParameter] ListSourceFilesRequest input)
     {
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Get);
@@ -30,7 +30,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
         return new ListAllFilesResponse() { Files = response.Items };
     }
 
-    [Action("List project target files", Description = "List target source files")]
+    [Action("Search project target files", Description = "Search target source files")]
     public async Task<ListAllFilesResponse> ListTargetFiles([ActionParameter] ListSourceFilesRequest input)
     {
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion,name", Method.Get);

@@ -6,7 +6,6 @@ namespace Apps.LanguageCloud.Models.Tasks.Requests;
 
 public class CompleteTaskRequest
 {
-    [DataSource(typeof(TaskDataHandler))]
     [Display("Task ID")]
     public string Task { get; set; }
 

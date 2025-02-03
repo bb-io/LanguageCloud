@@ -3,24 +3,30 @@ using Blackbird.Applications.Sdk.Common;
 using Apps.LanguageCloud.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using RestSharp;
+using Apps.LanguageCloud.Dtos;
+using Apps.LanguageCloud.Models.Responses;
 
 namespace Apps.LanguageCloud.DataSourceHandlers
 {
-    public class ProjectTemplateDataHandler : LanguageCloudInvocable, IAsyncDataSourceHandler
+    public class ProjectTemplateDataHandler : LanguageCloudInvocable, IAsyncDataSourceItemHandler
     {
         public ProjectTemplateDataHandler(InvocationContext invocationContext) : base(invocationContext)
         {
         }
 
-        public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+        public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
             CancellationToken cancellationToken)
         {
-            var projects = await new ProjectTemplateActions(InvocationContext).ListAllProjectTemplates();
-            return projects.ProjectTemplates
-                .Where(x => context.SearchString == null ||
-                            x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .Take(20)
-                .ToDictionary(x => x.Id, x => x.Name);
+            var request = new LanguageCloudRequest("/project-templates", Method.Get);
+            request.AddQueryParameter("top", 100);
+            if (context.SearchString != null)
+            {
+                request.AddQueryParameter("name", context.SearchString);
+            }
+            var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<ProjectTemplateDto>>>(request);
+
+            return response.Items.Select(x => new DataSourceItem(x.Id, x.Name));
         }
     }
 }
