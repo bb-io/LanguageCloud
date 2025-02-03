@@ -15,7 +15,7 @@ namespace Apps.LanguageCloud.Actions;
 public class GroupActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     [Action("Search groups", Description = "Search for groups, optionally by location")]
-    public async Task<ListAllGroupsResponse> ListAllGroups(OptionalLocationRequest location)
+    public async Task<ListAllGroupsResponse> SearchGroups(OptionalLocationRequest location)
     {
         var request = new LanguageCloudRequest("/groups", Method.Get);
         if (location.Location != null)

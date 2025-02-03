@@ -20,7 +20,7 @@ public class ProjectTests : TestBase
     {
         var actions = new ProjectActions(InvocationContext);
 
-        var result = await actions.ListAllProjects(new SearchProjectsRequest { ExcludeOnline = true });
+        var result = await actions.SearchProjects(new SearchProjectsRequest { ExcludeOnline = true });
         Console.WriteLine($"Total: {result.Projects.Count()}");
         foreach (var project in result.Projects)
         {

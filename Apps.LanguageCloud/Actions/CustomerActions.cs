@@ -15,7 +15,7 @@ namespace Apps.LanguageCloud.Actions;
 public class CustomerActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     [Action("Search customers", Description = "Search for customers, optionally by location")]
-    public async Task<ListAllCustomersResponse> ListAllCustomers(OptionalLocationRequest location)
+    public async Task<ListAllCustomersResponse> SearchCustomers(OptionalLocationRequest location)
     {
         
         var request = new LanguageCloudRequest("/customers", Method.Get);

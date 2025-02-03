@@ -19,7 +19,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
             CancellationToken cancellationToken)
         {
             var request = new LanguageCloudRequest("/project-templates", Method.Get);
-            request.AddQueryParameter("top", 100);
+            request.AddQueryParameter("top", 20);
             if (context.SearchString != null)
             {
                 request.AddQueryParameter("name", context.SearchString);

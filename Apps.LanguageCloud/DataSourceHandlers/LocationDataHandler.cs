@@ -21,6 +21,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
             var request = new LanguageCloudRequest("/folders", Method.Get);
             if (context.SearchString != null)
                 request.AddQueryParameter("name", context.SearchString);
+            request.AddQueryParameter("top", 20);
             var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FolderDto>>>(request);
 
 

@@ -21,6 +21,7 @@ public class TranslationMemoryDataSource(InvocationContext invocationContext)
         return response.Items
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+            .Take(20)
             .Select(x => new DataSourceItem(x.Id, x.Name));
     }
 }

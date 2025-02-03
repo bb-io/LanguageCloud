@@ -20,7 +20,7 @@ namespace Apps.LanguageCloud.DataSourceHandlers
         {
             var request = new LanguageCloudRequest("/projects", Method.Get);
             request.AddQueryParameter("fields", "id,name");
-            request.AddQueryParameter("top", 100);
+            request.AddQueryParameter("top", 20);
 
             if (context.SearchString != null)
             {
