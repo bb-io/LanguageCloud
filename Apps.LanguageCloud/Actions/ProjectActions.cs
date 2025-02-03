@@ -15,7 +15,7 @@ namespace Apps.LanguageCloud.Actions;
 public class ProjectActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     [Action("Search projects", Description = "Search for projects given certain filters")]
-    public async Task<ListAllProjectsResponse> SearchProjects(SearchProjectsRequest input)
+    public async Task<ListAllProjectsResponse> SearchProjects([ActionParameter] SearchProjectsRequest input)
     {
         var request = new LanguageCloudRequest("/projects", Method.Get);
         request.AddQueryParameter("fields", "id,shortId,name,description,dueBy,createdAt,status,languageDirections");
