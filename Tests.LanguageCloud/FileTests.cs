@@ -21,4 +21,15 @@ public class FileTests : TestBase
         Assert.IsNotNull(result.File.Name);
 
     }
+
+    [TestMethod]
+    public async Task Get_target_file_info_works()
+    {
+        var actions = new FileActions(InvocationContext, FileManager);
+
+        var result = await actions.GetTargetFile(new GetFileRequest { FileId = "671ac0635db7ac3bf6b438ca",  ProjectId = "671ac0568dcd3660baa78da6" });
+        Console.WriteLine($"{result.Name} - {result.Id}");
+        Assert.IsNotNull(result.Id);
+
+    }
 }

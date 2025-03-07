@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /ConsoleApp1
 /Tests.LanguageCloud/appsettings.json
 /Tests.LanguageCloud/Output/*
+/Tests.LanguageCloud/appsettings.json
