@@ -31,20 +31,20 @@ namespace Apps.LanguageCloud.Models.Files.Responses
             languageDirection = info.languageDirection;
             sourceFile = info.sourceFile;
             LatestVersion = info.LatestVersion;
-            Analysis = info.analysisStatistics == null ? null : new analysis 
+            Analysis = info.analysisStatistics == null ? null : new analysis
             {
-                exactMatch = info.analysisStatistics.exactMatch.words,
-                inContextExactMatch = info.analysisStatistics.inContextExactMatch.words,
-                perfectMatch = info.analysisStatistics.perfectMatch.words,
-                newWords = info.analysisStatistics.New.words,
-                repetitions = info.analysisStatistics.repetitions.words,
-                crossDocumentRepetitions = info.analysisStatistics.crossDocumentRepetitions.words,
-                machineTranslation = info.analysisStatistics.machineTranslation.words,
-                total = info.analysisStatistics.total.words,
-                Fuzzy_50_74 = info.analysisStatistics.fuzzyMatch.FirstOrDefault(x => x.category.minimum == 50).count.words,
-                Fuzzy_75_84 = info.analysisStatistics.fuzzyMatch.FirstOrDefault(x => x.category.minimum == 75).count.words,
-                Fuzzy_85_94 = info.analysisStatistics.fuzzyMatch.FirstOrDefault(x => x.category.minimum == 85).count.words,
-                Fuzzy_95_99 = info.analysisStatistics.fuzzyMatch.FirstOrDefault(x => x.category.minimum == 95).count.words
+                exactMatch = info.analysisStatistics?.exactMatch?.words ?? 0,
+                inContextExactMatch = info.analysisStatistics?.inContextExactMatch?.words ?? 0,
+                perfectMatch = info.analysisStatistics?.perfectMatch?.words ?? 0,
+                newWords = info.analysisStatistics?.New?.words ?? 0,
+                repetitions = info.analysisStatistics?.repetitions?.words ?? 0,
+                crossDocumentRepetitions = info.analysisStatistics?.crossDocumentRepetitions?.words ?? 0,
+                machineTranslation = info.analysisStatistics?.machineTranslation?.words ?? 0,
+                total = info.analysisStatistics?.total?.words ?? 0,
+                Fuzzy_50_74 = info.analysisStatistics?.fuzzyMatch?.FirstOrDefault(x => x.category?.minimum == 50)?.count?.words ?? 0,
+                Fuzzy_75_84 = info.analysisStatistics?.fuzzyMatch?.FirstOrDefault(x => x.category?.minimum == 75)?.count?.words ?? 0,
+                Fuzzy_85_94 = info.analysisStatistics?.fuzzyMatch?.FirstOrDefault(x => x.category?.minimum == 85)?.count?.words ?? 0,
+                Fuzzy_95_99 = info.analysisStatistics?.fuzzyMatch?.FirstOrDefault(x => x.category?.minimum == 95)?.count?.words ?? 0
             };
         }
 
