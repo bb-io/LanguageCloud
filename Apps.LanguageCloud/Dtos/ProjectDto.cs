@@ -33,16 +33,16 @@ public class ProjectDto
     [JsonProperty("languageDirections")]
     public List<LanguageDirection> LanguageDirections { get; set; }
 
-    [Display("Language directions")]
-    public List<GroupedLanguageDirections> GroupedLanguageDirections
+    [Display("Source language code")]
+    public string SourceLanguageCode
     {
-        get => LanguageDirections
-            .GroupBy(ld => ld.SourceLanguage.LanguageCode)
-            .Select(g => new GroupedLanguageDirections()
-            {
-                SourceLanguageCode = g.Key,
-                TargetLanguageCodes = g.Select(ld => ld.TargetLanguage.LanguageCode).ToList()
-            }).ToList();
+        get => LanguageDirections?.FirstOrDefault()?.SourceLanguage?.LanguageCode;
+    }
+
+    [Display("Target language codes")]
+    public List<string> TargetLanguageCodes
+    {
+        get => LanguageDirections?.Select(ld => ld.TargetLanguage?.LanguageCode).Where(code => code != null).ToList() ?? new List<string>();
     }
 
     [Display("Location")]
