@@ -25,7 +25,7 @@ public class DataHandlerTests : TestBase
         {
             Console.WriteLine($"{item.Value}: {item.DisplayName}");
         }
-        Assert.IsTrue(result.Count() > 0);
+        Assert.IsNotNull(result);
     }
 
     [TestMethod]

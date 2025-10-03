@@ -32,17 +32,19 @@ public class ProjectDto
     [DefinitionIgnore]
     [JsonProperty("languageDirections")]
     public List<LanguageDirection> LanguageDirections { get; set; }
-    
-    [Display("Language directions")]
-    public List<GroupedLanguageDirections> GroupedLanguageDirections { get => LanguageDirections
-            .GroupBy(ld => ld.SourceLanguage)
-            .Select(g => new GroupedLanguageDirections()
-            {
-                SourceLanguage = g.Key,
-                TargetLanguages = g.Select(ld => ld.TargetLanguage).ToList()
-            }).ToList();
-        }
-   
+
+    [Display("Source language code")]
+    public string SourceLanguageCode
+    {
+        get => LanguageDirections?.FirstOrDefault()?.SourceLanguage?.LanguageCode;
+    }
+
+    [Display("Target language codes")]
+    public List<string> TargetLanguageCodes
+    {
+        get => LanguageDirections?.Select(ld => ld.TargetLanguage?.LanguageCode).Where(code => code != null).ToList() ?? new List<string>();
+    }
+
     [Display("Location")]
     [JsonProperty("location")]
     public folder Location { get; set; }
@@ -50,13 +52,13 @@ public class ProjectDto
 
 public class GroupedLanguageDirections
 {
-    [Display("Source language")]
-    [JsonProperty("sourceLanguage")]
-    public SourceLanguage SourceLanguage { get; set; }
+    [Display("Source language code")]
+    [JsonProperty("sourceLanguageCode")]
+    public string SourceLanguageCode { get; set; }
 
-    [Display("Target languages")]
-    [JsonProperty("targetLanguages")]
-    public List<TargetLanguage> TargetLanguages { get; set; }
+    [Display("Target language codes")]
+    [JsonProperty("targetLanguageCodes")]
+    public List<string> TargetLanguageCodes { get; set; }
 }
 
 public class LanguageDirection
