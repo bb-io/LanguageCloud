@@ -25,6 +25,10 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Search project source files", Description = "Search project source files")]
     public async Task<ListAllFilesResponse> ListSourceFiles([ActionParameter] ListSourceFilesRequest input)
     {
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Get);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileInfoDto>>>(request);
         return new ListAllFilesResponse() { Files = response.Items };
@@ -33,6 +37,10 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Search project target files", Description = "Search target source files")]
     public async Task<ListAllFilesResponse> ListTargetFiles([ActionParameter] ListSourceFilesRequest input)
     {
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion,name", Method.Get);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileInfoDto>>>(request);
         return new ListAllFilesResponse() { Files = response.Items };
@@ -41,6 +49,11 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Get source file info", Description = "Get source file info")]
     public async Task<FileInfoDto?> GetSourceFile([ActionParameter] GetFileRequest input)
     {
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
+
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/{input.FileId}", Method.Get);
         return await Client.ExecuteWithErrorHandling<FileInfoDto>(request);
     }
@@ -48,6 +61,15 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Get target file info", Description = "Get target file info")]
     public async Task<GetTargetFileInfoResponse?> GetTargetFile([ActionParameter] GetFileRequest input)
     {
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
+        if (string.IsNullOrEmpty(input.FileId))
+        {
+            throw new PluginMisconfigurationException("Your file ID is null or empty please check your input and try again");
+        }
+
         var fields = new string[] { "name", "languageDirection", "latestVersion", "analysisStatistics", "status" };
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get);
         var response = await Client.ExecuteWithErrorHandling<TargetFileInfoDto>(request);
@@ -57,6 +79,11 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Upload source file", Description = "Upload source file to project")]
     public async Task<UploadFileResponse> UploadSourceFile([ActionParameter] UploadFileRequest input)
     {
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
+
         var sourceLanguage = "";
         if (input.SourceLanguageCode is null)
         {
@@ -100,6 +127,16 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Download target file", Description = "Download target file by id")]
     public async Task<DownloadTargetFileResponse> DownloadTargetFile([ActionParameter] DownloadFileRequest input)
     {
+        if (string.IsNullOrEmpty(input.FileId))
+        {
+            throw new PluginMisconfigurationException("Your file ID is null or empty please check your input and try again");
+        }
+
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
+
         var fields = new string[] { "name","latestVersion" };
         RestResponse fileData;
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}?fields={string.Join(", ", fields)}", Method.Get);
@@ -134,7 +171,10 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Attach source file to project", Description = "Attach source file to project")]
     public async Task AttachSourceFile([ActionParameter] AttachSourceFileRequest input)
     {
-        
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/attach-files", Method.Post);
         request.AddJsonBody(new
         {
@@ -158,6 +198,16 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     [Action("Update target file from SDLXLIFF", Description = "Creates a new version of a target file")]
     public async Task<UpdateTargetFileResponse> UpdateTargetFile([ActionParameter] UpdateTargetRequest input)
     {
+        if (string.IsNullOrEmpty(input.FileId))
+        {
+            throw new PluginMisconfigurationException("Your file ID is null or empty please check your input and try again");
+        }
+
+        if (string.IsNullOrEmpty(input.ProjectId))
+        {
+            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+        }
+
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/imports", Method.Post);
         var fileBytes = await fileManagementClient.DownloadAsync(input.File).Result.GetByteData();
         request.AddFile("file", fileBytes, input.File.Name);
