@@ -27,7 +27,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Get);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileInfoDto>>>(request);
@@ -39,7 +39,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion,name", Method.Get);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileInfoDto>>>(request);
@@ -51,7 +51,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
 
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/{input.FileId}", Method.Get);
@@ -63,11 +63,11 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
         if (string.IsNullOrEmpty(input.FileId))
         {
-            throw new PluginMisconfigurationException("Your file ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("File ID cannot be null or empty. Verify the input and retry");
         }
 
         var fields = new string[] { "name", "languageDirection", "latestVersion", "analysisStatistics", "status" };
@@ -81,7 +81,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
 
         var sourceLanguage = "";
@@ -129,12 +129,12 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.FileId))
         {
-            throw new PluginMisconfigurationException("Your file ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("File ID cannot be null or empty. Verify the input and retry");
         }
 
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
 
         var fields = new string[] { "name","latestVersion" };
@@ -173,7 +173,7 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files/attach-files", Method.Post);
         request.AddJsonBody(new
@@ -200,12 +200,12 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
     {
         if (string.IsNullOrEmpty(input.FileId))
         {
-            throw new PluginMisconfigurationException("Your file ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("File ID cannot be null or empty. Verify the input and retry");
         }
 
         if (string.IsNullOrEmpty(input.ProjectId))
         {
-            throw new PluginMisconfigurationException("Your project ID is null or empty please check your input and try again");
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
 
         var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files/{input.FileId}/versions/imports", Method.Post);
