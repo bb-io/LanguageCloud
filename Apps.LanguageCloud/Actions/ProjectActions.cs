@@ -1,5 +1,4 @@
 ﻿using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
 using RestSharp;
 using Apps.LanguageCloud.Models.Projects.Responses;
@@ -11,7 +10,7 @@ using System.Globalization;
 
 namespace Apps.LanguageCloud.Actions;
 
-[ActionList]
+[ActionList("Projects")]
 public class ProjectActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     [Action("Search projects", Description = "Search for projects given certain filters")]

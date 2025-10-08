@@ -3,7 +3,6 @@ using Apps.LanguageCloud.Models.Quotes.Requests;
 using Apps.LanguageCloud.Models.Quotes.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using RestSharp;
@@ -11,7 +10,7 @@ using System.Net.Mime;
 
 namespace Apps.LanguageCloud.Actions;
 
-[ActionList]
+[ActionList("Quotes")]
 public class QuoteActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : LanguageCloudInvocable(invocationContext)
 {

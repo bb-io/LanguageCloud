@@ -12,7 +12,7 @@ using System.Net.Mime;
 
 namespace Apps.LanguageCloud.Actions
 {
-    [ActionList]
+    [ActionList("Glossaries")]
     public class GlossaryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
         : LanguageCloudInvocable(invocationContext)
     {
@@ -32,7 +32,7 @@ namespace Apps.LanguageCloud.Actions
             var glossaryDetails = await Client.ExecuteWithErrorHandling<TermbaseDto>(requestGlossaryDetails);
 
             using var streamGlossaryData = new MemoryStream(fileData);
-            using var resultStream = await streamGlossaryData.ConvertFromTBXV2ToV3(glossaryDetails.Name);
+            using var resultStream = await streamGlossaryData.ConvertFromTbxV2ToV3(glossaryDetails.Name);
             var file = await fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, $"{glossaryDetails.Name}.tbx");
             return new ExportGlossaryResponse() { File = file };
         }
@@ -41,7 +41,7 @@ namespace Apps.LanguageCloud.Actions
         public async Task ImportGlossary([ActionParameter] ImportGlossaryRequest input)
         {
             var fileStream = await fileManagementClient.DownloadAsync(input.File);
-            var fileTBXV2Stream = await fileStream.ConvertFromTBXV3ToV2();
+            var fileTBXV2Stream = await fileStream.ConvertFromTbxV3ToV2();
 
             var request = new LanguageCloudRequest($"/termbases/{input.GlossaryId}/imports", Method.Post);
 

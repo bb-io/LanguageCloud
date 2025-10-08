@@ -4,7 +4,6 @@ using Apps.LanguageCloud.Models.Tasks.Requests;
 using Apps.LanguageCloud.Models.Tasks.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
@@ -12,7 +11,7 @@ using System.Net;
 
 namespace Apps.LanguageCloud.Actions;
 
-[ActionList]
+[ActionList("Tasks")]
 public class TaskActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     [Action("Get project tasks", Description = "Get tasks related to a project")]

@@ -1,5 +1,4 @@
 ﻿using Apps.LanguageCloud.Dtos;
-using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.TranslationMemories.Requests;
 using Apps.LanguageCloud.Models.TranslationMemories.Responses;
 using Blackbird.Applications.Sdk.Common;
@@ -12,7 +11,7 @@ using System.Net.Http.Json;
 
 namespace Apps.LanguageCloud.Actions;
 
-[ActionList]
+[ActionList("Translation memories")]
 public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : LanguageCloudInvocable(invocationContext)
 {
