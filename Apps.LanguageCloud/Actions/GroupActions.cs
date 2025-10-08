@@ -5,13 +5,12 @@ using Apps.LanguageCloud.Models.Groups.Responses;
 using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
 namespace Apps.LanguageCloud.Actions;
 
-[ActionList]
+[ActionList("Groups")]
 public class GroupActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     [Action("Search groups", Description = "Search for groups, optionally by location")]

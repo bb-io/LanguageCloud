@@ -1,24 +1,21 @@
 ﻿using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.LanguageCloud.Models.Files.Responses;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Files.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Newtonsoft.Json;
-using System.Net.Mime;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using System.Web;
 
 namespace Apps.LanguageCloud.Actions;
 
-[ActionList]
+[ActionList("Files")]
 public class FileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : LanguageCloudInvocable(invocationContext)
 {

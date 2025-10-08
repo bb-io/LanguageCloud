@@ -5,13 +5,12 @@ using Apps.LanguageCloud.Models.Customers.Responses;
 using Apps.LanguageCloud.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
 namespace Apps.LanguageCloud.Actions;
 
-[ActionList]
+[ActionList("Customers")]
 public class CustomerActions(InvocationContext invocationContext) : LanguageCloudInvocable(invocationContext)
 {
     [Action("Search customers", Description = "Search for customers, optionally by location")]
