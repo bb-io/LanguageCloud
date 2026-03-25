@@ -1,47 +1,80 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.LanguageCloud.Dtos;
+using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.LanguageCloud.Models.Tasks.Responses
+namespace Apps.LanguageCloud.Models.Tasks.Responses;
+
+public class TaskResponse(
+    TaskDto taskDto, 
+    string srcLang, 
+    string targLang, 
+    string srcFileId,
+    string targFileId,
+    string srcFileName, 
+    string targFileName)
 {
-    public class TaskResponse
-    {
-        [Display("Task ID")]
-        public string Id { get; set; }
-        public string Status { get; set; }
+    [Display("Task ID")]
+    public string Id { get; set; } = taskDto.Id;
 
-        [Display("Project ID")]
-        public string ProjectID { get; set; }
+    [Display("Status")]
+    public string Status { get; set; } = taskDto.Status;
 
-        [Display("Project name")]
-        public string ProjectName { get; set; }
+    [Display("Due by")]
+    public DateTime? DueBy { get; set; } = taskDto.DueBy;
 
-        [Display("Task type ID")]
-        public string TaskTypeID { get; set; }
+    [Display("Created at")]
+    public DateTime? CreatedAt { get; set; } = taskDto.CreatedAt;
 
-        [Display("Task type name")]
-        public string TaskTypeName { get; set; }
+    [Display("Completed at")]
+    public DateTime? CompletedAt { get; set; } = taskDto.CompletedAt;
 
-        [Display("Task type key")]
-        public string TaskTypeKey { get; set; }
+    [Display("Project ID")]
+    public string ProjectID { get; set; } = taskDto.Project.Id;
 
-        [Display("Task type description")]
-        public string TaskTypeDescription { get; set; }
-        
-        [Display("Source language")]
-        public string SourceLanguage { get; set; }
-        
-        [Display("Target language")]
-        public string TargetLanguage { get; set; }
+    [Display("Project name")]
+    public string ProjectName { get; set; } = taskDto.Project.Name;
 
-        [Display("Source file ID")]
-        public string SourceFileID { get; set; }
+    [Display("Task type ID")]
+    public string TaskTypeID { get; set; } = taskDto.TaskType.Id;
 
-        [Display("Source file name")]
-        public string SourceFileName { get; set; }
+    [Display("Task type name")]
+    public string TaskTypeName { get; set; } = taskDto.TaskType.Name;
 
-        [Display("Target file ID")]
-        public string TargetFileID { get; set; }
+    [Display("Task type key")]
+    public string TaskTypeKey { get; set; } = taskDto.TaskType.Key;
 
-        [Display("Target file name")]
-        public string TargetFileName { get; set; }
-    }
+    [Display("Task type description")]
+    public string TaskTypeDescription { get; set; } = taskDto.TaskType.Description;
+
+    [Display("Source language")]
+    public string SourceLanguage { get; set; } = srcLang;
+
+    [Display("Target language")]
+    public string TargetLanguage { get; set; } = targLang;
+
+    [Display("Source file ID")]
+    public string SourceFileID { get; set; } = srcFileId;
+
+    [Display("Source file name")]
+    public string SourceFileName { get; set; } = srcFileName;
+
+    [Display("Target file ID")]
+    public string TargetFileID { get; set; } = targFileId;
+
+    [Display("Target file name")]
+    public string TargetFileName { get; set; } = targFileName;
+
+    [Display("Assignees")]
+    public IEnumerable<TaskAssigneeResponse> Assignees { get; set; } = taskDto.Assignees.Select(x => new TaskAssigneeResponse(x));
+
+    [Display("Vendor order ID")]
+    public string? VendorOrderId { get; set; } = taskDto.input.Order?.Id;
+
+    [Display("Quote total translation fee")]
+    public double? VendorOrderTotalAmount { get; set; } = taskDto.input.Order?.Quote.TotalAmount;
+
+    [Display("Quote currency code")]
+    public string? VendorOrderCurrencyCode { get; set; } = taskDto.input.Order?.Quote.CurrencyCode;
+
+    [Display("Quote notes")]
+    public string? VendorOrderQuoteNotes { get; set; } = taskDto.input.Order?.Quote.Notes;
 }

@@ -2,7 +2,4 @@
 
 namespace Apps.LanguageCloud.Models.Tasks.Responses;
 
-public class ListAllTasksResponse
-{
-    public List<TaskDto> Tasks { get; set; }
-}
+public record ListAllTasksResponse(List<TaskDto> Tasks);

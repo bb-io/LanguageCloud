@@ -1,4 +1,5 @@
-﻿using Apps.LanguageCloud.Dtos;
+﻿using Apps.LanguageCloud.Constants;
+using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Tasks.Requests;
 using Apps.LanguageCloud.Models.Tasks.Responses;
@@ -17,61 +18,44 @@ public class TaskActions(InvocationContext invocationContext) : LanguageCloudInv
     [Action("Get project tasks", Description = "Get tasks related to a project")]
     public async Task<ListAllTasksResponse> GetProjectTasks([ActionParameter] ListAllProjectTasksRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks?fields=id,status,taskType,project,input", Method.Get);
+        var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks?fields={FieldsConstants.Task}", Method.Get);
         var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TaskDto>>>(request);
-        return new ListAllTasksResponse()
-        {
-            Tasks = response.Items
-        };
+        return new(response.Items);
     }
 
     [Action("Get task", Description = "Get task by ID")]
     public async Task<TaskResponse> GetTask([ActionParameter] GetTaskRequest input)
     {
-        var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields=id,status,taskType,project,input", Method.Get);
-        var task =  await Client.ExecuteWithErrorHandling<TaskDto>(request);
-        string tgt ="";
+        var request = new LanguageCloudRequest($"/tasks/{input.Task}?fields={FieldsConstants.Task}", Method.Get);
+        var taskDto =  await Client.ExecuteWithErrorHandling<TaskDto>(request);
+
+        string tgt = "";
         string src = "";
         string tgtfile = "";
         string tgtfilename = "";
         string srcfile = "";
         string srcfilename = "";
-        if (task.input.languageDirection != null && task.input.languageDirection != null) 
-            { tgt = task.input.languageDirection.TargetLanguage.LanguageCode;
-                src = task.input.languageDirection.SourceLanguage.LanguageCode;
-            } else if (task.input.targetFile != null)
-            {
-                tgt = task.input.targetFile.languageDirection.TargetLanguage.LanguageCode;
-                src = task.input.targetFile.languageDirection.SourceLanguage.LanguageCode;
-            }
 
-        if (task.input.targetFile != null)
-        { tgtfile = task.input.targetFile.id;
-          tgtfilename = task.input.targetFile.name;
+        if (taskDto.input.languageDirection != null && taskDto.input.languageDirection != null)             
+        { 
+            tgt = taskDto.input.languageDirection.TargetLanguage.LanguageCode;
+            src = taskDto.input.languageDirection.SourceLanguage.LanguageCode;
         }
-        if (task.input.sourceFile != null)
+        else if (taskDto.input.targetFile != null)
         {
-            srcfile = task.input.sourceFile.id;
-            srcfilename = task.input.sourceFile.name;
+            tgt = taskDto.input.targetFile.languageDirection.TargetLanguage.LanguageCode;
+            src = taskDto.input.targetFile.languageDirection.SourceLanguage.LanguageCode;
+            tgtfile = taskDto.input.targetFile.id;
+            tgtfilename = taskDto.input.targetFile.name;
         }
 
-        return new TaskResponse
+        if (taskDto.input.sourceFile != null)
         {
-            Id = task.Id,
-            ProjectID = task.Project.Id,
-            ProjectName = task.Project.Name,
-            Status = task.Status,
-            TaskTypeID = task.TaskType.Id,
-            TaskTypeKey = task.TaskType.Key,
-            TaskTypeDescription = task.TaskType.Description,
-            TaskTypeName = task.TaskType.Name,
-            SourceLanguage = src,
-            TargetLanguage = tgt,
-            SourceFileID = srcfile,
-            TargetFileID = tgtfile,
-            SourceFileName = srcfilename,
-            TargetFileName = tgtfilename
-        };
+            srcfile = taskDto.input.sourceFile.id;
+            srcfilename = taskDto.input.sourceFile.name;
+        }
+
+        return new(taskDto, src, tgt, srcfile, tgtfile, srcfilename, tgtfilename);
     }
 
     [Action("Accept task", Description = "Accept task by ID")]

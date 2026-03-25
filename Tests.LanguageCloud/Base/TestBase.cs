@@ -1,13 +1,10 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Tests.LanguageCloud.Base;
+
 public class TestBase
 {
     public IEnumerable<AuthenticationCredentialsProvider> Creds { get; set; }
@@ -28,5 +25,10 @@ public class TestBase
         };
 
         FileManager = new FileManager(folderLocation);
+    }
+
+    protected static void PrintJsonResult(object result)
+    {
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
     }
 }
