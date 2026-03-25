@@ -1,4 +1,5 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.LanguageCloud.Dtos.Vendor;
+using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
 
 namespace Apps.LanguageCloud.Dtos;
@@ -6,30 +7,31 @@ namespace Apps.LanguageCloud.Dtos;
 public class TaskDto
 {
     [Display("Task ID")]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [Display("Status")]
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 
-    //[Display("Due by")]
-    //[JsonProperty("dueBy")]
-    //public DateTime DueBy { get; set; }
+    [Display("Due by"), JsonProperty("dueBy")]
+    public DateTime? DueBy { get; set; }
 
-    //[Display("Created at")]
-    //[JsonProperty("createdAt")]
-    //public DateTime CreatedAt { get; set; }
+    [Display("Created at"), JsonProperty("createdAt")]
+    public DateTime? CreatedAt { get; set; }
 
-    [Display("Task type")]
-    [JsonProperty("taskType")]
+    [Display("Completed at"), JsonProperty("completedAt")]
+    public DateTime? CompletedAt { get; set; }
+
+    [Display("Task type"), JsonProperty("taskType")]
     public TaskType TaskType { get; set; }
 
-    [Display("Project")]
-    [JsonProperty("project")]
+    [Display("Project"), JsonProperty("project")]
     public ProjectDto Project { get; set; }
 
     [Display("Input")]
     public Input input { get; set; }
-  
+
+    [Display("Assignees"), JsonProperty("assignees")]
+    public List<TaskAssigneeDto> Assignees { get; set; } = [];
 }
 
 public class Input
@@ -45,6 +47,9 @@ public class Input
     
     [Display("Language direction")]
     public LanguageDirection languageDirection { get; set; }
+
+    [Display("Vendor order"), JsonProperty("order")]
+    public VendorOrderDto? Order { get; set; }
 }
 
 public class SourceFile
