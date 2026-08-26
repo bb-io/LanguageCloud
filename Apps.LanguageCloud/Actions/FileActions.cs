@@ -12,6 +12,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using System.Text.RegularExpressions;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using System.Web;
+using Apps.LanguageCloud.Utils;
 
 namespace Apps.LanguageCloud.Actions;
 
@@ -26,9 +27,8 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
         {
             throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/source-files", Method.Get);
-        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileInfoDto>>>(request);
-        return new ListAllFilesResponse() { Files = response.Items };
+        var files = await ListProjectFiles($"/projects/{input.ProjectId}/source-files");
+        return new ListAllFilesResponse() { Files = files };
     }
 
     [Action("Search project target files", Description = "Search target source files")]
@@ -38,9 +38,27 @@ public class FileActions(InvocationContext invocationContext, IFileManagementCli
         {
             throw new PluginMisconfigurationException("Project ID cannot be null or empty. Verify the input and retry");
         }
-        var request = new LanguageCloudRequest($"/projects/{input.ProjectId}/target-files?fields=latestVersion,name", Method.Get);
-        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileInfoDto>>>(request);
-        return new ListAllFilesResponse() { Files = response.Items };
+        var files = await ListProjectFiles(
+            $"/projects/{input.ProjectId}/target-files",
+            "latestVersion,name");
+        return new ListAllFilesResponse() { Files = files };
+    }
+
+    private async Task<List<FileInfoDto>> ListProjectFiles(string endpoint, string? fields = null)
+    {
+        return await PaginationHelper.GetAllAsync<FileInfoDto>(async (top, skip) =>
+        {
+            var request = new LanguageCloudRequest(endpoint, Method.Get);
+            request.AddQueryParameter("top", top);
+            request.AddQueryParameter("skip", skip);
+
+            if (fields is not null)
+            {
+                request.AddQueryParameter("fields", fields);
+            }
+
+            return await Client.ExecuteWithErrorHandling<ResponseWrapper<List<FileInfoDto>>>(request);
+        });
     }
 
     [Action("Get source file info", Description = "Get source file info")]
