@@ -24,6 +24,9 @@ public class TaskDto
     [Display("Task type"), JsonProperty("taskType")]
     public TaskType TaskType { get; set; }
 
+    [Display("Task name")]
+    public string TaskName => TaskType?.Name ?? string.Empty;
+
     [Display("Project"), JsonProperty("project")]
     public ProjectDto Project { get; set; }
 

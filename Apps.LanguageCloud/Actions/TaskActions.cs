@@ -3,6 +3,7 @@ using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.Responses;
 using Apps.LanguageCloud.Models.Tasks.Requests;
 using Apps.LanguageCloud.Models.Tasks.Responses;
+using Apps.LanguageCloud.Utils;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Exceptions;
@@ -18,9 +19,17 @@ public class TaskActions(InvocationContext invocationContext) : LanguageCloudInv
     [Action("Get project tasks", Description = "Get tasks related to a project")]
     public async Task<ListAllTasksResponse> GetProjectTasks([ActionParameter] ListAllProjectTasksRequest input)
     {
-        var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks?fields={FieldsConstants.Task}", Method.Get);
-        var response = await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TaskDto>>>(request);
-        return new(response.Items);
+        var tasks = await PaginationHelper.GetAllAsync<TaskDto>(async (top, skip) =>
+        {
+            var request = new LanguageCloudRequest($"/projects/{input.Project}/tasks", Method.Get);
+            request.AddQueryParameter("top", top);
+            request.AddQueryParameter("skip", skip);
+            request.AddQueryParameter("fields", FieldsConstants.Task);
+
+            return await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TaskDto>>>(request);
+        });
+
+        return new(tasks);
     }
 
     [Action("Get task", Description = "Get task by ID")]
