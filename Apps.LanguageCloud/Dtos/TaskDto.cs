@@ -34,7 +34,7 @@ public class TaskDto
     public Input input { get; set; }
 
     [Display("Assignees"), JsonProperty("assignees")]
-    public List<TaskAssigneeDto> Assignees { get; set; } = [];
+    public List<TaskAssigneeDto>? Assignees { get; set; } = [];
 }
 
 public class Input
