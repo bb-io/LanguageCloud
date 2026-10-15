@@ -64,7 +64,10 @@ public class TaskResponse(
     public string TargetFileName { get; set; } = targFileName;
 
     [Display("Assignees")]
-    public IEnumerable<TaskAssigneeResponse> Assignees { get; set; } = taskDto.Assignees.Select(x => new TaskAssigneeResponse(x));
+    public IEnumerable<TaskAssigneeResponse> Assignees { get; set; } = (taskDto.Assignees ?? [])
+        .Where(x => x is not null)
+        .Select(x => new TaskAssigneeResponse(x))
+        .ToList();
 
     [Display("Vendor order ID")]
     public string? VendorOrderId { get; set; } = taskDto.input.Order?.Id;
