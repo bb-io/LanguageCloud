@@ -95,6 +95,11 @@ public class PackageActions(
         using var buffer = new MemoryStream();
         await sourceStream.CopyToAsync(buffer);
 
+        if (buffer.Length == 0)
+        {
+            throw new PluginMisconfigurationException("The selected package file is empty.");
+        }
+
         var request = new LanguageCloudRequest("/packages/import", Method.Post);
         request.AddJsonBody(new
         {
