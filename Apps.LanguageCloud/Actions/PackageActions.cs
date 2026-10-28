@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using Apps.LanguageCloud.Constants;
 using Apps.LanguageCloud.Dtos;
 using Apps.LanguageCloud.Models.ProjectPackages.Requests;
 using Apps.LanguageCloud.Models.ProjectPackages.Responses;
@@ -18,7 +19,7 @@ public class PackageActions(
     InvocationContext invocationContext,
     IFileManagementClient fileManagementClient) : LanguageCloudInvocable(invocationContext)
 {
-    [Action("Start project package export", Description = "Starts exporting selected project tasks to translation packages. If no task IDs are provided, all project tasks are exported.")]
+    [Action("Start project package export", Description = "Starts exporting selected project tasks to translation packages. If no task IDs are provided, active human target-file tasks are selected automatically.")]
     public async Task<ExportPackageResponse> ExportPackage([ActionParameter] ExportPackageRequest input)
     {
         var taskIds = input.TaskIds?
@@ -28,12 +29,14 @@ public class PackageActions(
 
         if (taskIds.Count == 0)
         {
-            taskIds = await GetProjectTaskIds(input.ProjectId);
+            taskIds = await GetEligibleProjectTaskIds(input.ProjectId);
         }
 
         if (taskIds.Count == 0)
         {
-            throw new PluginMisconfigurationException("The project does not contain any tasks to export.");
+            throw new PluginApplicationException(
+                "The project does not contain any active human target-file tasks that can be exported. " +
+                "Wait for preprocessing to finish or provide eligible task IDs explicitly.");
         }
 
         var body = new Dictionary<string, object>
@@ -101,23 +104,37 @@ public class PackageActions(
         return await Client.ExecuteWithErrorHandling<ImportPackageResponse>(request);
     }
 
-    private async Task<List<string>> GetProjectTaskIds(string projectId)
+    private async Task<List<string>> GetEligibleProjectTaskIds(string projectId)
     {
         var tasks = await PaginationHelper.GetAllAsync<TaskDto>(async (top, skip) =>
         {
             var request = new LanguageCloudRequest($"/projects/{projectId}/tasks", Method.Get);
             request.AddQueryParameter("top", top);
             request.AddQueryParameter("skip", skip);
-            request.AddQueryParameter("fields", "id");
+            request.AddQueryParameter("fields", FieldsConstants.PackageExportTask);
 
             return await Client.ExecuteWithErrorHandling<ResponseWrapper<List<TaskDto>>>(request);
         });
 
         return tasks
+            .Where(IsEligiblePackageExportTask)
             .Select(x => x.Id)
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .Distinct(StringComparer.Ordinal)
             .ToList();
+    }
+
+    private static bool IsEligiblePackageExportTask(TaskDto task)
+    {
+        var isActive = string.Equals(task.Status, "created", StringComparison.OrdinalIgnoreCase) ||
+                       string.Equals(task.Status, "inProgress", StringComparison.OrdinalIgnoreCase);
+        var isHumanFileTask = task.TaskType is { Automatic: false } &&
+                              string.Equals(task.TaskType.Scope, "file", StringComparison.OrdinalIgnoreCase);
+        var hasTargetFileInput = task.input is not null &&
+                                 (string.Equals(task.input.type, "targetFile", StringComparison.OrdinalIgnoreCase) ||
+                                  task.input.targetFile is not null);
+
+        return isActive && isHumanFileTask && hasTargetFileInput;
     }
 
     private static void AddOptional<T>(IDictionary<string, object> body, string name, T? value)

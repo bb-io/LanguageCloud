@@ -10,7 +10,7 @@ public class ExportPackageRequest
     [DataSource(typeof(ProjectDataHandler))]
     public string ProjectId { get; set; } = string.Empty;
 
-    [Display("Task IDs", Description = "IDs of the tasks to export. If omitted, all tasks in the project are exported.")]
+    [Display("Task IDs", Description = "IDs of the tasks to export. If omitted, active human target-file tasks are selected automatically.")]
     public IEnumerable<string>? TaskIds { get; set; }
 
     [Display("Online package", Description = "Whether the package should use online termbases.")]

@@ -72,7 +72,7 @@ Before you can connect you need to make sure that:
 
 ### Packages
 
-- **Start project package export** Starts exporting selected project tasks to translation packages. If task IDs are omitted, all project tasks are exported.
+- **Start project package export** Starts exporting selected project tasks to translation packages. If task IDs are omitted, active human target-file tasks are selected automatically.
 - **Download exported package** Downloads a completed translation package as an `.sdlppx` file.
 - **Import project package** Imports a completed `.sdlppx` or `.sdlrpx` translation package.
 
