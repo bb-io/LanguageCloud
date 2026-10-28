@@ -29,23 +29,56 @@ public class LanguageCloudClient : BlackBirdRestClient
         {
             return new PluginMisconfigurationException("The connection is unauthorized. Please check your Tenant ID in the connection settings.");
         }
+
+        var responseContent = response.Content?.Trim();
+
         try
         {
-            var error = JsonConvert.DeserializeObject<ErrorDto>(response.Content);
+            var error = string.IsNullOrWhiteSpace(responseContent)
+                ? null
+                : JsonConvert.DeserializeObject<ErrorDto>(responseContent);
+
             if (error?.ErrorCode == "invalid")
             {
-                if (error.Details != null && error.Details.Select(x => x.Name).Any())
+                var invalidParameters = error.Details?
+                    .Select(x => x.Name)
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .ToList();
+
+                if (invalidParameters?.Count > 0)
                 {
-                    return new PluginMisconfigurationException($"The following input parameters were invalid: {string.Join(", ", error.Details.Select(x => x.Name))}. Please reconfigure these input values.");
+                    return new PluginMisconfigurationException(
+                        $"The following input parameters were invalid: {string.Join(", ", invalidParameters)}. " +
+                        "Please reconfigure these input values.");
                 }
+
                 return new PluginMisconfigurationException("One or more of the input values are invalid. Please reconfigure the input values.");
             }
-            return new PluginApplicationException(error.Message);
+
+            if (!string.IsNullOrWhiteSpace(error?.Message))
+            {
+                return new PluginApplicationException(error.Message);
+            }
         }
-        catch (Exception ex)
+        catch (JsonException)
         {
-            return new PluginApplicationException(response.Content);
-        } 
+            // Fall through and expose the raw response below.
+        }
+
+        if (!string.IsNullOrWhiteSpace(responseContent))
+        {
+            return new PluginApplicationException(responseContent);
+        }
+
+        var statusDescription = string.IsNullOrWhiteSpace(response.StatusDescription)
+            ? response.StatusCode.ToString()
+            : response.StatusDescription;
+        var transportError = string.IsNullOrWhiteSpace(response.ErrorMessage)
+            ? string.Empty
+            : $" {response.ErrorMessage}";
+
+        return new PluginApplicationException(
+            $"Trados API request failed with HTTP {(int)response.StatusCode} ({statusDescription}).{transportError}");
     }
 
 
