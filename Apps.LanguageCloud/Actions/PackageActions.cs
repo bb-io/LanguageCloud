@@ -92,16 +92,18 @@ public class PackageActions(
         }
 
         await using var sourceStream = await fileManagementClient.DownloadAsync(input.File);
-        using var buffer = new MemoryStream();
-        await sourceStream.CopyToAsync(buffer);
-
-        if (buffer.Length == 0)
+        if (sourceStream.CanSeek)
         {
-            throw new PluginMisconfigurationException("The selected package file is empty.");
+            if (sourceStream.Length == 0)
+            {
+                throw new PluginMisconfigurationException("The selected package file is empty.");
+            }
+
+            sourceStream.Position = 0;
         }
 
         var request = new LanguageCloudRequest("/packages/import", Method.Post);
-        request.AddFile("file", buffer.ToArray(), input.File.Name);
+        request.AddFile("file", () => sourceStream, input.File.Name);
 
         return await Client.ExecuteWithErrorHandling<ImportPackageResponse>(request);
     }
