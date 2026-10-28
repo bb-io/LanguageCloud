@@ -101,10 +101,7 @@ public class PackageActions(
         }
 
         var request = new LanguageCloudRequest("/packages/import", Method.Post);
-        request.AddJsonBody(new
-        {
-            file = Convert.ToBase64String(buffer.ToArray())
-        });
+        request.AddFile("file", buffer.ToArray(), input.File.Name);
 
         return await Client.ExecuteWithErrorHandling<ImportPackageResponse>(request);
     }
